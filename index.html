@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RITZ PARK TOWER MANAGEMENT</title>
+    <title>RITZ PARK TOWER MANAGEMENT - Add New Guest</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,6 +16,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative; /* Add this line */
         }
 
         .container {
@@ -24,7 +25,7 @@
             padding: 20px;
             justify-content: center;
             align-items: center;
-            max-width: 1000px;
+            max-width: 600px;
             width: 100%;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
@@ -54,7 +55,6 @@
             text-align: center;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
-            margin-bottom: 10px;
         }
 
         .button:hover {
@@ -64,42 +64,52 @@
         .button:active {
             transform: scale(0.95);
         }
-        .blood-title {
-            color: #FF4136;
-            font-size: 48px;
-            text-shadow: 2px 2px 4px #FF4136;
-            margin-bottom: 20px;
-        }
-        .textview {
+
+        .print-button {
+            display: block;
             width: 100%;
             padding: 10px;
-            margin-bottom: 20px;
+            background-color: #4caf50;
             border: none;
-            text-align: center;
             border-radius: 5px;
-            background-color: #f7f7f7;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #fff;
             font-size: 16px;
-            color: #333;
-            min-height: 100px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        /* Media Queries for Mobile */
-        @media (max-width: 767px) {
-            .container {
-                max-width: 350px;
-            }
+        .print-button:hover {
+            background-color: #45a049;
+        }
+
+        .print-button:active {
+            transform: scale(0.95);
+        }
+
+        .date-text {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
-        <input type="text" id="inputBox" class="input-box" placeholder="Enter text">
-        <button id="saveButton" class="button">Save</button>
-        <div class="textview" id="textview"></div>
-        <button onclick="location.href='guest_data.html'" class="button">Guest Data</button>
-        <button onclick="location.href='add_guest.html'" class="button">Add New Guest</button>
+        <h1>RITZ PARK TOWER MANAGEMENT - Add New Guest</h1>
+        <form id="guestForm">
+            <input type="text" id="fullNameInput" class="input-box" placeholder="Full Name" required>
+            <input type="text" id="phoneInput" class="input-box" placeholder="Phone Number" required>
+            <input type="text" id="addressInput" class="input-box" placeholder="Address" required>
+            <input type="text" id="carNumberInput" class="input-box" placeholder="Car Number" required>
+            <input type="text" id="eidNumberInput" class="input-box" placeholder="EID Number" required>
+            <input type="text" id="roomNumberInput" class="input-box" placeholder="Room Number" required>
+            <button type="submit" class="button">Submit</button>
+            <button id="printButton" class="print-button">Print</button>
+        </form>
+        <div class="date-text" id="dateText"></div> <!-- Add this line -->
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
@@ -116,39 +126,68 @@
   projectId: "ritz-park",
   storageBucket: "ritz-park.appspot.com",
   messagingSenderId: "272741038168",
-  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d"
+  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d",
+  measurementId: "G-2W6BFG4FHT"
             };
             firebase.initializeApp(firebaseConfig);
 
             // Get references to HTML elements
-            const inputBox = document.getElementById('inputBox');
-            const saveButton = document.getElementById('saveButton');
-            const textView = document.getElementById('textview');
+            const guestForm = document.getElementById('guestForm');
+            const fullNameInput = document.getElementById('fullNameInput');
+            const phoneInput = document.getElementById('phoneInput');
+            const addressInput = document.getElementById('addressInput');
+            const carNumberInput = document.getElementById('carNumberInput');
+            const eidNumberInput = document.getElementById('eidNumberInput');
+            const roomNumberInput = document.getElementById('roomNumberInput');
+            const dateText = document.getElementById('dateText'); // Add this line
 
             // Save data to Firebase Realtime Database
-            saveButton.addEventListener('click', function() {
-                const text = inputBox.value;
-                firebase.database().ref('/text').set(text)
+            guestForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                const fullName = fullNameInput.value;
+                const phone = phoneInput.value;
+                const address = addressInput.value;
+                const carNumber = carNumberInput.value;
+                const eidNumber = eidNumberInput.value;
+                const roomNumber = roomNumberInput.value;
+
+                // Create a new guest object
+                const guest = {
+                    fullName: fullName,
+                    phone: phone,
+                    address: address,
+                    carNumber: carNumber,
+                    eidNumber: eidNumber,
+                    roomNumber: roomNumber
+                };
+
+                // Generate a unique key for the guest
+                const guestKey = firebase.database().ref().child('guests').push().key;
+
+                // Save the guest data to the unique key
+                const updates = {};
+                updates['/guests/' + guestKey] = guest;
+                firebase.database().ref().update(updates)
                     .then(function() {
                         console.log('Data saved successfully.');
+                        // Reset the form
+                        guestForm.reset();
                     })
                     .catch(function(error) {
                         console.error('Error saving data:', error);
                     });
-                    
-                // Add animation class to the button
-                saveButton.classList.add('button-animation');
-                // Remove the animation class after the animation ends
-                setTimeout(function() {
-                    saveButton.classList.remove('button-animation');
-                }, 300);
             });
 
-            // Read data from Firebase Realtime Database
-            firebase.database().ref('/text').on('value', function(snapshot) {
-                const text = snapshot.val();
-                textView.innerText = text;
+            // Handle print button click event
+            const printButton = document.getElementById('printButton');
+            printButton.addEventListener('click', function() {
+                window.print();
             });
+
+            // Display current date
+            const currentDate = new Date().toLocaleDateString();
+            dateText.textContent = "Date: " + currentDate; // Add this line
         });
     </script>
 </body>
