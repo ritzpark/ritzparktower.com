@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RITZ PARK TOWER MANAGEMENT</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #dcdcdc;
+            border-radius: 20px;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            background-color: #f7f7f7;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #333;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #258cd1;
+        }
+
+        .button:active {
+            transform: scale(0.95);
+        }
+ .blood-title {
+            color: #FF4136;
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #FF4136;
+            margin-bottom: 20px;
+        }
+        .textview {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            text-align: center;
+            border-radius: 5px;
+            background-color: #f7f7f7;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #333;
+            min-height: 100px;
+        }
+
+        /* Media Queries for Mobile */
+        @media (max-width: 767px) {
+            .container {
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+<h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
+        <input type="text" id="inputBox" class="input-box" placeholder="Enter text">
+        <button id="saveButton" class="button">Save</button>
+        <div class="textview" id="textview"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyBKWoH5uZQ-4xOMNfB7zCCsG-7QZPdrNFQ",
+  authDomain: "ritz-park.firebaseapp.com",
+  databaseURL: "https://ritz-park-default-rtdb.firebaseio.com",
+  projectId: "ritz-park",
+  storageBucket: "ritz-park.appspot.com",
+  messagingSenderId: "272741038168",
+  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d"
+            };
+            firebase.initializeApp(firebaseConfig);
+
+            // Get references to HTML elements
+            const inputBox = document.getElementById('inputBox');
+            const saveButton = document.getElementById('saveButton');
+            const textView = document.getElementById('textview');
+
+            // Save data to Firebase Realtime Database
+            saveButton.addEventListener('click', function() {
+                const text = inputBox.value;
+                firebase.database().ref('/text').set(text)
+                    .then(function() {
+                        console.log('Data saved successfully.');
+                    })
+                    .catch(function(error) {
+                        console.error('Error saving data:', error);
+                    });
+                    
+                // Add animation class to the button
+                saveButton.classList.add('button-animation');
+                // Remove the animation class after the animation ends
+                setTimeout(function() {
+                    saveButton.classList.remove('button-animation');
+                }, 300);
+            });
+
+            // Read data from Firebase Realtime Database
+            firebase.database().ref('/text').on('value', function(snapshot) {
+                const text = snapshot.val();
+                textView.innerText = text;
+            });
+        });
+    </script>
+</body>
+</html>
