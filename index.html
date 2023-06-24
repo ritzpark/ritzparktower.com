@@ -54,6 +54,7 @@
             text-align: center;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-bottom: 10px;
         }
 
         .button:hover {
@@ -63,7 +64,7 @@
         .button:active {
             transform: scale(0.95);
         }
- .blood-title {
+        .blood-title {
             color: #FF4136;
             font-size: 48px;
             text-shadow: 2px 2px 4px #FF4136;
@@ -93,10 +94,12 @@
 </head>
 <body>
     <div class="container">
-<h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
+        <h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
         <input type="text" id="inputBox" class="input-box" placeholder="Enter text">
         <button id="saveButton" class="button">Save</button>
         <div class="textview" id="textview"></div>
+        <button onclick="location.href='guest_data.html'" class="button">Guest Data</button>
+        <button onclick="location.href='add_guest.html'" class="button">Add New Guest</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
@@ -107,7 +110,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             // Initialize Firebase
             const firebaseConfig = {
-                apiKey: "AIzaSyBKWoH5uZQ-4xOMNfB7zCCsG-7QZPdrNFQ",
+               apiKey: "AIzaSyBKWoH5uZQ-4xOMNfB7zCCsG-7QZPdrNFQ",
   authDomain: "ritz-park.firebaseapp.com",
   databaseURL: "https://ritz-park-default-rtdb.firebaseio.com",
   projectId: "ritz-park",
