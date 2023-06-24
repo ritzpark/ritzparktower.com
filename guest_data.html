@@ -98,8 +98,7 @@
   projectId: "ritz-park",
   storageBucket: "ritz-park.appspot.com",
   messagingSenderId: "272741038168",
-  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d",
-  measurementId: "G-2W6BFG4FHT"
+  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d"
             };
             firebase.initializeApp(firebaseConfig);
 
@@ -116,7 +115,7 @@
                 const eidNumber = eidNumberInput.value;
 
                 // Retrieve guest data from Firebase Realtime Database based on EID number
-                firebase.database().ref('/guests').orderByChild('eidNumber').equalTo(eidNumber).once('value')
+                firebase.database().ref('/guests/' + eidNumber).once('value')
                     .then(function(snapshot) {
                         const guest = snapshot.val();
 
