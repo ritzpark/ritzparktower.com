@@ -28,6 +28,7 @@
         max-width: 1000px;
         width: 100%;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        text-align: center; /* Center-align the content inside the container */
     }
 
     .input-box {
@@ -43,19 +44,27 @@
         color: #333;
     }
 
+    .button-container {
+        display: flex;
+        justify-content: center; /* Center-align the buttons horizontally */
+        align-items: center; /* Center-align the buttons vertically */
+        flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+    }
+
     .button {
         display: block;
-        width: 100%;
+        width: 250px;
+        height: 250px;
         padding: 10px;
         background-color: #3498db;
         border: none;
         border-radius: 5px;
         color: #fff;
-        font-size: 16px;
+        font-size: 25px;
         text-align: center;
         cursor: pointer;
         transition: background-color 0.3s ease, transform 0.3s ease;
-        margin-bottom: 10px;
+        margin: 10px; /* Add margin around each button */
     }
 
     .button:hover {
@@ -63,6 +72,28 @@
     }
 
     .button:active {
+        transform: scale(0.95);
+    }
+
+    .submit-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #3498db;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .submit-button:hover {
+        background-color: #258cd1;
+    }
+
+    .submit-button:active {
         transform: scale(0.95);
     }
 
@@ -82,7 +113,7 @@
         border-radius: 5px;
         background-color: #f7f7f7;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        font-size: 16px;
+        font-size: 20px;
         color: #333;
         min-height: 100px;
     }
@@ -100,10 +131,67 @@
         <h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
         <div id="passwordSection">
             <input type="password" id="passwordInput" class="input-box" placeholder="Enter Password">
-            <button id="submitButton" class="button">Submit</button>
+            <button id="submitButton" class="submit-button">Submit</button>
         </div>
         <div id="contentSection" style="display: none;">
-            <input type="text" id="inputBox" class="input-box" placeholder="Enter text">
+            <div class="textview" id="textview"></div>
+            <div class="button-container">
+                <button onclick="location.href='guest_data.html'" class="button">Guest Data</button>
+                <button onclick="location.href='add_guest.html'" class="button">Add New Guest</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+
+    <script src="ritzconfig.js"></script>
+
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+
+            // Get references to HTML elements
+            const passwordSection = document.getElementById('passwordSection');
+            const contentSection = document.getElementById('contentSection');
+            const passwordInput = document.getElementById('passwordInput');
+            const submitButton = document.getElementById('submitButton');
+            const textView = document.getElementById('textview');
+
+            // Add event listener to the submit button
+            submitButton.addEventListener('click', function() {
+                const password = passwordInput.value;
+
+                // Retrieve the stored password from Firebase Realtime Database
+                firebase.database().ref('/password').once('value')
+                    .then(function(snapshot) {
+                        const storedPassword = snapshot.val();
+
+                        // Check if the entered password matches the stored password
+                        if (password === storedPassword) {
+                            // Show the content section
+                            passwordSection.style.display = 'none';
+                            contentSection.style.display = 'block';
+                        } else {
+                            alert('Incorrect password. Please try again.');
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Error retrieving password:', error);
+                    });
+            });
+
+            // Read data from Firebase Realtime Database
+            firebase.database().ref('/text').on('value', function(snapshot) {
+                const text = snapshot.val();
+                textView.innerText = text;
+            });
+        });
+    </script>
+</body>
+</html>
             <button id="saveButton" class="button">Save</button>
             <div class="textview" id="textview"></div>
             <button onclick="location.href='guest_data.html'" class="button">Guest Data</button>
