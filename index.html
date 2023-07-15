@@ -1,194 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>RITZ PARK TOWER MANAGEMENT</title>
-    <style>
-        /* CSS styles omitted for brevity */
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        background-color: #dcdcdc;
-        border-radius: 20px;
-        padding: 20px;
-        justify-content: center;
-        align-items: center;
-        max-width: 1000px;
-        width: 100%;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        text-align: center; /* Center-align the content inside the container */
-    }
-
-    .input-box {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: none;
-        text-align: center;
-        border-radius: 5px;
-        background-color: #f7f7f7;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        font-size: 16px;
-        color: #333;
-    }
-
-    .button-container {
-        display: flex;
-        justify-content: center; /* Center-align the buttons horizontally */
-        align-items: center; /* Center-align the buttons vertically */
-        flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
-    }
-
-    .button {
-        display: block;
-        width: 250px;
-        height: 250px;
-        padding: 10px;
-        background-color: #3498db;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        font-size: 25px;
-        text-align: center;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-        margin: 10px; /* Add margin around each button */
-    }
-
-    .button:hover {
-        background-color: #258cd1;
-    }
-
-    .button:active {
-        transform: scale(0.95);
-    }
-
-    .submit-button {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        background-color: #3498db;
-        border: none;
-        border-radius: 5px;
-        color: #fff;
-        font-size: 25px;
-        text-align: center;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .submit-button:hover {
-        background-color: #258cd1;
-    }
-
-    .submit-button:active {
-        transform: scale(0.95);
-    }
-
-    .blood-title {
-        color: #FF4136;
-        font-size: 48px;
-        text-shadow: 2px 2px 4px #FF4136;
-        margin-bottom: 20px;
-    }
-
-    .textview {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: none;
-        text-align: center;
-        border-radius: 5px;
-        background-color: #f7f7f7;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        font-size: 20px;
-        color: #333;
-        min-height: 100px;
-    }
-
-    /* Media Queries for Mobile */
-    @media (max-width: 767px) {
-        .container {
-            max-width: 350px;
-        }
-    }
-    </style>
+  <title>RITZ RECEPTION</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom styling */
+    /* ... (your custom styles) ... */
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="blood-title">RITZ PARK TOWER MANAGEMENT</h1>
-        <div id="passwordSection">
-            <input type="password" id="passwordInput" class="input-box" placeholder="Enter Password">
-            <button id="submitButton" class="submit-button">Submit</button>
+<div id="datetime-container" style="position: fixed; top: 10px; right: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+  <div id="datetime"></div>
+</div>
+
+<div style="text-align: center;">
+  <h1 class="blood-title">RITZ RECEPTION</h1>
+
+  <!-- Guest Check-In Form -->
+  <div class="container-fluid container-in">
+    <h2 class="blood-title1">GUEST CHECK IN</h2>
+    <form id="checkInForm">
+      <div class="grid-container">
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+          <label for="guestName" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
+          <input type="text" class="form-control form-control-blood" id="guestName" required>
         </div>
-        <div id="contentSection" style="display: none;">
-            <div class="textview" id="textview"></div>
-            <div class="button-container">
-                <button onclick="location.href='guest_data.html'" class="button">Guest Data</button>
-                <button onclick="location.href='add_guest.html'" class="button">Add New Guest</button>
-            </div>
+        <!-- Add other form fields for guest check-in as needed -->
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary btn-check-in" style="padding: 10px;">BOOK NOW</button>
+    </form>
+  </div>
+  <br>
+
+  <!-- Guest Check-Out Form -->
+  <div class="container-fluid container-out">
+    <h2>GUEST CHECK OUT</h2>
+    <form id="checkOutForm">
+      <div class="grid-container">
+        <div style="border-radius: 15px; background-color: #ff4136; padding: 10px;">
+          <label for="guestNameOut" class="form-label" style="color: #f6f8ff; font-weight: bold;">GUEST FULL NAME</label>
+          <input type="text" class="form-control form-control-blood" id="guestNameOut" required>
         </div>
-    </div>
+        <!-- Add other form fields for guest check-out as needed -->
+      </div>
+      <br>
+      <button type="submit" class="submit-btn-check-in">CHECK OUT</button>
+    </form>
+  </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script>
+  // Initialize Firebase with your project's configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyAJflyN-sa6Qwkjt5ih2HmyD8aUdZr_KdI",
+  authDomain: "test-9c424.firebaseapp.com",
+  projectId: "test-9c424",
+  storageBucket: "test-9c424.appspot.com",
+  messagingSenderId: "533020541656",
+  appId: "1:533020541656:web:0fbd7758286de9cf1e8dad",
+  measurementId: "G-XQQNPM9RVM"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-    <script src="ritzconfig.js"></script>
+  // Create a reference to the Firebase Realtime Database
+  var database = firebase.database();
 
-    <script>
-        // Wait for the DOM to be fully loaded
-        document.addEventListener("DOMContentLoaded", function() {
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
+  // Function to handle guest check-in
+  function handleCheckIn(event) {
+    event.preventDefault();
 
-            // Get references to HTML elements
-            const passwordSection = document.getElementById('passwordSection');
-            const contentSection = document.getElementById('contentSection');
-            const passwordInput = document.getElementById('passwordInput');
-            const submitButton = document.getElementById('submitButton');
-            const textView = document.getElementById('textview');
+    const guestName = document.getElementById('guestName').value;
+    // Retrieve other form values for guest check-in as needed
 
-            // Add event listener to the submit button
-            submitButton.addEventListener('click', function() {
-                const password = passwordInput.value;
+    // Save check-in details to Firebase
+    database.ref('checkIns').push({
+      guestName: guestName,
+      timestamp: Date.now()
+      // Add other form values for guest check-in to the object as needed
+    });
 
-                // Retrieve the stored password from Firebase Realtime Database
-                firebase.database().ref('/password').once('value')
-                    .then(function(snapshot) {
-                        const storedPassword = snapshot.val();
+    // Clear input fields
+    document.getElementById('checkInForm').reset();
+  }
 
-                        // Check if the entered password matches the stored password
-                        if (password === storedPassword) {
-                            // Show the content section
-                            passwordSection.style.display = 'none';
-                            contentSection.style.display = 'block';
-                        } else {
-                            alert('Incorrect password. Please try again.');
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error retrieving password:', error);
-                    });
-            });
+  // Function to handle guest check-out
+  function handleCheckOut(event) {
+    event.preventDefault();
 
-            // Read data from Firebase Realtime Database
-            firebase.database().ref('/text').on('value', function(snapshot) {
-                const text = snapshot.val();
-                textView.innerText = text;
-            });
-        });
-    </script>
+    const guestName = document.getElementById('guestNameOut').value;
+    // Retrieve other form values for guest check-out as needed
+
+    // Save check-out details to Firebase
+    database.ref('checkOuts').push({
+      guestName: guestName,
+      timestamp: Date.now()
+      // Add other form values for guest check-out to the object as needed
+    });
+
+    // Clear input fields
+    document.getElementById('checkOutForm').reset();
+  }
+
+  // Attach event listeners to the forms
+  document.getElementById('checkInForm').addEventListener('submit', handleCheckIn);
+  document.getElementById('checkOutForm').addEventListener('submit', handleCheckOut);
+</script>
+<script>
+function updateDateTime() {
+  const dateTimeElement = document.getElementById("datetime");
+  const now = new Date();
+
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+  const formattedDateTime = now.toLocaleString('en-US', options);
+  
+  dateTimeElement.textContent = formattedDateTime;
+}
+
+// Call the function initially to set the date and time immediately
+updateDateTime();
+
+// Update the date and time every second to keep it accurate
+setInterval(updateDateTime, 1000);
+</script>
 </body>
 </html>
