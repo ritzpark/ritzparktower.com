@@ -66,29 +66,20 @@
     firebase.initializeApp(firebaseConfig);
 
     function login() {
-      var email = document.getElementById("email").value;
-      var password = document.getElementById("password").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // User is logged in, redirect to the main booking page or other authorized pages
-          window.location.href = "index.html";
+      // Firebase authentication
+      firebase.auth().signInWithEmailAndPassword(username, password)
+        .then(() => {
+          // Login successful, redirect to the welcome page
+          window.location.href = "ritz.html";
         })
         .catch((error) => {
-          // Handle login error, show an error message to the user
-          var errorMessage = error.message;
-          alert(errorMessage);
+          alert("Login failed. Please check your username and password.");
+          console.error(error);
         });
     }
-
-    // Check if the user is authenticated when the page loads
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in, allow access to the booking page
-      } else {
-        // User is not signed in, stay on the login page
-      }
-    });
   </script>
 </body>
 </html>
