@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RITZ RECEPTION</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom styling */
+#datetime-container {
+    /* Customize the appearance of the container */
+    /* For example: font-size, font-family, etc. */
+  }
+
+  /* Optionally, you can style the date and time text inside the container */
+  #datetime {
+    font-size: 16px;
+    /* Add any other styles you want */
+  }
+.blood-title {
+            font-family: "Arial Black", sans-serif; /* Change the font family */
+            color: #ffd700; /* Change the text color */
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #FF4136; /* Add a text shadow */
+            margin-bottom: 20px;
+  }
+.blood-title1 {
+            font-family: "Arial Black", sans-serif; /* Change the font family */
+            color: #fff0f5; /* Change the text color */
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #0000cd; /* Add a text shadow */
+            margin-bottom: 20px;
+ }
+    body {
+      padding: 50px;
+      margin: 50px;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 120vh;
+    }
+
+    .container-in {
+      background-color: #00ff7f;
+      justify-content: center;
+border-radius: 15px;
+      align-items: center;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .container-out {
+      background-color: lightcoral;
+       justify-content: center;
+border-radius: 20px;
+
+        align-items: center;
+      padding: 10px;
+      margin: 0;
+    }
+.btn-check-in-container {
+        display: flex;
+        justify-content: center; /* Center-align the buttons horizontally */
+        align-items: center; /* Center-align the buttons vertically */
+        flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+  }
+    .btn-check-in {
+       display: block;
+      width: 99%;
+      height: 80px;
+      padding: 5px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin: 10px; /* Add margin around each button */
+    }
+
+    .btn-check-in:hover {
+        background-color: #258cd1;
+    }
+
+    .btn-check-in:active {
+        transform: scale(0.95);
+    }
+
+    .submit-btn-check-in {
+        display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .submit-btn-check-in:hover {
+        background-color: #258cd1;
+    }
+
+    .submit-btn-check-in:active {
+        transform: scale(0.95);
+    }
+
+    .blood-title {
+        color: #FF4136;
+        font-size: 48px;
+        text-shadow: 2px 2px 4px #FF4136;
+        margin-bottom: 20px;
+    
+        }
+
+
+
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+<div id="datetime-container" style="position: fixed; top: 10px; right: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+    <div id="datetime"></div>
+  </div>
+
+  <div style="text-align: center;">
+ <h1 class="blood-title">RITZ RECEPTION</h1>
+
+  <div class="container-fluid container-in">
+    
+<h2 id="userEmail"></h2>
+    <form id="checkInForm">
+      <div class="grid-container">
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="GUEST_NAME" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
+  <input type="text" class="form-control form-control-blood" id="GUEST_NAME" required>
+</div>
+<div id="successMessage" style="display: none; color: green;">Check-in information uploaded successfully!</div>
+
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="VEHICLE_NUMBER" class="form-label" style="color: #d1fde4; font-weight: bold;">VEHICLE NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="VEHICLE_NUMBER" required>
+</div>
+         <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="PASSPORT_NUMBER" class="form-label" style="color: #d1fde4; font-weight: bold;">PASSPORT NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="PASSPORT_NUMBER" required>
+</div>
+  
+
+    <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="EID_NUMBER" class="form-label" style="color: #d1fde4; font-weight: bold;">EID NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="EID_NUMBER" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="E-MAIL" class="form-label" style="color: #d1fde4; font-weight: bold;">E-MAIL</label>
+  <input type="text" class="form-control form-control-blood" id="E-MAIL" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="PHONE" class="form-label" style="color: #d1fde4; font-weight: bold;">PHONE NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="PHONE" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="RABDAN STUDENT ID" class="form-label" style="color: #d1fde4; font-weight: bold;">RABDAN STUDENT ID</label>
+  <input type="text" class="form-control form-control-blood" id="RABDAN STUDENT ID" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="ADDRESS" class="form-label" style="color: #d1fde4; font-weight: bold;">ADDRESS</label>
+  <input type="text" class="form-control form-control-blood" id="ADDRESS" required>
+</div>
+  
+
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="ZIP_CODE" class="form-label" style="color: #d1fde4; font-weight: bold;">ZIP CODE</label>
+  <input type="text" class="form-control form-control-blood" id="ZIP_CODE" required>
+</div>
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="GUEST_GENDER" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST GENDER</label>
+       <select id="GUEST_GENDER" class="form-control">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="OTHERS">OTHERS</option>
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="ADULTS" class="form-label" style="color: #d1fde4; font-weight: bold;">ADULTS</label>
+       <select id="ADULTS" class="form-control">
+            <option value="ONE">ONE</option>
+            <option value="TWO">TWO</option>
+            <option value="THREE">THREE</option>
+<option value="FOUR">FOUR</option>
+<option value="FIVE">FIVE</option>
+<option value="SIX">SIX</option>
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="CHILD" class="form-label" style="color: #d1fde4; font-weight: bold;">CHILD</label>
+       <select id="CHILD" class="form-control">
+            <option value="ONE">ONE</option>
+            <option value="TWO">TWO</option>
+            <option value="THREE">THREE</option>
+<option value="FOUR">FOUR</option>
+<option value="FIVE">FIVE</option>
+<option value="SIX">SIX</option>
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="BED_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">BED TYPE</label>
+       <select id="BED_TYPE" class="form-control">
+            <option value="TWIN_BED">TWIN BED</option>
+            <option value="QUEEN_BED">QUEEN BED</option>
+           
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="ROOM_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">ROOM TYPE</label>
+       <select id="ROOM_TYPE" class="form-control">
+            <option value="SUITE_ROOM">SUITE ROOM</option>
+             <option value="DELUXE_ROOM">DELUXE ROOM</option>
+<option value="STUDIO">STUDIO</option>
+            <option value="SINGLE_BED_ROOM">1 BED ROOM</option>
+            <option value="DOUBLE_BED_ROOM">2 BED ROOM</option>
+<option value="THREE_BED_ROOM">3 BED ROOM</option>
+           
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="ROOM" class="form-label" style="color: #d1fde4; font-weight: bold;">AVAILABLE ROOM</label>
+<select id="ROOM" class="form-control">
+    <optgroup label="2nd Floor">
+<option value="None">None</option>
+      <option value="2001-Single Bed"> 2001 - Single Bed</option>
+      <option value="2002-Single Bed"> 2002 - Single Bed</option>
+      <option value="2003-Single Bed"> 2003 - Single Bed</option>
+      <option value="2004-Single Bed"> 2004 - Single Bed</option>
+      <option value="2005-Single Bed"> 2005 - Single Bed</option>
+      <option value="2006-Single Bed"> 2006 - Single Bed</option>
+      <option value="2007-Single Bed"> 2007 - Single Bed</option>
+      <option value="2008-Single Bed"> 2008 - Single Bed</option>
+      <option value="2009-Single Bed"> 2009- Single Bed</option>
+      <option value="2010-Single Bed"> 2010 - Single Bed</option>
+      <option value="2011-Single Bed"> 2011 - Single Bed</option>
+      <option value="2012-Single Bed"> 2012 - Single Bed</option>
+      <option value="2013-Single Bed"> 2013 - Single Bed</option>
+      <option value="2014-Single Bed"> 2014 - Single Bed</option>
+      <option value="2015-Single Bed"> 2015- Single Bed</option>
+      <option value="2016-Single Bed"> 2016 - Single Bed</option>
+      <option value="2017-Single Bed"> 2017 - Single Bed</option>
+      <option value="2018-Single Bed"> 2018 - Single Bed</option>
+      <option value="2019-Single Bed"> 2019 - Single Bed</option>
+      <option value="2020-Single Bed"> 2020 - Single Bed</option>
+    </optgroup>
+  </select>
+</div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+            <label for="checkIn_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-IN DATE & TIME</label>
+            <input type="datetime-local" class="form-control form-control-blood" id="checkIn_Date_Time" required>
+          </div>
+          <div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+            <label for="checkOut_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-OUT DATE & TIME</label>
+            <input type="datetime-local" class="form-control form-control-blood" id="checkOut_Date_Time" required>
+          </div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="guestPhoto" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST PHOTO (JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="guestPhoto" accept=".jpg,.jpeg,.png" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="idScan" class="form-label" style="color: #d1fde4; font-weight: bold;">ID SCAN (PDF/JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="idScan" accept=".pdf,.jpg,.jpeg,.png" required>
+</div>
+<div style="border-radius: 15px; background-color: #8a2be2; padding: 10px;">
+  <label for="PAYMENT_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">PAYMENT TYPE</label>
+       <select id="PAYMENT_TYPE" class="form-control">
+            <option value="CASH">CASH</option>
+            <option value="CARD">CARD</option>
+           
+          </select>
+        </div>
+      </div>
+<br>
+      <button type="submit" class="btn btn-primary btn-check-in" style="padding: 10px;">BOOK NOW</button>
+    </form>
+  </div>
+    <br>
+
+  <!-- Guest Check-Out Form -->
+  <div class="container-fluid container-out">
+    <h2>GUEST CHECK OUT</h2>
+    <form id="checkOutForm">
+      <div class="grid-container">
+        <div style="border-radius: 15px; background-color: #ff4136; padding: 10px;">
+          <label for="guestNameOut" class="form-label" style="color: #f6f8ff; font-weight: bold;">GUEST FULL NAME</label>
+          <input type="text" class="form-control form-control-blood" id="guestNameOut" required>
+        </div>
+        <!-- Add other form fields for guest check-out as needed -->
+      </div>
+      <br>
+      <button type="submit" class="submit-btn-check-in">CHECK OUT</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script>
+  // Initialize Firebase with your project's configuration
+  var firebaseConfig = {
+   apiKey: "AIzaSyBKWoH5uZQ-4xOMNfB7zCCsG-7QZPdrNFQ",
+  authDomain: "ritz-park.firebaseapp.com",
+  databaseURL: "https://ritz-park-default-rtdb.firebaseio.com",
+  projectId: "ritz-park",
+  storageBucket: "ritz-park.appspot.com",
+  messagingSenderId: "272741038168",
+  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d",
+  measurementId: "G-2W6BFG4FHT"
+  };
+  firebase.initializeApp(firebaseConfig);
+
+
+  // Create a reference to the Firebase Realtime Database
+  var database = firebase.database();
+
+  // Function to handle guest check-in
+ 
+
+    function handleCheckIn(event) {
+  event.preventDefault();
+
+  const GUEST_NAME = document.getElementById('GUEST_NAME').value;
+  const VEHICLE_NUMBER = document.getElementById('VEHICLE_NUMBER').value;
+  const checkIn_Date_Time = document.getElementById('checkIn_Date_Time').value;
+  const PASSPORT_NUMBER = document.getElementById('PASSPORT_NUMBER').value;
+  const EID_NUMBER = document.getElementById('EID_NUMBER').value;
+  const PHONE = document.getElementById('PHONE').value;
+  const ADDRESS = document.getElementById('ADDRESS').value;
+  const ZIP_CODE = document.getElementById('ZIP_CODE').value;
+  const ADULTS = document.getElementById('ADULTS').value;
+  const GUEST_GENDER = document.getElementById('GUEST_GENDER').value;
+  const CHILD = document.getElementById('CHILD').value;
+  const PAYMENT_TYPE = document.getElementById('PAYMENT_TYPE').value;
+  const ROOM_TYPE = document.getElementById('ROOM_TYPE').value;
+  const ROOM = document.getElementById('ROOM').value;
+  const checkOut_Date_Time = document.getElementById('checkOut_Date_Time').value;
+
+  // Upload guest photo and ID scan files to Firebase Storage
+  const guestPhotoFile = document.getElementById('guestPhoto').files[0];
+  const idScanFile = document.getElementById('idScan').files[0];
+
+  const storageRef = firebase.storage().ref();
+  const guestPhotoRef = storageRef.child(`guest_photos/${GUEST_NAME}_${Date.now()}`);
+  const idScanRef = storageRef.child(`id_scans/${GUEST_NAME}_${Date.now()}`);
+
+  guestPhotoRef.put(guestPhotoFile).then((snapshot) => {
+    return snapshot.ref.getDownloadURL();
+  }).then((guestPhotoURL) => {
+    // Guest photo URL is available here, you can save it to the database
+    // along with other guest information.
+    
+    idScanRef.put(idScanFile).then((snapshot) => {
+      return snapshot.ref.getDownloadURL();
+    }).then((idScanURL) => {
+      // ID scan URL is available here, you can save it to the database
+      // along with other guest information.
+
+      // Save check-in details to Firebase
+      database.ref('checkIns').push({
+        GUEST_NAME: GUEST_NAME,
+        VEHICLE_NUMBER: VEHICLE_NUMBER,
+        EID_NUMBER: EID_NUMBER,
+        checkOut_Date_Time: checkOut_Date_Time,
+        PASSPORT_NUMBER: PASSPORT_NUMBER,
+        RABDAN STUDENT ID: RABDAN STUDENT ID
+        PHONE: PHONE,
+        ADDRESS: ADDRESS,
+        ZIP_CODE: ZIP_CODE,
+        ADULTS: ADULTS,
+        GUEST_GENDER: GUEST_GENDER,
+        BED_TYPE: BED_TYPE,
+        ROOM_TYPE: ROOM_TYPE,
+        ROOM: ROOM,
+        E-MAIL: E-MAIL,
+        checkIn_Date_Time: checkIn_Date_Time,
+        guestPhotoURL: guestPhotoURL,
+        idScanURL: idScanURL,
+        timestamp: Date.now()
+      });
+ document.getElementById('checkInForm').reset();
+    }).catch((error) => {
+      console.error('Error uploading ID scan:', error);
+    });
+  }).catch((error) => {
+    console.error('Error uploading guest photo:', error);
+  });
+}
+
+  // Function to handle guest check-out
+  function handleCheckOut(event) {
+    event.preventDefault();
+
+    const guestName = document.getElementById('guestNameOut').value;
+    // Retrieve other form values for guest check-out as needed
+
+    // Save check-out details to Firebase
+    database.ref('checkOuts').push({
+      guestName: guestName,
+      timestamp: Date.now()
+      // Add other form values for guest check-out to the object as needed
+    });
+
+    // Clear input fields
+    document.getElementById('checkOutForm').reset();
+  }
+
+  // Attach event listeners to the forms
+  document.getElementById('checkInForm').addEventListener('submit', handleCheckIn);
+  document.getElementById('checkOutForm').addEventListener('submit', handleCheckOut);
+</script>
+<script>
+function updateDateTime() {
+  const dateTimeElement = document.getElementById("datetime");
+  const now = new Date();
+
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+  const formattedDateTime = now.toLocaleString('en-US', options);
+  
+  dateTimeElement.textContent = formattedDateTime;
+}
+
+// Call the function initially to set the date and time immediately
+updateDateTime();
+
+// Update the date and time every second to keep it accurate
+setInterval(updateDateTime, 1000);
+</script>
+</body>
+</html>
