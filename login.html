@@ -1,85 +1,257 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login Page</title>
+  <title>RITZ RECEPTION</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
+    /* Custom styling */
+#datetime-container {
+    /* Customize the appearance of the container */
+    /* For example: font-size, font-family, etc. */
+  }
+
+  /* Optionally, you can style the date and time text inside the container */
+  #datetime {
+    font-size: 16px;
+    /* Add any other styles you want */
+  }
+.blood-title {
+            font-family: "Arial Black", sans-serif; /* Change the font family */
+            color: #ffd700; /* Change the text color */
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #FF4136; /* Add a text shadow */
+            margin-bottom: 20px;
+  }
+.blood-title1 {
+            font-family: "Arial Black", sans-serif; /* Change the font family */
+            color: #fff0f5; /* Change the text color */
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #0000cd; /* Add a text shadow */
+            margin-bottom: 20px;
+ }
     body {
+      padding: 50px;
+      margin: 50px;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8ff;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      height: 120vh;
     }
 
-    .login-container {
-      width: 300px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .form-control {
-      margin-bottom: 10px;
-    }
-
-    .login-btn {
-      width: 100%;
+    .data-container {
+      background-color: #00ff7f;
+      justify-content: center;
+border-radius: 15px;
+      align-items: center;
       padding: 10px;
+      margin: 0;
+    }
+
+    .container-out {
+      background-color: lightcoral;
+       justify-content: center;
+border-radius: 20px;
+
+        align-items: center;
+      padding: 10px;
+      margin: 0;
+    }
+.sign-out-btn-container {
+        display: flex;
+        justify-content: center; /* Center-align the buttons horizontally */
+        align-items: center; /* Center-align the buttons vertically */
+        flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
+  }
+    .sign-out-btn {
+       display: block;
+      width: 99%;
+      height: 80px;
+      padding: 5px;
       background-color: #3498db;
       border: none;
       border-radius: 5px;
       color: #fff;
-      font-size: 16px;
+      font-size: 25px;
       text-align: center;
       cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin: 10px; /* Add margin around each button */
     }
 
-    .login-btn:hover {
-      background-color: #258cd1;
+    .sign-out-btn:hover {
+        background-color: #258cd1;
+    }
+
+    .sign-out-btn:active {
+        transform: scale(0.95);
+    }
+
+    .sign-out-btn {
+        display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .submit-btn-check-in:hover {
+        background-color: #258cd1;
+    }
+
+    .submit-btn-check-in:active {
+        transform: scale(0.95);
+    }
+
+    .blood-title {
+        color: #FF4136;
+        font-size: 48px;
+        text-shadow: 2px 2px 4px #FF4136;
+        margin-bottom: 20px;
+    
+        }
+
+
+
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr ;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
+<div style="text-align: center;">
+ <h1 class="blood-title">RITZ RECEPTION</h1>
+  <div id="login-container">
     <h2>Login</h2>
-    <input type="email" id="email" class="form-control" placeholder="Email" required>
-    <input type="password" id="password" class="form-control" placeholder="Password" required>
-    <button class="login-btn" onclick="login()">Login</button>
+    <input type="email" id="email-input" placeholder="Email">
+    <input type="password" id="password-input" placeholder="Password">
+    <button id="email-password-sign-in">Sign in with Email</button>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <div id="data-container" style="display: none;">
+    <h2>Welcome, <span id="user-display-email"></span>!</h2>
+    <form id="checkInForm">
+      <div class="grid-container">
+       <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="data-input-1" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
+  <input type="text" class="form-control form-control-blood" id="data-input-1" required>
+</div>
+        <input type="text" id="data-input-2" placeholder="Enter data 2" required>
+        <button type="submit">Save Data</button>
+        <button id="sign-out-btn">Sign Out</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script>
-    // Initialize Firebase
-    // Replace this config with your Firebase project's config
-    var firebaseConfig = {
-       apiKey: "AIzaSyB-cucHeHXwWfEUKdQKhPZ16MqB3IdXdXE",
-  authDomain: "ritx-82601.firebaseapp.com",
-  databaseURL: "https://ritx-82601-default-rtdb.firebaseio.com",
-  projectId: "ritx-82601",
-  storageBucket: "ritx-82601.appspot.com",
-  messagingSenderId: "603814234161",
-  appId: "1:603814234161:web:e68093a56711ac7d2e2d10",
-  measurementId: "G-J8L3M9B59N"
-      // Add other Firebase configuration properties
+    // Replace the following config with your Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
+  authDomain: "webtest-8b017.firebaseapp.com",
+  projectId: "webtest-8b017",
+  storageBucket: "webtest-8b017.appspot.com",
+  messagingSenderId: "612125772509",
+  appId: "1:612125772509:web:4bfaf98777617fdd34a934",
+  measurementId: "G-EGSGCW57FM"
     };
+
     firebase.initializeApp(firebaseConfig);
 
-    function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+    const auth = firebase.auth();
+    const database = firebase.database();
 
-      // Firebase authentication
-      firebase.auth().signInWithEmailAndPassword(username, password)
+    // Function to show/hide the login and data containers
+    function toggleContainers(showLogin) {
+      const loginContainer = document.getElementById("login-container");
+      const dataContainer = document.getElementById("data-container");
+
+      loginContainer.style.display = showLogin ? "block" : "none";
+      dataContainer.style.display = showLogin ? "none" : "block";
+    }
+
+    // Function to update the user's email on the data container
+    function updateDisplayEmail(user) {
+      const displayEmailElement = document.getElementById("user-display-email");
+      displayEmailElement.textContent = user.email;
+    }
+
+    // Function to save data to Firebase Realtime Database
+    function saveDataToDatabase(userId, data1, data2) {
+      database.ref("users/" + userId).set({ data1, data2 })
         .then(() => {
-          // Login successful, redirect to the welcome page
-          window.location.href = "ritz.html";
+          console.log("Data successfully saved!");
         })
         .catch((error) => {
-          alert("Login failed. Please check your username and password.");
-          console.error(error);
+          console.error("Error saving data: ", error);
         });
     }
+
+    // Email and Password Sign-In button click event handler
+    document.getElementById("email-password-sign-in").addEventListener("click", () => {
+      const emailInput = document.getElementById("email-input").value;
+      const passwordInput = document.getElementById("password-input").value;
+
+      auth.signInWithEmailAndPassword(emailInput, passwordInput)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          toggleContainers(false);
+          updateDisplayEmail(user);
+        })
+        .catch((error) => {
+          console.error("Error signing in: ", error);
+        });
+    });
+
+    // Form submission event handler
+    document.getElementById("checkInForm").addEventListener("submit", (event) => {
+      event.preventDefault(); // Prevent the default form submission behavior
+
+      // Get the values from the form inputs
+      const dataInput1 = document.getElementById("data-input-1");
+      const dataInput2 = document.getElementById("data-input-2");
+      const userId = firebase.auth().currentUser.uid;
+      const data1 = dataInput1.value.trim();
+      const data2 = dataInput2.value.trim();
+
+      // Check if the required fields are not empty and the user is authenticated
+      if (data1 !== "" && data2 !== "" && firebase.auth().currentUser) {
+        // Save data to Firebase Realtime Database
+        saveDataToDatabase(userId, data1, data2);
+      } else {
+        console.log("You need to be logged in and provide both data fields to save data.");
+      }
+    });
+
+    // Sign Out button click event handler
+    document.getElementById("sign-out-btn").addEventListener("click", () => {
+      auth.signOut().then(() => {
+        toggleContainers(true);
+        console.log("User signed out.");
+      });
+    });
+
+    // Check if a user is already signed in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        toggleContainers(false);
+        updateDisplayEmail(user);
+      } else {
+        toggleContainers(true);
+      }
+    });
   </script>
 </body>
 </html>
