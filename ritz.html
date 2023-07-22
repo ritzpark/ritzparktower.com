@@ -189,8 +189,8 @@ border-radius: 20px;
     }
 
     // Function to save data to Firebase Realtime Database
-    function saveDataToDatabase(userId, data1, data2, userEmail) {
-      database.ref("CheckinData/" + userId).set({ data1, data2, userEmail })
+    function saveDataToDatabase(userId, data1, data2) {
+      database.ref("users/" + userId).set({ data1, data2 })
         .then(() => {
           console.log("Data successfully saved!");
         })
