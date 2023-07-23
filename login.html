@@ -88,7 +88,32 @@ border-radius: 20px;
         transform: scale(0.95);
     }
 
-    .sign-out-btn {
+  
+.btn-check-in {
+       display: block;
+      width: 99%;
+      height: 80px;
+      padding: 5px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 25px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      margin: 10px; /* Add margin around each button */
+    }
+
+    .btn-check-in:hover {
+        background-color: #258cd1;
+    }
+
+    .btn-check-in:active {
+        transform: scale(0.95);
+    }
+
+.submit-btn-check-in {
         display: block;
       width: 100%;
       padding: 10px;
@@ -119,19 +144,20 @@ border-radius: 20px;
         }
 
 
-
-
     .grid-container {
       display: grid;
-      grid-template-columns: 1fr 1fr ;
+      grid-template-columns: 1fr 1fr 1fr 1fr ;
       gap: 10px;
     }
   </style>
 </head>
 <body>
+<div id="datetime-container" style="position: fixed; top: 10px; right: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+    <div id="datetime"></div>
+  </div>
 <div style="text-align: center;">
- <h1 class="blood-title">RITZ RECEPTION</h1>
-  <div id="login-container">
+  <h1 class="blood-title">RITZ RECEPTION</h1>
+ <div id="login-container">
     <h2>Login</h2>
     <input type="email" id="email-input" placeholder="Email">
     <input type="password" id="password-input" placeholder="Password">
@@ -142,116 +168,376 @@ border-radius: 20px;
     <h2>Welcome, <span id="user-display-email"></span>!</h2>
     <form id="checkInForm">
       <div class="grid-container">
-       <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-  <label for="data-input-1" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
-  <input type="text" class="form-control form-control-blood" id="data-input-1" required>
+      
+
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+          <label for="data-input-1" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
+          <input type="text" class="form-control form-control-blood" id="data-input-1" required>
+        </div>
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+          <label for="data-input-2" class="form-label" style="color: #d1fde4; font-weight: bold;">VEHICLE NUMBER</label>
+          <input type="text" class="form-control form-control-blood" id="data-input-2" required>
+        </div>
+  
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="passport-number" class="form-label" style="color: #d1fde4; font-weight: bold;">PASSPORT NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="passport-number" required>
 </div>
-        <input type="text" id="data-input-2" placeholder="Enter data 2" required>
-        <button type="submit">Save Data</button>
-        <button id="sign-out-btn">Sign Out</button>
+  
+
+    <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="eid-number" class="form-label" style="color: #d1fde4; font-weight: bold;">EID NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="eid-number" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="guestemail" class="form-label" style="color: #d1fde4; font-weight: bold;">E-MAIL</label>
+  <input type="text" class="form-control form-control-blood" id="guestemail" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="phone-number" class="form-label" style="color: #d1fde4; font-weight: bold;">PHONE NUMBER</label>
+  <input type="text" class="form-control form-control-blood" id="phone-number" required>
+</div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="rabdan-student-id" class="form-label" style="color: #d1fde4; font-weight: bold;">RABDAN STUDENT ID</label>
+  <input type="text" class="form-control form-control-blood" id="rabdan-student-id" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="address" class="form-label" style="color: #d1fde4; font-weight: bold;">ADDRESS</label>
+  <input type="text" class="form-control form-control-blood" id="address" required>
+</div>
+  
+
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="zip-code" class="form-label" style="color: #d1fde4; font-weight: bold;">ZIP CODE</label>
+  <input type="text" class="form-control form-control-blood" id="zip-code" required>
+</div>
+        <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="guest-gender" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST GENDER</label>
+       <select id="guest-gender" class="form-control">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="OTHERS">OTHERS</option>
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="adults" class="form-label" style="color: #d1fde4; font-weight: bold;">ADULTS</label>
+       <select id="adults" class="form-control">
+            <option value="ONE">ONE</option>
+            <option value="TWO">TWO</option>
+            <option value="THREE">THREE</option>
+<option value="FOUR">FOUR</option>
+<option value="FIVE">FIVE</option>
+<option value="SIX">SIX</option>
+          </select>
+        </div>
+<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+  <label for="child" class="form-label" style="color: #d1fde4; font-weight: bold;">CHILD</label>
+       <select id="child" class="form-control">
+            <option value="ONE">ONE</option>
+            <option value="TWO">TWO</option>
+            <option value="THREE">THREE</option>
+<option value="FOUR">FOUR</option>
+<option value="FIVE">FIVE</option>
+<option value="SIX">SIX</option>
+          </select>
+</div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="checkIn_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-IN DATE & TIME</label>
+  <input type="datetime-local" class="form-control form-control-blood" id="checkIn_Date_Time" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="checkOut_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-OUT DATE & TIME</label>
+  <input type="datetime-local" class="form-control form-control-blood" id="checkOut_Date_Time" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="guestPhoto" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST PHOTO (JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="guestPhoto" accept=".jpg,.jpeg,.png" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="idScan" class="form-label" style="color: #d1fde4; font-weight: bold;">ID SCAN (PDF/JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="idScan" accept=".pdf,.jpg,.jpeg,.png" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #8a2be2; padding: 10px;">
+  <label for="PAYMENT_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">PAYMENT TYPE</label>
+  <select id="PAYMENT_TYPE" class="form-control">
+    <option value="CASH">CASH</option>
+    <option value="CARD">CARD</option>
+  </select>
+</div>
+
+       
+       
+        <button type="submit" class="btn btn-primary btn-check-in" style="padding: 10px;" >CONFIRM BOOK</button>
+        <button id="sign-out-btn" class="btn btn-primary sign-out-btn">Sign Out</button>
       </div>
     </form>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script>
-    // Replace the following config with your Firebase config
-    const firebaseConfig = {
-        apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
-  authDomain: "webtest-8b017.firebaseapp.com",
-  projectId: "webtest-8b017",
-  storageBucket: "webtest-8b017.appspot.com",
-  messagingSenderId: "612125772509",
-  appId: "1:612125772509:web:4bfaf98777617fdd34a934",
-  measurementId: "G-EGSGCW57FM"
-    };
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
+    authDomain: "webtest-8b017.firebaseapp.com",
+    projectId: "webtest-8b017",
+    storageBucket: "webtest-8b017.appspot.com",
+    messagingSenderId: "612125772509",
+    appId: "1:612125772509:web:4bfaf98777617fdd34a934",
+    measurementId: "G-EGSGCW57FM"
+  };
 
-    firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 
-    const auth = firebase.auth();
-    const database = firebase.database();
+  const auth = firebase.auth();
+  const database = firebase.database();
+  const storage = firebase.storage(); // Initialize Firebase Storage
 
-    // Function to show/hide the login and data containers
-    function toggleContainers(showLogin) {
-      const loginContainer = document.getElementById("login-container");
-      const dataContainer = document.getElementById("data-container");
+  let currentUserEmail = "";
 
-      loginContainer.style.display = showLogin ? "block" : "none";
-      dataContainer.style.display = showLogin ? "none" : "block";
-    }
+  // Function to reset the check-in form after successful submission
+  function resetCheckInForm() {
+    document.getElementById("checkInForm").reset();
+  }
 
-    // Function to update the user's email on the data container
-    function updateDisplayEmail(user) {
-      const displayEmailElement = document.getElementById("user-display-email");
-      displayEmailElement.textContent = user.email;
-    }
+  function toggleContainers(showLogin) {
+    const loginContainer = document.getElementById("login-container");
+    const dataContainer = document.getElementById("data-container");
 
-    // Function to save data to Firebase Realtime Database
-    function saveDataToDatabase(userId, data1, data2) {
-      database.ref("users/" + userId).set({ data1, data2 })
-        .then(() => {
-          console.log("Data successfully saved!");
-        })
-        .catch((error) => {
-          console.error("Error saving data: ", error);
-        });
-    }
+    loginContainer.style.display = showLogin ? "block" : "none";
+    dataContainer.style.display = showLogin ? "none" : "block";
+  }
 
-    // Email and Password Sign-In button click event handler
-    document.getElementById("email-password-sign-in").addEventListener("click", () => {
-      const emailInput = document.getElementById("email-input").value;
-      const passwordInput = document.getElementById("password-input").value;
+  // Event listener for sign-in button
+  document.getElementById("email-password-sign-in").addEventListener("click", () => {
+    const emailInput = document.getElementById("email-input").value;
+    const passwordInput = document.getElementById("password-input").value;
 
-      auth.signInWithEmailAndPassword(emailInput, passwordInput)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          toggleContainers(false);
-          updateDisplayEmail(user);
-        })
-        .catch((error) => {
-          console.error("Error signing in: ", error);
-        });
-    });
-
-    // Form submission event handler
-    document.getElementById("checkInForm").addEventListener("submit", (event) => {
-      event.preventDefault(); // Prevent the default form submission behavior
-
-      // Get the values from the form inputs
-      const dataInput1 = document.getElementById("data-input-1");
-      const dataInput2 = document.getElementById("data-input-2");
-      const userId = firebase.auth().currentUser.uid;
-      const data1 = dataInput1.value.trim();
-      const data2 = dataInput2.value.trim();
-
-      // Check if the required fields are not empty and the user is authenticated
-      if (data1 !== "" && data2 !== "" && firebase.auth().currentUser) {
-        // Save data to Firebase Realtime Database
-        saveDataToDatabase(userId, data1, data2);
-      } else {
-        console.log("You need to be logged in and provide both data fields to save data.");
-      }
-    });
-
-    // Sign Out button click event handler
-    document.getElementById("sign-out-btn").addEventListener("click", () => {
-      auth.signOut().then(() => {
-        toggleContainers(true);
-        console.log("User signed out.");
-      });
-    });
-
-    // Check if a user is already signed in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
+    auth.signInWithEmailAndPassword(emailInput, passwordInput)
+      .then((userCredential) => {
+        const user = userCredential.user;
         toggleContainers(false);
         updateDisplayEmail(user);
-      } else {
-        toggleContainers(true);
-      }
+      })
+      .catch((error) => {
+        console.error("Error signing in: ", error);
+      });
+  });
+
+  // Event listener for check-in form submission
+  document.getElementById("checkInForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const dataInput1 = document.getElementById("data-input-1").value;
+    const dataInput2 = document.getElementById("data-input-2").value;
+    const passportNumber = document.getElementById("passport-number").value.trim();
+    const eidNumber = document.getElementById("eid-number").value.trim();
+    const guestemail = document.getElementById("guestemail").value.trim();
+    const phoneNumber = document.getElementById("phone-number").value.trim();
+    const rabdanStudentId = document.getElementById("rabdan-student-id").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const zipCode = document.getElementById("zip-code").value.trim();
+    const guestGender = document.getElementById("guest-gender").value.trim();
+    const adults = document.getElementById("adults").value.trim();
+    const child = document.getElementById("child").value.trim();
+    const checkInDateTime = document.getElementById("checkIn_Date_Time").value;
+    const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
+    const guestPhoto = document.getElementById("guestPhoto").files[0]; // For file input, get the file using .files[0]
+    const idScan = document.getElementById("idScan").files[0]; // For file input, get the file using .files[0]
+    const paymentType = document.getElementById("PAYMENT_TYPE").value;
+    const userId = firebase.auth().currentUser.uid;
+    const userEmail = currentUserEmail; 
+
+    if (
+      dataInput1 !== "" &&
+      dataInput2 !== "" &&
+      passportNumber !== "" &&
+      eidNumber !== "" &&
+      guestemail !== "" &&
+      phoneNumber !== "" &&
+      rabdanStudentId !== "" &&
+      address !== "" &&
+      zipCode !== "" &&
+      guestGender !== "" &&
+      adults !== "" &&
+      child !== "" &&
+      checkInDateTime !== "" &&
+      checkOutDateTime !== "" &&
+      guestPhoto &&
+      idScan &&
+      paymentType !== "" &&
+      firebase.auth().currentUser
+    ) {
+      // Pass all the form data to the saveDataToDatabase function
+      saveDataToDatabase(
+        userId,
+        dataInput1,
+        dataInput2,
+        passportNumber,
+        eidNumber,
+        guestemail,
+        phoneNumber,
+        rabdanStudentId,
+        address,
+        zipCode,
+        guestGender,
+        adults,
+        child,
+        checkInDateTime,
+        checkOutDateTime,
+        guestPhoto,
+        idScan,
+        paymentType,
+        userEmail
+      );
+    } else {
+      console.log("Please fill in all the required fields.");
+    }
+  });
+
+  // Event listener for sign-out button
+  document.getElementById("sign-out-btn").addEventListener("click", () => {
+    auth.signOut().then(() => {
+      toggleContainers(true);
+      console.log("User signed out.");
     });
-  </script>
+  });
+
+  // Function to update the display email
+  function updateDisplayEmail(user) {
+    const displayEmailElement = document.getElementById("user-display-email");
+    displayEmailElement.textContent = user.email;
+    currentUserEmail = user.email;
+  }
+
+  // Function to update the date and time
+  function updateDateTime() {
+    const dateTimeElement = document.getElementById("datetime");
+    const now = new Date();
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
+    };
+    const formattedDateTime = now.toLocaleString("en-US", options);
+
+    dateTimeElement.textContent = formattedDateTime;
+  }
+
+  // Call the function initially to set the date and time immediately
+  updateDateTime();
+
+  // Update the date and time every second to keep it accurate
+  setInterval(updateDateTime, 1000);
+
+  // Firebase Auth state change listener
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      toggleContainers(false);
+      updateDisplayEmail(user);
+    } else {
+      toggleContainers(true);
+    }
+  });
+
+  // Function to save the check-in data to the Firebase database
+  function saveDataToDatabase(
+    userId,
+    dataInput1,
+    dataInput2,
+    passportNumber,
+    eidNumber,
+    guestemail,
+    phoneNumber,
+    rabdanStudentId,
+    address,
+    zipCode,
+    guestGender,
+    adults,
+    child,
+    checkInDateTime,
+    checkOutDateTime,
+    guestPhoto,
+    idScan,
+    paymentType,
+    userEmail
+  ) {
+    // Create a reference to the Firebase database node where you want to store the check-in data
+    const checkInDataRef = database.ref("check-ins");
+
+    // Generate a unique key for each check-in entry
+    const checkInKey = checkInDataRef.push().key;
+
+    // Create a storage reference for guest photo and ID scan in Firebase Storage
+    const photoRef = storage.ref().child(`guest_photos/${checkInKey}.jpg`);
+    const idScanRef = storage.ref().child(`id_scans/${checkInKey}.pdf`);
+
+    // Upload guest photo and ID scan to Firebase Storage
+    const photoUploadTask = photoRef.put(guestPhoto);
+    const idScanUploadTask = idScanRef.put(idScan);
+
+    // After both uploads complete, save the check-in data to the database
+    Promise.all([photoUploadTask, idScanUploadTask])
+      .then(() => {
+        // Get the download URLs of the uploaded files
+        return Promise.all([photoRef.getDownloadURL(), idScanRef.getDownloadURL()]);
+      })
+      .then((downloadURLs) => {
+        // Extract the download URLs
+        const guestPhotoURL = downloadURLs[0];
+        const idScanURL = downloadURLs[1];
+
+        // Create an object with the check-in data
+        const checkInData = {
+          userId,
+          dataInput1,
+          dataInput2,
+          passportNumber,
+          eidNumber,
+          guestemail,
+          phoneNumber,
+          rabdanStudentId,
+          address,
+          zipCode,
+          guestGender,
+          adults,
+          child,
+          checkInDateTime,
+          checkOutDateTime,
+          guestPhotoURL,
+          idScanURL,
+          paymentType,
+          userEmail
+        };
+
+        // Save the check-in data to the Firebase database using the unique key
+        checkInDataRef.child(checkInKey).set(checkInData)
+          .then(() => {
+            // Reset the form after successful submission
+            resetCheckInForm();
+            console.log("Check-in data saved successfully!");
+          })
+          .catch((error) => {
+            console.error("Error saving check-in data: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error uploading files: ", error);
+      });
+  }
+</script>
 </body>
 </html>
