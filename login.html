@@ -282,19 +282,20 @@ border-radius: 20px;
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-<script>
-  // Initialize Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
-    authDomain: "webtest-8b017.firebaseapp.com",
-    projectId: "webtest-8b017",
-    storageBucket: "webtest-8b017.appspot.com",
-    messagingSenderId: "612125772509",
-    appId: "1:612125772509:web:4bfaf98777617fdd34a934",
-    measurementId: "G-EGSGCW57FM"
-  };
+ 
+   <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
+      authDomain: "webtest-8b017.firebaseapp.com",
+      projectId: "webtest-8b017",
+      storageBucket: "webtest-8b017.appspot.com",
+      messagingSenderId: "612125772509",
+      appId: "1:612125772509:web:4bfaf98777617fdd34a934",
+      measurementId: "G-EGSGCW57FM"
+    };
 
-  firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
 
   const auth = firebase.auth();
   const database = firebase.database();
@@ -452,29 +453,36 @@ border-radius: 20px;
       toggleContainers(true);
     }
   });
+function saveDataToDatabase(
+  userId,
+  dataInput1,
+  dataInput2,
+  passportNumber,
+  eidNumber,
+  guestemail,
+  phoneNumber,
+  rabdanStudentId,
+  address,
+  zipCode,
+  guestGender,
+  adults,
+  child,
+  checkInDateTime,
+  checkOutDateTime,
+  guestPhoto,
+  idScan,
+  paymentType,
+  userEmail
+) {
+  // Get the currently logged-in user
+  const user = firebase.auth().currentUser;
 
-  // Function to save the check-in data to the Firebase database
-  function saveDataToDatabase(
-    userId,
-    dataInput1,
-    dataInput2,
-    passportNumber,
-    eidNumber,
-    guestemail,
-    phoneNumber,
-    rabdanStudentId,
-    address,
-    zipCode,
-    guestGender,
-    adults,
-    child,
-    checkInDateTime,
-    checkOutDateTime,
-    guestPhoto,
-    idScan,
-    paymentType,
-    userEmail
-  ) {
+  // Check if the user is logged in and their email matches the allowed emails
+  if (user && (
+    user.email === "alltime240@gmail.com" ||
+    user.email === "ashikmiah01@gmail.com" ||
+    user.email === "ashikmiah@gmail.com"
+  )) {
     // Create a reference to the Firebase database node where you want to store the check-in data
     const checkInDataRef = database.ref("check-ins");
 
@@ -537,7 +545,12 @@ border-radius: 20px;
       .catch((error) => {
         console.error("Error uploading files: ", error);
       });
+  } else {
+    console.log("Permission denied. Only certain users can upload data.");
   }
+}
+
 </script>
+
 </body>
 </html>
