@@ -146,7 +146,7 @@ border-radius: 20px;
 
     .grid-container {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
+      grid-template-columns: 1fr 1fr 1fr 1fr ;
       gap: 10px;
     }
   </style>
@@ -242,6 +242,34 @@ border-radius: 20px;
 <option value="SIX">SIX</option>
           </select>
 </div>
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="checkIn_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-IN DATE & TIME</label>
+  <input type="datetime-local" class="form-control form-control-blood" id="checkIn_Date_Time" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="checkOut_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-OUT DATE & TIME</label>
+  <input type="datetime-local" class="form-control form-control-blood" id="checkOut_Date_Time" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="guestPhoto" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST PHOTO (JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="guestPhoto" accept=".jpg,.jpeg,.png" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
+  <label for="idScan" class="form-label" style="color: #d1fde4; font-weight: bold;">ID SCAN (PDF/JPEG/PNG)</label>
+  <input type="file" class="form-control form-control-blood" id="idScan" accept=".pdf,.jpg,.jpeg,.png" required>
+</div>
+
+<div style="border-radius: 15px; background-color: #8a2be2; padding: 10px;">
+  <label for="PAYMENT_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">PAYMENT TYPE</label>
+  <select id="PAYMENT_TYPE" class="form-control">
+    <option value="CASH">CASH</option>
+    <option value="CARD">CARD</option>
+  </select>
+</div>
+
        
        
         <button type="submit" class="btn btn-primary btn-check-in" style="padding: 10px;" >CONFIRM BOOK</button>
@@ -251,113 +279,65 @@ border-radius: 20px;
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  <script>
-    // Replace the following config with your Firebase config
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+ 
+   <script>
+    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCXVG-m6t0-ayH0POwSqU3Tlpq7_tJNd8Q",
-  authDomain: "webtest-8b017.firebaseapp.com",
-  projectId: "webtest-8b017",
-  storageBucket: "webtest-8b017.appspot.com",
-  messagingSenderId: "612125772509",
-  appId: "1:612125772509:web:4bfaf98777617fdd34a934",
-  measurementId: "G-EGSGCW57FM"
+      authDomain: "webtest-8b017.firebaseapp.com",
+      projectId: "webtest-8b017",
+      storageBucket: "webtest-8b017.appspot.com",
+      messagingSenderId: "612125772509",
+      appId: "1:612125772509:web:4bfaf98777617fdd34a934",
+      measurementId: "G-EGSGCW57FM"
     };
 
     firebase.initializeApp(firebaseConfig);
 
-   const auth = firebase.auth();
-    const database = firebase.database();
+  const auth = firebase.auth();
+  const database = firebase.database();
+  const storage = firebase.storage(); // Initialize Firebase Storage
 
-    let currentUserEmail = "";
-
-    function updateDisplayEmail(user) {
-      const displayEmailElement = document.getElementById("user-display-email");
-      displayEmailElement.textContent = user.email;
-      currentUserEmail = user.email;
-    }
-
-   function saveDataToDatabase(
-    userId,
-    dataInput1,
-    dataInput2,
-    passportNumber,
-    eidNumber,
-    guestemail,
-    phoneNumber,
-    rabdanStudentId,
-    address,
-    zipCode,
-    guestGender,
-    adults,
-    child
-  ) {
-    if (firebase.auth().currentUser) {
-      const userData = {
-        adminemail: currentUserEmail,
-        data1: dataInput1,
-        data2: dataInput2,
-        passportNumber: passportNumber,
-        eidNumber: eidNumber,
-        guestemail: guestemail,
-        phoneNumber: phoneNumber,
-        rabdanStudentId: rabdanStudentId,
-        address: address,
-        zipCode: zipCode,
-        guestGender: guestGender,
-        adults: adults,
-        child: child
-      };
-
-      database
-        .ref("checkInData/" + userId)
-        .push(userData)
-        .then(() => {
-          console.log("Data successfully saved!");
-          resetCheckInForm();
-        })
-        .catch((error) => {
-          console.error("Error saving data: ", error);
-        });
-    } else {
-      console.log("You need to be logged in to save data.");
-    }
-  }
+  let currentUserEmail = "";
 
   // Function to reset the check-in form after successful submission
   function resetCheckInForm() {
     document.getElementById("checkInForm").reset();
   }
 
-   function toggleContainers(showLogin) {
-      const loginContainer = document.getElementById("login-container");
-      const dataContainer = document.getElementById("data-container");
+  function toggleContainers(showLogin) {
+    const loginContainer = document.getElementById("login-container");
+    const dataContainer = document.getElementById("data-container");
 
-      loginContainer.style.display = showLogin ? "block" : "none";
-      dataContainer.style.display = showLogin ? "none" : "block";
-    }
+    loginContainer.style.display = showLogin ? "block" : "none";
+    dataContainer.style.display = showLogin ? "none" : "block";
+  }
 
-    document.getElementById("email-password-sign-in").addEventListener("click", () => {
-      const emailInput = document.getElementById("email-input").value;
-      const passwordInput = document.getElementById("password-input").value;
+  // Event listener for sign-in button
+  document.getElementById("email-password-sign-in").addEventListener("click", () => {
+    const emailInput = document.getElementById("email-input").value;
+    const passwordInput = document.getElementById("password-input").value;
 
-      auth.signInWithEmailAndPassword(emailInput, passwordInput)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          toggleContainers(false);
-          updateDisplayEmail(user);
-        })
-        .catch((error) => {
-          console.error("Error signing in: ", error);
-        });
-    });
+    auth.signInWithEmailAndPassword(emailInput, passwordInput)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        toggleContainers(false);
+        updateDisplayEmail(user);
+      })
+      .catch((error) => {
+        console.error("Error signing in: ", error);
+      });
+  });
 
+  // Event listener for check-in form submission
   document.getElementById("checkInForm").addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const dataInput1 = document.getElementById("data-input-1");
-    const dataInput2 = document.getElementById("data-input-2");
+    const dataInput1 = document.getElementById("data-input-1").value;
+    const dataInput2 = document.getElementById("data-input-2").value;
     const passportNumber = document.getElementById("passport-number").value.trim();
     const eidNumber = document.getElementById("eid-number").value.trim();
     const guestemail = document.getElementById("guestemail").value.trim();
@@ -368,8 +348,13 @@ border-radius: 20px;
     const guestGender = document.getElementById("guest-gender").value.trim();
     const adults = document.getElementById("adults").value.trim();
     const child = document.getElementById("child").value.trim();
-
+    const checkInDateTime = document.getElementById("checkIn_Date_Time").value;
+    const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
+    const guestPhoto = document.getElementById("guestPhoto").files[0]; // For file input, get the file using .files[0]
+    const idScan = document.getElementById("idScan").files[0]; // For file input, get the file using .files[0]
+    const paymentType = document.getElementById("PAYMENT_TYPE").value;
     const userId = firebase.auth().currentUser.uid;
+    const userEmail = currentUserEmail; 
 
     if (
       dataInput1 !== "" &&
@@ -384,6 +369,11 @@ border-radius: 20px;
       guestGender !== "" &&
       adults !== "" &&
       child !== "" &&
+      checkInDateTime !== "" &&
+      checkOutDateTime !== "" &&
+      guestPhoto &&
+      idScan &&
+      paymentType !== "" &&
       firebase.auth().currentUser
     ) {
       // Pass all the form data to the saveDataToDatabase function
@@ -400,45 +390,167 @@ border-radius: 20px;
         zipCode,
         guestGender,
         adults,
-        child
+        child,
+        checkInDateTime,
+        checkOutDateTime,
+        guestPhoto,
+        idScan,
+        paymentType,
+        userEmail
       );
     } else {
       console.log("Please fill in all the required fields.");
     }
   });
 
-    document.getElementById("sign-out-btn").addEventListener("click", () => {
-      auth.signOut().then(() => {
-        toggleContainers(true);
-        console.log("User signed out.");
+  // Event listener for sign-out button
+  document.getElementById("sign-out-btn").addEventListener("click", () => {
+    auth.signOut().then(() => {
+      toggleContainers(true);
+      console.log("User signed out.");
+    });
+  });
+
+  // Function to update the display email
+  function updateDisplayEmail(user) {
+    const displayEmailElement = document.getElementById("user-display-email");
+    displayEmailElement.textContent = user.email;
+    currentUserEmail = user.email;
+  }
+
+  // Function to update the date and time
+  function updateDateTime() {
+    const dateTimeElement = document.getElementById("datetime");
+    const now = new Date();
+
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
+    };
+    const formattedDateTime = now.toLocaleString("en-US", options);
+
+    dateTimeElement.textContent = formattedDateTime;
+  }
+
+  // Call the function initially to set the date and time immediately
+  updateDateTime();
+
+  // Update the date and time every second to keep it accurate
+  setInterval(updateDateTime, 1000);
+
+  // Firebase Auth state change listener
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      toggleContainers(false);
+      updateDisplayEmail(user);
+    } else {
+      toggleContainers(true);
+    }
+  });
+function saveDataToDatabase(
+  userId,
+  dataInput1,
+  dataInput2,
+  passportNumber,
+  eidNumber,
+  guestemail,
+  phoneNumber,
+  rabdanStudentId,
+  address,
+  zipCode,
+  guestGender,
+  adults,
+  child,
+  checkInDateTime,
+  checkOutDateTime,
+  guestPhoto,
+  idScan,
+  paymentType,
+  userEmail
+) {
+  // Get the currently logged-in user
+  const user = firebase.auth().currentUser;
+
+  // Check if the user is logged in and their email matches the allowed emails
+  if (user && (
+    user.email === "alltime240@gmail.com" ||
+    user.email === "ashikmiah01@gmail.com" ||
+    user.email === "ashikmiah@gmail.com"
+  )) {
+    // Create a reference to the Firebase database node where you want to store the check-in data
+    const checkInDataRef = database.ref("check-ins");
+
+    // Generate a unique key for each check-in entry
+    const checkInKey = checkInDataRef.push().key;
+
+    // Create a storage reference for guest photo and ID scan in Firebase Storage
+    const photoRef = storage.ref().child(`guest_photos/${checkInKey}.jpg`);
+    const idScanRef = storage.ref().child(`id_scans/${checkInKey}.pdf`);
+
+    // Upload guest photo and ID scan to Firebase Storage
+    const photoUploadTask = photoRef.put(guestPhoto);
+    const idScanUploadTask = idScanRef.put(idScan);
+
+    // After both uploads complete, save the check-in data to the database
+    Promise.all([photoUploadTask, idScanUploadTask])
+      .then(() => {
+        // Get the download URLs of the uploaded files
+        return Promise.all([photoRef.getDownloadURL(), idScanRef.getDownloadURL()]);
+      })
+      .then((downloadURLs) => {
+        // Extract the download URLs
+        const guestPhotoURL = downloadURLs[0];
+        const idScanURL = downloadURLs[1];
+
+        // Create an object with the check-in data
+        const checkInData = {
+          userId,
+          dataInput1,
+          dataInput2,
+          passportNumber,
+          eidNumber,
+          guestemail,
+          phoneNumber,
+          rabdanStudentId,
+          address,
+          zipCode,
+          guestGender,
+          adults,
+          child,
+          checkInDateTime,
+          checkOutDateTime,
+          guestPhotoURL,
+          idScanURL,
+          paymentType,
+          userEmail
+        };
+
+        // Save the check-in data to the Firebase database using the unique key
+        checkInDataRef.child(checkInKey).set(checkInData)
+          .then(() => {
+            // Reset the form after successful submission
+            resetCheckInForm();
+            console.log("Check-in data saved successfully!");
+          })
+          .catch((error) => {
+            console.error("Error saving check-in data: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error uploading files: ", error);
       });
-    });
-
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        toggleContainers(false);
-        updateDisplayEmail(user);
-      } else {
-        toggleContainers(true);
-      }
-    });
-  </script>
-<script>
-function updateDateTime() {
-  const dateTimeElement = document.getElementById("datetime");
-  const now = new Date();
-
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-  const formattedDateTime = now.toLocaleString('en-US', options);
-  
-  dateTimeElement.textContent = formattedDateTime;
+  } else {
+    console.log("Permission denied. Only certain users can upload data.");
+  }
 }
 
-// Call the function initially to set the date and time immediately
-updateDateTime();
-
-// Update the date and time every second to keep it accurate
-setInterval(updateDateTime, 1000);
 </script>
+
 </body>
 </html>
