@@ -1,94 +1,337 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ritz Login Page</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-container {
-      width: 300px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .form-control {
-      margin-bottom: 10px;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 10px;
-      background-color: #3498db;
-      border: none;
-      border-radius: 5px;
-      color: #fff;
-      font-size: 16px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .login-btn:hover {
-      background-color: #258cd1;
-    }
-  </style>
+  <title>RITZ RECEPTION</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <input type="email" id="email" class="form-control" placeholder="Email" required>
-    <input type="password" id="password" class="form-control" placeholder="Password" required>
-    <button class="login-btn" onclick="login()">Login</button>
+  <h1>RITZ RECEPTION</h1>
+
+  <div id="user-info" style="display: none;">
+    <p>Welcome, <span id="user-name"></span>!</p>
+    <button id="logout-btn">Logout</button>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <div id="login-form">
+    <input type="email" id="login-email" placeholder="Email" required>
+    <input type="password" id="login-password" placeholder="Password" required>
+    <button id="login-btn">Login</button>
+  </div>
+
+<div id="user-info" style="display: none;">
+  <p>Welcome, <span id="user-name"></span>!</p>
+  <button id="logout-btn">Logout</button>
+</div>
+<!-- ... (Your other HTML code) ... -->
+
+  <div id="reservation-form" style="display: none;">
+    <h2>Guest Information</h2>
+    <label for="guest-name">Guest Name:</label>
+    <input type="text" id="guest-name" required>
+
+    <label for="guest-email">Guest Email:</label>
+    <input type="email" id="guest-email" required>
+
+    <label for="guest-photo">Guest Photo:</label>
+    <input type="file" id="guest-photo" accept="image/*" required>
+
+    <h2>Available Rooms</h2>
+    <label for="room-type">Room Type:</label>
+    <select id="room-type">
+      <!-- Room options will be populated dynamically using JavaScript -->
+    </select>
+
+    <label for="bed-type">Bed Type:</label>
+    <select id="bed-type" disabled>
+      <!-- Bed options will be populated dynamically using JavaScript -->
+    </select>
+
+    <label for="available-room">Available Room(s):</label>
+    <select id="available-room" disabled>
+      <!-- Available room options will be populated dynamically using JavaScript -->
+    </select>
+
+    <button id="submit-btn">Submit</button>
+  </div>
+
   <script>
-    // Initialize Firebase
-    // Replace this config with your Firebase project's config
-    var firebaseConfig = {
-       apiKey: "AIzaSyBKWoH5uZQ-4xOMNfB7zCCsG-7QZPdrNFQ",
-  authDomain: "ritz-park.firebaseapp.com",
-  databaseURL: "https://ritz-park-default-rtdb.firebaseio.com",
-  projectId: "ritz-park",
-  storageBucket: "ritz-park.appspot.com",
-  messagingSenderId: "272741038168",
-  appId: "1:272741038168:web:d2434c2c88eefe7cd9f22d",
-  measurementId: "G-2W6BFG4FHT"
-      // Add other Firebase configuration properties
+    // Replace the following config with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJflyN-sa6Qwkjt5ih2HmyD8aUdZr_KdI",
+      authDomain: "test-9c424.firebaseapp.com",
+      databaseURL: "https://test-9c424-default-rtdb.firebaseio.com",
+      projectId: "test-9c424",
+      storageBucket: "test-9c424.appspot.com",
+      messagingSenderId: "533020541656",
+      appId: "1:533020541656:web:0fbd7758286de9cf1e8dad",
+      measurementId: "G-XQQNPM9RVM"
     };
+
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    function login() {
-      var email = document.getElementById("email").value;
-      var password = document.getElementById("password").value;
+    // Get a reference to the Firebase Realtime Database
+    const db = firebase.database();
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // User is logged in, redirect to the main booking page or other authorized pages
-          window.location.href = "ritz.html";
-        })
-        .catch((error) => {
-          // Handle login error, show an error message to the user
-          var errorMessage = error.message;
-          alert(errorMessage);
+    // Function to fetch available room types from the database
+    function fetchAvailableRoomTypes() {
+      const roomTypeSelector = document.getElementById("room-type");
+
+      db.ref("rooms").once("value").then((snapshot) => {
+        // Clear existing options
+        roomTypeSelector.innerHTML = "";
+
+        // Add an option for each room type
+        snapshot.forEach((childSnapshot) => {
+          const roomData = childSnapshot.val();
+          const option = document.createElement("option");
+          option.value = roomData.name;
+          option.textContent = roomData.name;
+          roomTypeSelector.appendChild(option);
         });
+      }).catch((error) => {
+        console.error("Error fetching room types:", error);
+      });
     }
 
-    // Check if the user is authenticated when the page loads
+    // Function to fetch available bed types based on selected room type
+    function fetchAvailableBedTypes(selectedRoomType) {
+      const bedTypeSelector = document.getElementById("bed-type");
+
+      db.ref("rooms").orderByChild("name").equalTo(selectedRoomType).once("value").then((snapshot) => {
+        // Clear existing options
+        bedTypeSelector.innerHTML = "";
+
+        // Enable the bed type selector
+        bedTypeSelector.disabled = false;
+
+        // Add an option for each bed type
+        snapshot.forEach((childSnapshot) => {
+          const roomData = childSnapshot.val();
+          const option = document.createElement("option");
+          option.value = roomData.bedType;
+          option.textContent = roomData.bedType;
+          bedTypeSelector.appendChild(option);
+        });
+      }).catch((error) => {
+        console.error("Error fetching bed types:", error);
+      });
+    }
+
+    // Function to fetch available rooms based on selected room type and bed type
+    function fetchAvailableRooms(selectedRoomType, selectedBedType) {
+      const availableRoomSelector = document.getElementById("available-room");
+
+      db.ref("rooms").orderByChild("bedType").equalTo(selectedBedType).once("value").then((snapshot) => {
+        // Clear existing options
+        availableRoomSelector.innerHTML = "";
+
+        // Enable the available room selector
+        availableRoomSelector.disabled = false;
+
+        // Add an option for each available room
+        snapshot.forEach((childSnapshot) => {
+          const roomData = childSnapshot.val();
+          const option = document.createElement("option");
+          option.value = roomData.roomNumber;
+          option.textContent = roomData.roomNumber;
+          availableRoomSelector.appendChild(option);
+        });
+      }).catch((error) => {
+        console.error("Error fetching available rooms:", error);
+      });
+    }
+
+    // Function to handle email/password login
+    function loginUserWithEmailAndPassword() {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      return firebase.auth().signInWithEmailAndPassword(email, password);
+    }
+
+ function logoutUser() {
+    firebase.auth().signOut()
+      .then(() => {
+        // User is logged out
+        document.getElementById("user-info").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("reservation-form").style.display = "none";
+      })
+      .catch((error) => {
+        console.error("Error logging out:", error);
+      });
+  }
+
+    // Function to show the reservation form and hide the login form after login
+    function showReservationForm() {
+      document.getElementById("login-form").style.display = "none";
+      document.getElementById("reservation-form").style.display = "block";
+    }
+
+    // Event listener for the login button
+    const loginBtn = document.getElementById("login-btn");
+    loginBtn.addEventListener("click", () => {
+      loginUserWithEmailAndPassword()
+        .then(() => {
+          // User is logged in
+          const user = firebase.auth().currentUser;
+          document.getElementById("user-name").textContent = user.displayName;
+          document.getElementById("user-info").style.display = "block";
+          showReservationForm();
+        })
+        .catch((error) => {
+          console.error("Error logging in:", error);
+        });
+    });
+
+    // Event listener to check if the user is logged in
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // User is signed in, allow access to the booking page
+        // User is logged in
+        document.getElementById("user-name").textContent = user.displayName;
+        document.getElementById("user-info").style.display = "block";
+        showReservationForm();
       } else {
-        // User is not signed in, stay on the login page
+        // User is logged out
+        document.getElementById("user-info").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("reservation-form").style.display = "none";
       }
     });
+
+    // Function to handle guest photo upload
+    function uploadGuestPhoto(guestPhotoFile, roomNumber) {
+      // ... (same as before) ...
+    }
+
+    // Event listener for room type selection
+    const roomTypeSelector = document.getElementById("room-type");
+    roomTypeSelector.addEventListener("change", (event) => {
+      const selectedRoomType = event.target.value;
+      const bedTypeSelector = document.getElementById("bed-type");
+      const availableRoomSelector = document.getElementById("available-room");
+
+      // Clear existing options
+      bedTypeSelector.innerHTML = "";
+      availableRoomSelector.innerHTML = "";
+
+      // Disable the bed type and available room selectors until a valid room type is selected
+      bedTypeSelector.disabled = true;
+      availableRoomSelector.disabled = true;
+
+      // Fetch available bed types based on selected room type
+      fetchAvailableBedTypes(selectedRoomType);
+    });
+
+    // Event listener for bed type selection
+    const bedTypeSelector = document.getElementById("bed-type");
+    bedTypeSelector.addEventListener("change", (event) => {
+      const selectedRoomType = document.getElementById("room-type").value;
+      const selectedBedType = event.target.value;
+
+      const availableRoomSelector = document.getElementById("available-room");
+
+      // Clear existing options
+      availableRoomSelector.innerHTML = "";
+
+      // Disable the available room selector until a valid bed type is selected
+      availableRoomSelector.disabled = true;
+
+      // Fetch available rooms based on selected room type and bed type
+      fetchAvailableRooms(selectedRoomType, selectedBedType);
+    });
+
+
+    /// Event listener for the logout button
+  const logoutBtn = document.getElementById("logout-btn");
+  logoutBtn.addEventListener("click", () => {
+    logoutUser();
+  });
+
+    // Event listener for the submit button
+    const submitButton = document.getElementById("submit-btn");
+    submitButton.addEventListener("click", () => {
+      // Get the selected room number
+      const selectedRoomNumber = document.getElementById("available-room").value;
+
+      // Get the guest photo file
+      const guestPhotoFile = document.getElementById("guest-photo").files[0];
+
+      // Make sure a photo is selected
+      if (!guestPhotoFile) {
+        console.error("Please select a guest photo.");
+        return;
+      }
+
+      // Create a storage reference
+      const storageRef = firebase.storage().ref();
+
+      // Generate a unique file name for the guest photo
+      const timestamp = Date.now().toString();
+      const fileName = `guest_photos/guest_${selectedRoomNumber}_${timestamp}`;
+
+      // Upload the guest photo to Firebase Storage
+      const uploadTask = storageRef.child(fileName).put(guestPhotoFile);
+
+      // Listen for state changes, errors, and completion of the upload task
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // You can track the upload progress here (optional)
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload progress: ${progress}%`);
+        },
+        (error) => {
+          console.error("Error uploading guest photo:", error);
+        },
+        () => {
+          // Upload completed successfully, get the download URL and store it in the database
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            // Now you have the download URL of the uploaded photo
+            // You can store it in the Realtime Database along with other reservation data
+
+            // Get the selected values and guest information
+            const selectedRoomType = document.getElementById("room-type").value;
+            const selectedBedType = document.getElementById("bed-type").value;
+            const guestName = document.getElementById("guest-name").value;
+            const guestEmail = document.getElementById("guest-email").value;
+
+            // Create an object to store the data to be submitted to Firebase
+            const reservationData = {
+              guestName: guestName,
+              guestEmail: guestEmail,
+              roomType: selectedRoomType,
+              bedType: selectedBedType,
+              roomNumber: selectedRoomNumber,
+              guestPhotoURL: downloadURL // Add the download URL to the reservation data
+            };
+
+            // Set the data in Firebase under the room number as the key
+            db.ref("reservations/" + selectedRoomNumber).set(reservationData)
+              .then(() => {
+                console.log("Reservation data with guest photo submitted successfully!");
+                // Optional: Reset the form after successful submission
+                document.getElementById("guest-name").value = "";
+                document.getElementById("guest-email").value = "";
+                document.getElementById("room-type").value = "";
+                document.getElementById("bed-type").value = "";
+                document.getElementById("available-room").value = "";
+                document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
+              })
+              .catch((error) => {
+                console.error("Error submitting reservation data:", error);
+              });
+          });
+        }
+      );
+    });
+
+    // Call the function to fetch available room types and populate the "Room Type" selector
+    fetchAvailableRoomTypes();
   </script>
 </body>
 </html>
