@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -334,26 +335,34 @@ border-radius: 20px;
     // Get a reference to the Firebase Realtime Database
     const db = firebase.database();
 
-    // Function to fetch available room types from the database
     function fetchAvailableRoomTypes() {
-      const roomTypeSelector = document.getElementById("room-type");
+  const roomTypeSelector = document.getElementById("room-type");
 
-      db.ref("rooms").once("value").then((snapshot) => {
-        // Clear existing options
-        roomTypeSelector.innerHTML = "";
+  db.ref("rooms").once("value").then((snapshot) => {
+    // Clear existing options
+    roomTypeSelector.innerHTML = "";
 
-        // Add an option for each room type
-        snapshot.forEach((childSnapshot) => {
-          const roomData = childSnapshot.val();
-          const option = document.createElement("option");
-          option.value = roomData.name;
-          option.textContent = roomData.name;
-          roomTypeSelector.appendChild(option);
-        });
-      }).catch((error) => {
-        console.error("Error fetching room types:", error);
-      });
-    }
+    // Use a Set to store unique room types
+    const uniqueRoomTypes = new Set();
+
+    // Add each room type to the Set
+    snapshot.forEach((childSnapshot) => {
+      const roomData = childSnapshot.val();
+      uniqueRoomTypes.add(roomData.name);
+    });
+
+    // Populate the "Room Type" dropdown with unique room types
+    uniqueRoomTypes.forEach((roomType) => {
+      const option = document.createElement("option");
+      option.value = roomType;
+      option.textContent = roomType;
+      roomTypeSelector.appendChild(option);
+    });
+  }).catch((error) => {
+    console.error("Error fetching room types:", error);
+  });
+}
+
 
     // Function to fetch available bed types based on selected room type
     function fetchAvailableBedTypes(selectedRoomType) {
