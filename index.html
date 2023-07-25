@@ -1,36 +1,15 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>RITZ RECEPTION</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     /* Custom styling */
-#datetime-container {
-    /* Customize the appearance of the container */
-    /* For example: font-size, font-family, etc. */
-  }
-
-  /* Optionally, you can style the date and time text inside the container */
-  #datetime {
-    font-size: 16px;
-    /* Add any other styles you want */
-  }
-.blood-title {
-            font-family: "Arial Black", sans-serif; /* Change the font family */
-            color: #ffd700; /* Change the text color */
-            font-size: 48px;
-            text-shadow: 2px 2px 4px #FF4136; /* Add a text shadow */
-            margin-bottom: 20px;
-  }
-.blood-title1 {
-            font-family: "Arial Black", sans-serif; /* Change the font family */
-            color: #fff0f5; /* Change the text color */
-            font-size: 48px;
-            text-shadow: 2px 2px 4px #0000cd; /* Add a text shadow */
-            margin-bottom: 20px;
- }
     body {
       padding: 50px;
       margin: 50px;
@@ -40,12 +19,41 @@
       justify-content: center;
       align-items: center;
       height: 120vh;
+      flex-direction: column;
+    }
+
+    /* Add the existing styles from the provided code */
+    #datetime-container {
+      /* Customize the appearance of the container */
+      /* For example: font-size, font-family, etc. */
+    }
+
+    /* Optionally, you can style the date and time text inside the container */
+    #datetime {
+      font-size: 16px;
+      /* Add any other styles you want */
+    }
+
+    .blood-title {
+      font-family: "Arial Black", sans-serif;
+      color: #FF4136;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px #FF4136;
+      margin-bottom: 20px;
+    }
+
+    .blood-title1 {
+      font-family: "Arial Black", sans-serif;
+      color: #fff0f5;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px #0000cd;
+      margin-bottom: 20px;
     }
 
     .data-container {
       background-color: #00ff7f;
       justify-content: center;
-border-radius: 15px;
+      border-radius: 15px;
       align-items: center;
       padding: 10px;
       margin: 0;
@@ -53,21 +61,25 @@ border-radius: 15px;
 
     .container-out {
       background-color: lightcoral;
-       justify-content: center;
-border-radius: 20px;
-
-        align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      align-items: center;
       padding: 10px;
       margin: 0;
     }
-.sign-out-btn-container {
-        display: flex;
-        justify-content: center; /* Center-align the buttons horizontally */
-        align-items: center; /* Center-align the buttons vertically */
-        flex-wrap: wrap; /* Allow buttons to wrap to the next line if necessary */
-  }
-    .sign-out-btn {
-       display: block;
+
+    .sign-out-btn-container {
+      display: flex;
+      justify-content: center;
+      /* Center-align the buttons horizontally */
+      align-items: center;
+      /* Center-align the buttons vertically */
+      flex-wrap: wrap;
+      /* Allow buttons to wrap to the next line if necessary */
+    }
+
+    .login-btn {
+      display: block;
       width: 99%;
       height: 80px;
       padding: 5px;
@@ -79,20 +91,20 @@ border-radius: 20px;
       text-align: center;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.3s ease;
-      margin: 10px; /* Add margin around each button */
+      margin: 10px;
+      /* Add margin around each button */
     }
 
-    .sign-out-btn:hover {
-        background-color: #258cd1;
+    .login-btn:hover {
+      background-color: #258cd1;
     }
 
-    .sign-out-btn:active {
-        transform: scale(0.95);
+    .login-btn:active {
+      transform: scale(0.95);
     }
 
-  
-.btn-check-in {
-       display: block;
+    .btn-check-in {
+      display: block;
       width: 99%;
       height: 80px;
       padding: 5px;
@@ -104,19 +116,20 @@ border-radius: 20px;
       text-align: center;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.3s ease;
-      margin: 10px; /* Add margin around each button */
+      margin: 10px;
+      /* Add margin around each button */
     }
 
     .btn-check-in:hover {
-        background-color: #258cd1;
+      background-color: #258cd1;
     }
 
     .btn-check-in:active {
-        transform: scale(0.95);
+      transform: scale(0.95);
     }
 
-.submit-btn-check-in {
-        display: block;
+    .submit-btn-check-in {
+      display: block;
       width: 100%;
       padding: 10px;
       background-color: #3498db;
@@ -130,62 +143,82 @@ border-radius: 20px;
     }
 
     .submit-btn-check-in:hover {
-        background-color: #258cd1;
+      background-color: #258cd1;
     }
 
     .submit-btn-check-in:active {
-        transform: scale(0.95);
+      transform: scale(0.95);
+    }
+#login-btn {
+      /* Add your existing button styles here */
+
+      /* Add the button animation styles */
+      background-color: #3498db;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
-    .blood-title {
-        color: #FF4136;
-        font-size: 48px;
-        text-shadow: 2px 2px 4px #FF4136;
-        margin-bottom: 20px;
-    
-        }
+    /* Button hover effect */
+    #login-btn:hover {
+      background-color: #258cd1;
+      transform: scale(1.05);
+    }
 
+    /* Button click effect */
+    #login-btn:active {
+      background-color: #1a6ea9;
+      transform: scale(0.95);
+    }
+    .blood-title {
+      color: #FF4136;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px #FF4136;
+      margin-bottom: 20px;
+    }
 
     .grid-container {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr ;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
       gap: 10px;
     }
+  /* Add any other existing styles from the provided code */
   </style>
 </head>
 <body>
 <div id="datetime-container" style="position: fixed; top: 10px; right: 10px; background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
     <div id="datetime"></div>
+
+
   </div>
 <div style="text-align: center;">
   <h1 class="blood-title">RITZ RECEPTION</h1>
 
 <div id="user-info" style="display: none;">
-    <p>Welcome, <span id="user-name"></span>!</p>
-    <button id="logout-btn">Logout</button>
-  </div>
+  <p>Welcome, <span id="user-name"></span> (<span id="user-email"></span>)!</p>
 
-  <div id="login-form">
-    <input type="email" id="login-email" placeholder="Email" required>
-    <input type="password" id="login-password" placeholder="Password" required>
-    <button id="login-btn">Login</button>
-  </div>
-
-<div id="user-info" style="display: none;">
-  <p>Welcome, <span id="user-name"></span>!</p>
-  <button id="logout-btn">Logout</button>
+  <button id="logout-btn" style="width: 30%; padding: 20px; background-color: #FF4136; border: none; border-radius: 6px; color: #fff; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">CLOSE SYSTEM</button>
 </div>
+
+  <div id="login-form" style="display: none;">
+  <h2 style="color: #3498db; font-size: 28px; margin-bottom: 20px;">Login</h2>
+  <input type="email" id="login-email" placeholder="Email" required style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc;">
+  <input type="password" id="login-password" placeholder="Password" required style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #ccc;">
+  <!-- Custom styled login button -->
+  <button id="login-btn" style="width: 100%; padding: 10px; background-color: #3498db; border: none; border-radius: 8px; color: #fff; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">Login</button>
+</div>
+
+
  
   <div id="data-container" style="display: none;">
     <h2>Welcome, <span id="user-display-email"></span>!</h2>
+
 </div>
 
-    <form id="reservation-form">
+    <div id="reservation-form" style="display: none;">
       <div class="grid-container">
       
 
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-          <label for="data-input-1" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
+          <label for="guest-name" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST FULL NAME</label>
           <input type="text" class="form-control form-control-blood" id="guest-name" required>
         </div>
         <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
@@ -256,19 +289,19 @@ border-radius: 20px;
 <option value="SIX">SIX</option>
           </select>
 </div>
-<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
 <label for="room-type" class="form-label">Room Type:</label>
     <select id="room-type">
       <!-- Room options will be populated dynamically using JavaScript -->
     </select>
 </div>
-<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
     <label for="bed-type" class="form-label">Bed Type:</label>
     <select id="bed-type" disabled>
       <!-- Bed options will be populated dynamically using JavaScript -->
     </select>
 </div>
-<div style="border-radius: 15px; background-color: #000080; padding: 10px;">
+<div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
     <label for="available-room" class="form-label">Available Room(s):</label>
     <select id="available-room" disabled>
       <!-- Available room options will be populated dynamically using JavaScript -->
@@ -303,20 +336,16 @@ border-radius: 20px;
   </select>
 </div>
 
-       
-       
-         <button id="submit-btn">Submit</button>
-        <button id="logout-btn" class="btn btn-primary sign-out-btn">Sign Out</button>
-      </div>
-    </form>
-  </div>
+   <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
+<div>
+  <!-- Move the "Total Reservations" display here -->
+  <h3>Total Reservations Room: <span id="total-reservations">Loading...</span></h3>
+</div>
+</div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
- 
-    <script>
+
+        <button id="submit-btn"  style="width: 100%; padding: 30px; background-color: #3498db; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
+  <script>
     // Replace the following config with your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAJflyN-sa6Qwkjt5ih2HmyD8aUdZr_KdI",
@@ -420,6 +449,17 @@ border-radius: 20px;
       return firebase.auth().signInWithEmailAndPassword(email, password);
     }
 
+// Function to fetch the total number of reservations
+function fetchTotalReservations() {
+  db.ref("reservations").once("value").then((snapshot) => {
+    const totalReservations = snapshot.numChildren();
+    // Display the total number of reservations in the HTML page
+    document.getElementById("total-reservations").textContent = totalReservations;
+  }).catch((error) => {
+    console.error("Error fetching total reservations:", error);
+  });
+}
+
  function logoutUser() {
     firebase.auth().signOut()
       .then(() => {
@@ -460,6 +500,7 @@ border-radius: 20px;
       if (user) {
         // User is logged in
         document.getElementById("user-name").textContent = user.displayName;
+           document.getElementById("user-email").textContent = user.email;
         document.getElementById("user-info").style.display = "block";
         showReservationForm();
       } else {
@@ -467,6 +508,7 @@ border-radius: 20px;
         document.getElementById("user-info").style.display = "none";
         document.getElementById("login-form").style.display = "block";
         document.getElementById("reservation-form").style.display = "none";
+ document.getElementById("submit-btn").style.display = "none";
       }
     });
 
@@ -599,6 +641,10 @@ border-radius: 20px;
 
     // Call the function to fetch available room types and populate the "Room Type" selector
     fetchAvailableRoomTypes();
+// Call the function to fetch the total number of reservations and display it
+fetchTotalReservations();
+
   </script>
 </body>
 </html>
+
