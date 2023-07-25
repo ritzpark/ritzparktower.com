@@ -608,6 +608,8 @@ function fetchTotalReservations() {
             const selectedBedType = document.getElementById("bed-type").value;
             const guestName = document.getElementById("guest-name").value;
             const guestEmail = document.getElementById("guest-email").value;
+            const userEmail = firebase.auth().currentUser.email; // Get the user's email
+
 
             // Create an object to store the data to be submitted to Firebase
             const reservationData = {
@@ -616,7 +618,8 @@ function fetchTotalReservations() {
               roomType: selectedRoomType,
               bedType: selectedBedType,
               roomNumber: selectedRoomNumber,
-              guestPhotoURL: downloadURL // Add the download URL to the reservation data
+              guestPhotoURL: downloadURL,
+               userEmail: userEmail                                 
             };
 
             // Set the data in Firebase under the room number as the key
