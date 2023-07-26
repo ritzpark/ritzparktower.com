@@ -228,14 +228,14 @@
         </div>
   
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-  <label for="passport-number" class="form-label" style="color: #d1fde4; font-weight: bold;">PASSPORT NUMBER</label>
+  <label for="passportnumber" class="form-label" style="color: #d1fde4; font-weight: bold;">PASSPORT NUMBER</label>
   <input type="text" class="form-control form-control-blood" id="passport-number" required>
 </div>
   
 
     <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="eid-number" class="form-label" style="color: #d1fde4; font-weight: bold;">EID NUMBER</label>
-  <input type="text" class="form-control form-control-blood" id="eid-number" required>
+  <input type="text" class="form-control form-control-blood" id="eidnumber" required>
 </div>
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="guestemail" class="form-label" style="color: #d1fde4; font-weight: bold;">E-MAIL</label>
@@ -243,11 +243,11 @@
 </div>
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="phone-number" class="form-label" style="color: #d1fde4; font-weight: bold;">PHONE NUMBER</label>
-  <input type="text" class="form-control form-control-blood" id="phone-number" required>
+  <input type="text" class="form-control form-control-blood" id="phonenumber" required>
 </div>
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="rabdan-student-id" class="form-label" style="color: #d1fde4; font-weight: bold;">RABDAN STUDENT ID</label>
-  <input type="text" class="form-control form-control-blood" id="rabdan-student-id" required>
+  <input type="text" class="form-control form-control-blood" id="rabdanstudentid" required>
 </div>
 
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
@@ -257,12 +257,12 @@
   
 
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-  <label for="zip-code" class="form-label" style="color: #d1fde4; font-weight: bold;">ZIP CODE</label>
+  <label for="zipcode" class="form-label" style="color: #d1fde4; font-weight: bold;">ZIP CODE</label>
   <input type="text" class="form-control form-control-blood" id="zip-code" required>
 </div>
         <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-  <label for="guest-gender" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST GENDER</label>
-       <select id="guest-gender" class="form-control">
+  <label for="guest gender" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST GENDER</label>
+       <select id="guestgender" class="form-control">
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="OTHERS">OTHERS</option>
@@ -545,6 +545,7 @@ function fetchTotalReservations() {
       const selectedRoomType = event.target.value;
       const bedTypeSelector = document.getElementById("bed-type");
       const availableRoomSelector = document.getElementById("available-room");
+      
 
       // Clear existing options
       bedTypeSelector.innerHTML = "";
@@ -593,7 +594,20 @@ const guestName = document.getElementById("guest-name").value;
 const guestEmail = document.getElementById("guest-email").value;
   const selectedRoomNumber = document.getElementById("available-room").value;
  const userEmail = firebase.auth().currentUser.email; // Get the user's email
-
+const passportNumber = document.getElementById("passportnumber").value;
+    const eidNumber = document.getElementById("eidnumber").value;
+    
+    const phoneNumber = document.getElementById("phonenumber").value;
+    const rabdanStudentId = document.getElementById("rabdan-student-id").value;
+    const address = document.getElementById("address").value;
+    const zipCode = document.getElementById("zipcode").value;
+    const guestGender = document.getElementById("guestgender").value;
+    const adults = document.getElementById("adults").value;
+    const child = document.getElementById("child").value;
+    const checkInDateTime = document.getElementById("checkIn_Date_Time").value;
+    const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
+   
+    const paymentType = document.getElementById("PAYMENT_TYPE").value;
   // Check if the selected room number is available (not already booked)
   const availableRooms = Array.from(document.getElementById("available-room").options).map((option) => option.value);
   if (!availableRooms.includes(selectedRoomNumber)) {
@@ -645,6 +659,18 @@ const guestEmail = document.getElementById("guest-email").value;
     const reservationData = {
       guestName: guestName,
       guestEmail: guestEmail,
+      passportNumber: passportNumber,
+      eidnumber: eidnumber,
+phonenumber: phonenumber,
+rabdanstudentid: rabdanstudentid,
+address: address,
+zipcode: zipcode,
+guestgender: guestgender,
+adults: adults,
+child: child,
+checkIn_Date_Time: checkIn_Date_Time,
+checkOut_Date_Time: checkOut_Date_Time,
+PAYMENT_TYPE: PAYMENT_TYPE,
       roomType: selectedRoomType,
       bedType: selectedBedType,
       roomNumber: selectedRoomNumber,
@@ -664,6 +690,17 @@ const guestEmail = document.getElementById("guest-email").value;
         document.getElementById("room-type").value = "";
         document.getElementById("bed-type").value = "";
         document.getElementById("available-room").value = "";
+        document.getElementById("eid-number").value = "";
+        document.getElementById("phone-number").value = "";
+        document.getElementById("rabdan-student-id").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("zip-code").value = "";
+        document.getElementById("guest-gender").value = "";
+        document.getElementById("adults").value = "";
+        document.getElementById("checkIn_Date_Time").value = "";
+        document.getElementById("checkOut_Date_Time").value = "";
+        document.getElementById("PAYMENT_TYPE").value = "";
+       
         document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
         document.getElementById("idScan").value = ""; // Reset the ID scan input field
       })
