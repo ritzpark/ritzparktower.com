@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -337,14 +338,17 @@
 </div>
 
    <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
+</div>
 <div>
   <!-- Move the "Total Reservations" display here -->
   <h3>Total Reservations Room: <span id="total-reservations">Loading...</span></h3>
 </div>
+
+        <button id="submit-btn"  style="width: 100%; padding: 30px; background-color: #3498db; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button>
+<div id="processing-message" style="display: none;">
+  Processing... Please wait.
 </div>
 
-
-        <button id="submit-btn"  style="width: 100%; padding: 30px; background-color: #3498db; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
   <script>
     // Replace the following config with your Firebase config
     const firebaseConfig = {
@@ -579,12 +583,16 @@ function fetchTotalReservations() {
     logoutUser();
   });
 
-    // Event listener for the submit button
-    const submitButton = document.getElementById("submit-btn");
-    submitButton.addEventListener("click", () => {
-      // Get the selected room number
-     
-const selectedRoomNumber = document.getElementById("available-room").value;
+ // Event listener for the submit button
+const submitButton = document.getElementById("submit-btn");
+submitButton.addEventListener("click", () => {
+  // Get the selected room number
+const selectedRoomType = document.getElementById("room-type").value;
+            const selectedBedType = document.getElementById("bed-type").value;
+const guestName = document.getElementById("guest-name").value;
+const guestEmail = document.getElementById("guest-email").value;
+  const selectedRoomNumber = document.getElementById("available-room").value;
+ const userEmail = firebase.auth().currentUser.email; // Get the user's email
 
   // Check if the selected room number is available (not already booked)
   const availableRooms = Array.from(document.getElementById("available-room").options).map((option) => option.value);
@@ -592,81 +600,85 @@ const selectedRoomNumber = document.getElementById("available-room").value;
     console.error("The selected room is already booked. Please choose another room.");
     return;
   }
-      // Get the guest photo file
-      const guestPhotoFile = document.getElementById("guest-photo").files[0];
 
-      // Make sure a photo is selected
-      if (!guestPhotoFile) {
-        console.error("Please select a guest photo.");
-        return;
-      }
+  // Get the guest photo file and ID scan file
+  const guestPhotoFile = document.getElementById("guest-photo").files[0];
+  const idScanFile = document.getElementById("idScan").files[0];
 
-      // Create a storage reference
-      const storageRef = firebase.storage().ref();
+  // Make sure both files are selected
+  if (!guestPhotoFile || !idScanFile) {
+    console.error("Please select both a guest photo and an ID scan.");
+    return;
+  }
 
-      // Generate a unique file name for the guest photo
-      const timestamp = Date.now().toString();
-      const fileName = `guest_photos/guest_${selectedRoomNumber}_${timestamp}`;
+  // Create a storage reference
+  const storageRef = firebase.storage().ref();
 
-      // Upload the guest photo to Firebase Storage
-      const uploadTask = storageRef.child(fileName).put(guestPhotoFile);
+  // Generate unique file names for the guest photo and ID scan
+  const timestamp = Date.now().toString();
+  const guestPhotoFileName = `guest_photos/guest_${selectedRoomNumber}_${timestamp}`;
+  const idScanFileName = `id_scans/id_scan_${selectedRoomNumber}_${timestamp}`;
 
-      // Listen for state changes, errors, and completion of the upload task
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // You can track the upload progress here (optional)
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload progress: ${progress}%`);
-        },
-        (error) => {
-          console.error("Error uploading guest photo:", error);
-        },
-        () => {
-          // Upload completed successfully, get the download URL and store it in the database
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            // Now you have the download URL of the uploaded photo
-            // You can store it in the Realtime Database along with other reservation data
+  // Upload the guest photo to Firebase Storage
+  const uploadGuestPhotoTask = storageRef.child(guestPhotoFileName).put(guestPhotoFile);
 
-            // Get the selected values and guest information
-            const selectedRoomType = document.getElementById("room-type").value;
-            const selectedBedType = document.getElementById("bed-type").value;
-            const guestName = document.getElementById("guest-name").value;
-            const guestEmail = document.getElementById("guest-email").value;
-            const userEmail = firebase.auth().currentUser.email; // Get the user's email
+  // Upload the ID scan to Firebase Storage
+  const uploadIDScanTask = storageRef.child(idScanFileName).put(idScanFile);
 
+  Promise.all([uploadGuestPhotoTask, uploadIDScanTask])
+  .then((results) => {
+    // Get the download URLs for both files
+    const guestPhotoDownloadURLPromise = results[0].ref.getDownloadURL();
+    const idScanDownloadURLPromise = results[1].ref.getDownloadURL();
 
-            // Create an object to store the data to be submitted to Firebase
-            const reservationData = {
-              guestName: guestName,
-              guestEmail: guestEmail,
-              roomType: selectedRoomType,
-              bedType: selectedBedType,
-              roomNumber: selectedRoomNumber,
-              guestPhotoURL: downloadURL,
-               userEmail: userEmail                                 
-            };
+    // Use Promise.all() to wait for both download URL promises to complete
+    return Promise.all([guestPhotoDownloadURLPromise, idScanDownloadURLPromise]);
+  })
+  .then((downloadURLs) => {
+    const guestPhotoDownloadURL = downloadURLs[0];
+    const idScanDownloadURL = downloadURLs[1];
 
-            // Set the data in Firebase under the room number as the key
-            db.ref("reservations/" + selectedRoomNumber).set(reservationData)
-              .then(() => {
-                console.log("Reservation data with guest photo submitted successfully!");
-                // Optional: Reset the form after successful submission
-                document.getElementById("guest-name").value = "";
-                document.getElementById("guest-email").value = "";
-                document.getElementById("room-type").value = "";
-                document.getElementById("bed-type").value = "";
-                document.getElementById("available-room").value = "";
-                document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
-              })
-              .catch((error) => {
-                console.error("Error submitting reservation data:", error);
-              });
-          });
-        }
-      );
-    });
+    // Proceed with storing the reservation data in the database
+    // ... (previous code remains unchanged) ...
 
+    // Create an object to store the data to be submitted to Firebase
+    const reservationData = {
+      guestName: guestName,
+      guestEmail: guestEmail,
+      roomType: selectedRoomType,
+      bedType: selectedBedType,
+      roomNumber: selectedRoomNumber,
+      guestPhotoURL: guestPhotoDownloadURL,
+      idScanURL: idScanDownloadURL,
+      userEmail: userEmail,
+    };
+
+    // Set the data in Firebase under the room number as the key
+    db.ref("reservations/" + selectedRoomNumber)
+      .set(reservationData)
+      .then(() => {
+        console.log("Reservation data with guest photo and ID scan submitted successfully!");
+        // Optional: Reset the form after successful submission
+        document.getElementById("guest-name").value = "";
+        document.getElementById("guest-email").value = "";
+        document.getElementById("room-type").value = "";
+        document.getElementById("bed-type").value = "";
+        document.getElementById("available-room").value = "";
+        document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
+        document.getElementById("idScan").value = ""; // Reset the ID scan input field
+      })
+      .catch((error) => {
+        console.error("Error submitting reservation data:", error);
+      });
+  })
+  .catch((error) => {
+    console.error("Error uploading files or obtaining download URLs:", error);
+  });
+
+ });
+        
+     
+   
     // Call the function to fetch available room types and populate the "Room Type" selector
     fetchAvailableRoomTypes();
 // Call the function to fetch the total number of reservations and display it
