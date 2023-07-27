@@ -7,6 +7,9 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<!-- Add this script tag to your HTML file -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
@@ -78,6 +81,41 @@
       flex-wrap: wrap;
       /* Allow buttons to wrap to the next line if necessary */
     }
+/* Styling for the container div */
+.total-reservations {
+  background-color: #00ff00;
+  padding: 15px;
+  border-radius: 15px;
+  width: 300px;
+}
+
+/* Styling for the "Total Reservations" header */
+.total-reservations h3 {
+  font-size: 18px;
+  color: #d1fde4;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+  font-weight: bold;
+}
+
+/* Styling for the loading text */
+#total-reservations {
+  font-size: 24px;
+  color: #ffffff;
+  font-weight: bold;
+  display: inline-block;
+  animation: blink 1s infinite; /* Optional loading animation */
+}
+
+/* Animation for loading text (optional) */
+@keyframes blink {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+
 
     .login-btn {
       display: block;
@@ -339,8 +377,8 @@
 
    <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
 </div>
-<div>
-  <!-- Move the "Total Reservations" display here -->
+<div class="total-reservations">
+  <!-- Total Reservations display -->
   <h3>Total Reservations Room: <span id="total-reservations">Loading...</span></h3>
 </div>
 
@@ -685,6 +723,20 @@ paymenttype: paymenttype,
       .set(reservationData)
       .then(() => {
         console.log("Reservation data with guest photo and ID scan submitted successfully!");
+ // Show the toast message
+  Toastify({
+    text: "Reservation data submitted successfully!",
+    duration: 3000, // 3 seconds
+    gravity: "bottom", // Position the toast at the bottom
+    position: "right", // Position the toast at the right
+    backgroundColor: "#00ff00",
+    stopOnFocus: true, // Stop the toast from hiding on focus
+style: {
+    color: "#ff0000", // Set the text color to red (#ff0000)
+    // Add more custom styles here if needed
+  },
+  }).showToast();
+
         // Optional: Reset the form after successful submission
         document.getElementById("guest-name").value = "";
         document.getElementById("guest-email").value = "";
