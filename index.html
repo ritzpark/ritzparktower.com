@@ -331,7 +331,7 @@
 
 <div style="border-radius: 15px; background-color: #8a2be2; padding: 10px;">
   <label for="PAYMENT_TYPE" class="form-label" style="color: #d1fde4; font-weight: bold;">PAYMENT TYPE</label>
-  <select id="PAYMENT_TYPE" class="form-control">
+  <select id="paymenttype" class="form-control">
     <option value="CASH">CASH</option>
     <option value="CARD">CARD</option>
   </select>
@@ -607,7 +607,7 @@ const passportNumber = document.getElementById("passportnumber").value;
     const checkInDateTime = document.getElementById("checkIn_Date_Time").value;
     const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
    
-    const paymentType = document.getElementById("PAYMENT_TYPE").value;
+    const paymenttype = document.getElementById("paymenttype").value;
 const userEmail = firebase.auth().currentUser.email; // Get the user's email
   // Check if the selected room number is available (not already booked)
   const availableRooms = Array.from(document.getElementById("available-room").options).map((option) => option.value);
@@ -671,7 +671,7 @@ adults: adults,
 child: child,
 checkIn_Date_Time: checkIn_Date_Time,
 checkOut_Date_Time: checkOut_Date_Time,
-PAYMENT_TYPE: PAYMENT_TYPE,
+paymenttype: paymenttype,
       roomType: selectedRoomType,
       bedType: selectedBedType,
       roomNumber: selectedRoomNumber,
@@ -691,16 +691,16 @@ PAYMENT_TYPE: PAYMENT_TYPE,
         document.getElementById("room-type").value = "";
         document.getElementById("bed-type").value = "";
         document.getElementById("available-room").value = "";
-        document.getElementById("eid-number").value = "";
-        document.getElementById("phone-number").value = "";
-        document.getElementById("rabdan-student-id").value = "";
+        document.getElementById("eidnumber").value = "";
+        document.getElementById("phonenumber").value = "";
+        document.getElementById("rabdanstudentid").value = "";
         document.getElementById("address").value = "";
-        document.getElementById("zip-code").value = "";
-        document.getElementById("guest-gender").value = "";
+        document.getElementById("zipcode").value = "";
+        document.getElementById("guestgender").value = "";
         document.getElementById("adults").value = "";
         document.getElementById("checkIn_Date_Time").value = "";
         document.getElementById("checkOut_Date_Time").value = "";
-        document.getElementById("PAYMENT_TYPE").value = "";
+        document.getElementById("paymenttype").value = "";
        
         document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
         document.getElementById("idScan").value = ""; // Reset the ID scan input field
