@@ -229,7 +229,7 @@
   
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="passportnumber" class="form-label" style="color: #d1fde4; font-weight: bold;">PASSPORT NUMBER</label>
-  <input type="text" class="form-control form-control-blood" id="passport-number" required>
+  <input type="text" class="form-control form-control-blood" id="passportnumber" required>
 </div>
   
 
@@ -258,7 +258,7 @@
 
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="zipcode" class="form-label" style="color: #d1fde4; font-weight: bold;">ZIP CODE</label>
-  <input type="text" class="form-control form-control-blood" id="zip-code" required>
+  <input type="text" class="form-control form-control-blood" id="zipcode" required>
 </div>
         <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="guest gender" class="form-label" style="color: #d1fde4; font-weight: bold;">GUEST GENDER</label>
@@ -589,16 +589,16 @@ const submitButton = document.getElementById("submit-btn");
 submitButton.addEventListener("click", () => {
   // Get the selected room number
 const selectedRoomType = document.getElementById("room-type").value;
+
             const selectedBedType = document.getElementById("bed-type").value;
 const guestName = document.getElementById("guest-name").value;
 const guestEmail = document.getElementById("guest-email").value;
   const selectedRoomNumber = document.getElementById("available-room").value;
- const userEmail = firebase.auth().currentUser.email; // Get the user's email
 const passportNumber = document.getElementById("passportnumber").value;
     const eidNumber = document.getElementById("eidnumber").value;
     
     const phoneNumber = document.getElementById("phonenumber").value;
-    const rabdanStudentId = document.getElementById("rabdan-student-id").value;
+    const rabdanStudentId = document.getElementById("rabdanstudentid").value;
     const address = document.getElementById("address").value;
     const zipCode = document.getElementById("zipcode").value;
     const guestGender = document.getElementById("guestgender").value;
@@ -608,6 +608,7 @@ const passportNumber = document.getElementById("passportnumber").value;
     const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
    
     const paymentType = document.getElementById("PAYMENT_TYPE").value;
+const userEmail = firebase.auth().currentUser.email; // Get the user's email
   // Check if the selected room number is available (not already booked)
   const availableRooms = Array.from(document.getElementById("available-room").options).map((option) => option.value);
   if (!availableRooms.includes(selectedRoomNumber)) {
