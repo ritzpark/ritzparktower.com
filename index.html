@@ -507,8 +507,23 @@
       const email = document.getElementById("login-email").value;
       const password = document.getElementById("login-password").value;
 
-      return firebase.auth().signInWithEmailAndPassword(email, password);
-    }
+     firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Handle successful login here, for example, redirect to the main page
+        handleSuccessfulLogin();
+      })
+      .catch((error) => {
+        // Handle login errors here, display an error message, etc.
+        console.error("Login error:", error.message);
+      });
+  }
+
+  // Function to handle successful login and redirect to the main page
+  function handleSuccessfulLogin() {
+    // Redirect to the main page after successful login
+    window.location.href = 'https://ritzpark.github.io/ritzparktower.com/';
+  }
+
 
 // Function to fetch the total number of reservations
 function fetchTotalReservations() {
