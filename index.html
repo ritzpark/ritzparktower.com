@@ -232,7 +232,7 @@
   <h1 class="blood-title">RITZ RECEPTION</h1>
 
 <div id="user-info" style="display: none;">
-  <p>Welcome, <span id="user-name"></span> (<span id="user-email"></span>)!</p>
+  <p>Welcome, <span id="user-name"></span> (<span id="checkInBy"></span>)!</p>
 
   <button id="logout-btn" style="width: 30%; padding: 20px; background-color: #FF4136; border: none; border-radius: 6px; color: #fff; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">CLOSE SYSTEM</button>
 </div>
@@ -349,12 +349,12 @@
 </div>
 <div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
   <label for="checkIn_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-IN DATE & TIME</label>
-  <input type="datetime-local" class="form-control form-control-blood" id="checkIn_Date_Time" required>
+  <input type="datetime-local" class="form-control form-control-blood" id="arrivalDate" required>
 </div>
 
 <div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
   <label for="checkOut_Date_Time" class="form-label" style="color: #d1fde4; font-weight: bold;">CHECK-OUT DATE & TIME</label>
-  <input type="datetime-local" class="form-control form-control-blood" id="checkOut_Date_Time" required>
+  <input type="datetime-local" class="form-control form-control-blood" id="departureDate" required>
 </div>
 
 <div style="border-radius: 15px; background-color: #3498db; padding: 10px;">
@@ -383,7 +383,9 @@
    <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
 </div>
 
+
         <button id="submit-btn"  style="width: 100%; padding: 30px; background-color: #3498db; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button>
+<button onclick="openPage()"> CHECKOUT SYSTEM </button>
 <div id="processing-message" style="display: none;">
   Processing... Please wait.
 </div>
@@ -521,9 +523,13 @@
   // Function to handle successful login and redirect to the main page
   function handleSuccessfulLogin() {
     // Redirect to the main page after successful login
-    window.location.href = 'https://ritzpark.github.io/ritzparktower.com/';
+   
   }
 
+function openPage() {
+  // Replace 'target_page.html' with the actual URL of the page you want to open
+  window.location.href = 'checkoutform.html';
+}
 
 // Function to fetch the total number of reservations
 function fetchTotalReservations() {
@@ -576,7 +582,7 @@ function fetchTotalReservations() {
       if (user) {
         // User is logged in
         document.getElementById("user-name").textContent = user.displayName;
-           document.getElementById("user-email").textContent = user.email;
+           document.getElementById("checkInBy").textContent = user.email;
         document.getElementById("user-info").style.display = "block";
         
         showReservationForm();
@@ -650,7 +656,7 @@ const guestName = document.getElementById("guest-name").value;
 const guestEmail = document.getElementById("guest-email").value;
   const selectedRoomNumber = document.getElementById("available-room").value;
 const passportNumber = document.getElementById("passportnumber").value;
-    const eidNumber = document.getElementById("eidnumber").value;
+    const eidnumber = document.getElementById("eidnumber").value;
     
     const phoneNumber = document.getElementById("phonenumber").value;
     const rabdanStudentId = document.getElementById("rabdanstudentid").value;
@@ -659,11 +665,11 @@ const passportNumber = document.getElementById("passportnumber").value;
     const guestGender = document.getElementById("guestgender").value;
     const adults = document.getElementById("adults").value;
     const child = document.getElementById("child").value;
-    const checkInDateTime = document.getElementById("checkIn_Date_Time").value;
-    const checkOutDateTime = document.getElementById("checkOut_Date_Time").value;
+    const arrivalDate = document.getElementById("arrivalDate").value;
+    const departureDate = document.getElementById("departureDate").value;
    
     const paymenttype = document.getElementById("paymenttype").value;
-const userEmail = firebase.auth().currentUser.email; // Get the user's email
+const checkInBy = firebase.auth().currentUser.email; // Get the user's email
   // Check if the selected room number is available (not already booked)
   const availableRooms = Array.from(document.getElementById("available-room").options).map((option) => option.value);
   if (!availableRooms.includes(selectedRoomNumber)) {
@@ -724,15 +730,15 @@ zipcode: zipcode,
 guestgender: guestgender,
 adults: adults,
 child: child,
-checkIn_Date_Time: checkIn_Date_Time,
-checkOut_Date_Time: checkOut_Date_Time,
+arrivalDate: arrivalDate,
+departureDate: departureDate,
 paymenttype: paymenttype,
       roomType: selectedRoomType,
       bedType: selectedBedType,
       roomNumber: selectedRoomNumber,
       guestPhotoURL: guestPhotoDownloadURL,
       idScanURL: idScanDownloadURL,
-      userEmail: userEmail,
+      checkInBy: checkInBy,
     };
 
     // Set the data in Firebase under the room number as the key
@@ -767,8 +773,8 @@ style: {
         document.getElementById("zipcode").value = "";
         document.getElementById("guestgender").value = "";
         document.getElementById("adults").value = "";
-        document.getElementById("checkIn_Date_Time").value = "";
-        document.getElementById("checkOut_Date_Time").value = "";
+        document.getElementById("arrivalDate").value = "";
+        document.getElementById("departureDate").value = "";
         document.getElementById("paymenttype").value = "";
        
         document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
@@ -794,4 +800,3 @@ fetchTotalReservations();
   </script>
 </body>
 </html>
-
