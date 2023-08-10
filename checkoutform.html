@@ -284,7 +284,7 @@ width: 100%;
           <p id="room-number"></p>
           <p id="guest-id"></p>
           <p id="">departure-date</p>
-          <p id="arrival-date"></p>
+          <p id="arrivalDate"></p>
           
           <img id="guest-id-scan" src="" alt="Guest ID Scan">
           <!-- Add other guest details as needed -->
@@ -391,7 +391,7 @@ function logout() {
         if (guest) {
           document.getElementById("guest-name").textContent = "Name: " + guest.guestName;
           document.getElementById("guest-email").textContent = "Email: " + guest.guestEmail;
-          document.getElementById("checkin-date").textContent = "Check-in Date: " + guest.checkindate;
+          document.getElementById("arrivalDate").textContent = "Check-in Date: " + guest.arrivalDate;
 
 
 
@@ -512,7 +512,7 @@ function confirmCheckout() {
             (!checkinEndDate || checkinDate <= endDate)
           ) {
             const listItem = document.createElement("li");
-            listItem.textContent = `Guest Name: ${checkoutData.guestName}, Guest ID: ${checkoutData.guestID}, Room Number: ${checkoutData.roomNumber}, Check-in Date: ${checkoutData.checkindate}`;
+            listItem.textContent = `Guest Name: ${checkoutData.guestName}, Guest Email: ${checkoutData.guestEmail}, Room Number: ${checkoutData.roomNumber}, Check-in Date: ${checkoutData.arrivalDate},Departure Date: ${checkoutData.departureDate}`;
             resultsList.appendChild(listItem);
           }
         });
@@ -527,6 +527,8 @@ function confirmCheckout() {
       alert("Error searching checkout records. Please try again.");
     });
 }
+
+
 
 
 // Function to update the date and time
