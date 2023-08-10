@@ -115,6 +115,16 @@
   100% { opacity: 0.2; }
 }
 
+buttonn {
+  padding: 10px 15px;
+  font-size: 20px;
+  background-color: #ffd700;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
 
     .login-btn {
@@ -246,6 +256,7 @@
 </div>
 
 
+
  
   <div id="data-container" style="display: none;">
     <h2>Welcome, <span id="user-display-email"></span>!</h2>
@@ -270,6 +281,7 @@
   <input type="text" class="form-control form-control-blood" id="passportnumber" required>
 </div>
   
+
 
     <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
   <label for="eid-number" class="form-label" style="color: #d1fde4; font-weight: bold;">EID NUMBER</label>
@@ -374,18 +386,22 @@
     <option value="CARD">CARD</option>
   </select>
 </div>
+
 <div class="total-reservations">
   <!-- Total Reservations display -->
   <h3>Total Reservations Room: <span id="total-reservations">Loading...</span></h3>
 </div>
 
 
-   <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button></div>
+   <button id="submrgfgit-btn"  style="width: 100%; padding: 30px; background-color: #fff; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button>
+<buttonn onclick="openPage()">Open Checkout Page</buttonn>
+</div>
 </div>
 
 
         <button id="submit-btn"  style="width: 100%; padding: 30px; background-color: #3498db; border: none; border-radius: 6px; color: #fff; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease;">SUBMIT_DATA_RESERVATION</button>
-<button onclick="openPage()"> CHECKOUT SYSTEM </button>
+
+
 <div id="processing-message" style="display: none;">
   Processing... Please wait.
 </div>
