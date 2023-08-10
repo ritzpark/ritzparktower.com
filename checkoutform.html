@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GUEST CHECKOUT SYSTEM</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Style for the input text elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ffd700;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+/* Style for the buttons */
+button {
+  padding: 15px 15px;
+  font-size: 20px;
+  background-color: #ffd700;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+buttonn {
+  padding: 15px 20px;
+  font-size: 20px;
+  background-color: #ff0000;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+sbutton {
+  padding: 15px 150px;
+  font-size: 20px;
+  background-color: #ffd700;
+  color: #000000;
+  border: none;
+  width: 100%;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for buttons */
+button:hover {
+  background-color: #45a049;
+}
+/* Hover effect for buttons */
+buttonn:hover {
+  background-color: #45a049;
+}
+sbutton:hover {
+  background-color: #45a049;
+}
+
+/* Style for the login and checkout forms */
+#login-form, #checkout-form, #search-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Style for the login and checkout form headers */
+#login-form h2, #checkout-form h2, #search-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Style for the guest details section */
+#guest-details {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 20px
+  font-weight: bold;
+  border: 2px solid #ffd700;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Style for the search results section */
+#search-results {
+  grid-column: span 2;
+  margin-top: 20px;
+}
+
+/* Style for the search results list */
+#results-list {
+  list-style: none;
+  padding: 0;
+}
+
+#results-list li {
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ffd700;
+  padding-bottom: 5px;
+  background-color: #fff;
+  color: #3E3E3E;
+  font-size: 20px
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+/* Style for the date and time display */
+#date-time {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ffd700;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+#user-email {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ffd700;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Style for the check-in date selector */
+#checkin-start-date,
+#checkin-end-date {
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #1FFF00;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+/* Style for the guest photo and ID scan */
+#guest-photo,
+#guest-id-scan {
+  display: block;
+  max-width: 200px;
+  max-height: 200px;
+  margin: 10px auto;
+}
+
+/* Style for the guest details */
+#guest-details p {
+  margin: 5px 0;
+}
+
+/* Style for the main container */
+#main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.blood-title {
+      color: #FF4136;
+      font-size: 48px;
+      text-shadow: 2px 2px 4px #FF4136;
+      margin-bottom: 20px;
+    }
+.blood-title1 {
+      color: #ffd700;
+      font-size: 30px;
+      text-shadow: 2px 2px 4px #FF4136;
+      margin-bottom: 20px;
+    }
+
+/* Style for the checkout and search containers */
+#checkout-container,
+#search-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cool design for the login form */
+#login-form {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #f5f5dc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Cool design for the login form header */
+#login-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Cool design for the login form inputs */
+#login-form input[type="email"],
+#login-form input[type="password"] {
+  padding: 10px;
+  font-size: 17px;
+  border: 2px solid #ffd700;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.5s ease;
+}
+
+#login-form input[type="email"]:focus,
+#login-form input[type="password"]:focus {
+  border-color: #00ff00;
+}
+
+/* Cool design for the login form button */
+#login-form button {
+  padding: 15px 15px;
+  font-size: 20px;
+  background-color: #ffd700;
+  color: #fff;
+width: 100%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+#login-form button:hover {
+  background-color: #ffd700;
+  transform: scale(1.10);
+}
+
+
+  </style>
+</head>
+<body>
+  <div id="date-time" style="position: absolute; top: 10px; right: 10px;"></div>
+<div id="user-email" style="position: absolute; top: 50px; right: 10px;"></div>
+  
+  <h1 class="blood-title">RITZ RECEPTION</h1>
+ 
+  <div id="login-form">
+    <h2>Login</h2>
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required>
+    <button onclick="login()">Login</button>
+  </div>
+  
+  <div id="main-container">
+
+
+    <div id="checkout-container">
+     
+      <div id="checkout-form" style="display: none;">
+     <h2 class="blood-title1">CHECKOUT SYSTEM</h2>
+     
+
+        <input type="text" id="room-number" placeholder="Enter Room Number" required>
+        <button onclick="fetchGuestDetails()">PROCEED TO CHECKOUT</button>
+        <buttonn onclick="logout()">CLOSE</buttonn>
+        
+        <div id="guest-details" style="display: none;">
+          <h2>GUEST DETAILS</h2>
+<img id="guest-photo" src="" alt="Guest Photo">
+          <p id="guest-name"></p>
+          <p id="guest-email"></p>
+          <p id="room-number"></p>
+          <p id="guest-id"></p>
+          <p id="">departure-date</p>
+          <p id="arrival-date"></p>
+          
+          <img id="guest-id-scan" src="" alt="Guest ID Scan">
+          <!-- Add other guest details as needed -->
+        </div>
+
+        <div id="confirmation-form" style="display: none;">
+          <label for="confirmation">Type "CONFIRM" to proceed with checkout:</label>
+          <input type="text" id="confirmation" required>
+          <button onclick="confirmCheckout()">Checkout</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="search-container" style="display: none;">
+      <div id="search-form">
+        <h2 class="blood-title1">Advanced Search</h2>
+        <label for="guest-name-search">Guest Name:</label>
+        <input type="text" id="guest-name-search" placeholder="Guest Name">
+        <label for="guest-id-search">Guest ID:</label>
+        <input type="text" id="guest-id-search" placeholder="Guest ID">
+        <label for="room-number-search">Room Number:</label>
+        <input type="text" id="room-number-search" placeholder="Room Number">
+        <label for="checkin-start-date">Check-in Start Date:</label>
+        <input type="date" id="checkin-start-date">
+        <label for="checkin-end-date">Check-in End Date:</label>
+        <input type="date" id="checkin-end-date">
+        <sbutton onclick="searchCheckoutRecords()">Search</sbutton>
+      </div>
+
+      <div id="search-results">
+        <h2>SEARCH RESULTS</h2>
+        <ul id="results-list"></ul>
+      </div>
+    </div>
+  </div>
+  <!-- Include the Firebase SDK for JavaScript -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJflyN-sa6Qwkjt5ih2HmyD8aUdZr_KdI",
+    authDomain: "test-9c424.firebaseapp.com",
+    databaseURL: "https://test-9c424-default-rtdb.firebaseio.com",
+    projectId: "test-9c424",
+    storageBucket: "test-9c424.appspot.com",
+    messagingSenderId: "533020541656",
+    appId: "1:533020541656:web:0fbd7758286de9cf1e8dad",
+    measurementId: "G-XQQNPM9RVM"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  // Reference to the Firebase Realtime Database
+  const db = firebase.database();
+let userEmail;
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // User login successful, show the checkout form
+      userEmail = userCredential.user.email; // Set userEmail here
+      const userEmailDiv = document.getElementById("user-email");
+      userEmailDiv.textContent = "STAFF ID: " + userEmail;
+
+      document.getElementById("login-form").style.display = "none";
+      document.getElementById("checkout-form").style.display = "block";
+      document.getElementById("search-container").style.display = "block";
+    })
+    .catch((error) => {
+      console.error("Error logging in:", error);
+      alert("Login failed. Please check your credentials and try again.");
+    });
+}
+function logout() {
+  firebase.auth().signOut()
+    .then(() => {
+      // User logged out successfully, hide the checkout form and show the login form again
+      document.getElementById("checkout-form").style.display = "none";
+      document.getElementById("login-form").style.display = "block";
+      document.getElementById("search-container").style.display = "none"; // Show the search form
+      // Reset form after logout
+      resetForm();
+    })
+    .catch((error) => {
+      console.error("Error logging out:", error);
+      alert("Logout failed. Please try again.");
+    });
+}
+
+
+  function fetchGuestDetails() {
+    const roomNumber = document.getElementById("room-number").value;
+
+    // Assume you have a "reservations" node in your Firebase database
+    const guestRef = db.ref("reservations").child(roomNumber);
+    guestRef.once("value")
+      .then((snapshot) => {
+        const guest = snapshot.val();
+        if (guest) {
+          document.getElementById("guest-name").textContent = "Name: " + guest.guestName;
+          document.getElementById("guest-email").textContent = "Email: " + guest.guestEmail;
+          document.getElementById("checkin-date").textContent = "Check-in Date: " + guest.checkindate;
+
+
+
+          const guestDetailsDiv = document.getElementById("guest-details");
+          guestDetailsDiv.style.display = "block";
+
+          document.getElementById("confirmation-form").style.display = "block"; 
+  if (guest.guestPhotoURL) {
+              const guestPhoto = document.getElementById("guest-photo");
+              guestPhoto.src = guest.guestPhotoURL;
+            } else {
+              // Display a default image if no guest photo is available
+              const guestPhoto = document.getElementById("guest-photo");
+              guestPhoto.src = "default_guest_photo.jpg"; // Replace with the URL of your default guest photo
+            }
+
+            // Load and display guest ID scan copy if available
+            if (guest.idScanURL) {
+              const guestIdScan = document.getElementById("guest-id-scan");
+              guestIdScan.src = guest.idScanURL;
+            } else {
+              // Display a default image if no guest ID scan copy is available
+              const guestIdScan = document.getElementById("guest-id-scan");
+              guestIdScan.src = "default_id_scan.jpg"; // Replace with the URL of your default ID scan copy
+            }
+        } else {
+          alert("Guest not found for the given room number.");
+          resetForm();
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching guest details:", error);
+        alert("Error fetching guest details. Please try again.");
+        resetForm();
+      });
+  }
+
+ 
+function confirmCheckout() {
+  const confirmationText = document.getElementById("confirmation").value.trim();
+  if (confirmationText === "CONFIRM") {
+    const roomNumber = document.getElementById("room-number").value;
+    const reservationRef = db.ref("reservations").child(roomNumber);
+    reservationRef.once("value")
+      .then((snapshot) => {
+        const reservationData = snapshot.val();
+        if (reservationData) {
+          const checkoutRef = db.ref("checkout").child(roomNumber);
+          const checkoutData = { ...reservationData };
+          checkoutData.checkoutDate = new Date().toISOString();
+          checkoutData.checkoutBy = userEmail; // Use the globally declared userEmail
+          checkoutRef.set(checkoutData);
+
+          reservationRef.remove();
+
+          alert("Checkout successful!");
+          resetForm();
+        } else {
+          alert("No reservation found for the given room number.");
+          resetForm();
+        }
+      })
+      .catch((error) => {
+        console.error("Error performing checkout:", error);
+        alert("Error performing checkout. Please try again.");
+        resetForm();
+      });
+  } else {
+    alert("Confirmation text does not match. Please type 'CONFIRM' to proceed with checkout.");
+  }
+}
+
+
+  function resetForm() {
+    document.getElementById("room-number").value = "";
+    document.getElementById("guest-details").style.display = "none";
+    document.getElementById("confirmation-form").style.display = "none";
+  }
+
+ function searchCheckoutRecords() {
+  const guestName = document.getElementById("guest-name-search").value.trim();
+  const guestID = document.getElementById("guest-id-search").value.trim();
+  const roomNumber = document.getElementById("room-number-search").value.trim();
+  const checkinStartDate = document.getElementById("checkin-start-date").value;
+  const checkinEndDate = document.getElementById("checkin-end-date").value;
+
+  const checkoutRef = db.ref("checkout");
+
+  let query = checkoutRef;
+  if (guestName !== "") {
+    query = query.orderByChild("guestName").equalTo(guestName);
+  }
+
+  if (guestID !== "") {
+    query = query.orderByChild("guestID").equalTo(guestID);
+  }
+
+  if (roomNumber !== "") {
+    query = query.orderByChild("roomNumber").equalTo(roomNumber);
+  }
+
+  query.once("value")
+    .then((snapshot) => {
+      const resultsList = document.getElementById("results-list");
+      resultsList.innerHTML = ""; // Clear previous search results
+
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          const checkoutData = childSnapshot.val();
+
+          // Check if check-in date falls within the selected date range
+          const checkinDate = new Date(checkoutData.checkindate);
+          const startDate = new Date(checkinStartDate);
+          const endDate = new Date(checkinEndDate);
+
+          if (
+            (!checkinStartDate || checkinDate >= startDate) &&
+            (!checkinEndDate || checkinDate <= endDate)
+          ) {
+            const listItem = document.createElement("li");
+            listItem.textContent = `Guest Name: ${checkoutData.guestName}, Guest ID: ${checkoutData.guestID}, Room Number: ${checkoutData.roomNumber}, Check-in Date: ${checkoutData.checkindate}`;
+            resultsList.appendChild(listItem);
+          }
+        });
+
+        document.getElementById("search-results").style.display = "block";
+      } else {
+        alert("No checkout records found for the provided criteria.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error searching checkout records:", error);
+      alert("Error searching checkout records. Please try again.");
+    });
+}
+
+
+// Function to update the date and time
+    function updateDateTime() {
+      const now = new Date();
+      const dateTimeDiv = document.getElementById("date-time");
+      dateTimeDiv.textContent = now.toLocaleString();
+    }
+
+    // Update the date and time every second
+    setInterval(updateDateTime, 1000);
+  </script>
+
+</body>
+</html>
