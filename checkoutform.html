@@ -253,7 +253,7 @@ width: 100%;
 <div id="user-email" style="position: absolute; top: 50px; right: 10px;"></div>
   
   <h1 class="blood-title">RITZ RECEPTION</h1>
- 
+
   <div id="login-form">
     <h2>Login</h2>
     <label for="email">Email:</label>
@@ -280,11 +280,17 @@ width: 100%;
           <h2>GUEST DETAILS</h2>
 <img id="guest-photo" src="" alt="Guest Photo">
           <p id="guest-name"></p>
+           <p id="roomNumber"></p>
           <p id="guest-email"></p>
           <p id="room-number"></p>
-          <p id="guest-id"></p>
-          <p id="">departure-date</p>
+          <p id="eidnumber"></p>
+          <p id="rabdanstudentid"></p>
+          
           <p id="arrivalDate"></p>
+          <p id="departuredate"></p>
+          <p id="passportNumber"></p>
+           <p id="checkInBy"></p>
+        
           
           <img id="guest-id-scan" src="" alt="Guest ID Scan">
           <!-- Add other guest details as needed -->
@@ -303,8 +309,8 @@ width: 100%;
         <h2 class="blood-title1">Advanced Search</h2>
         <label for="guest-name-search">Guest Name:</label>
         <input type="text" id="guest-name-search" placeholder="Guest Name">
-        <label for="guest-id-search">Guest ID:</label>
-        <input type="text" id="guest-id-search" placeholder="Guest ID">
+        <label for="rabdanstudentid-search">Student ID:</label>
+        <input type="text" id="rabdanstudentid-search" placeholder="Rabdan Student Id">
         <label for="room-number-search">Room Number:</label>
         <input type="text" id="room-number-search" placeholder="Room Number">
         <label for="checkin-start-date">Check-in Start Date:</label>
@@ -390,8 +396,15 @@ function logout() {
         const guest = snapshot.val();
         if (guest) {
           document.getElementById("guest-name").textContent = "Name: " + guest.guestName;
-          document.getElementById("guest-email").textContent = "Email: " + guest.guestEmail;
-          document.getElementById("arrivalDate").textContent = "Check-in Date: " + guest.arrivalDate;
+          document.getElementById("roomNumber").textContent = "Room Number: " + guest.roomNumber;
+          document.getElementById("guest-email").textContent = " Guest Email: " + guest.guestEmail;
+          document.getElementById("arrivalDate").textContent = "Arrival Date: " + guest.arrivalDate;
+           document.getElementById("departuredate").textContent = "Departure Date: " + guest.departureDate;
+          document.getElementById("passportNumber").textContent = "Passport Number: " + guest.passportNumber;
+          document.getElementById("eidnumber").textContent = "Eid Number: " + guest.eidnumber;
+          document.getElementById("rabdanstudentid").textContent = "Student Id: " + guest.rabdanstudentid;
+          document.getElementById("checkInBy").textContent = "Check In By: " + guest.checkInBy;
+      
 
 
 
@@ -473,20 +486,20 @@ function confirmCheckout() {
 
  function searchCheckoutRecords() {
   const guestName = document.getElementById("guest-name-search").value.trim();
-  const guestID = document.getElementById("guest-id-search").value.trim();
+  const rabdanstudentid = document.getElementById("rabdanstudentid-search").value.trim();
   const roomNumber = document.getElementById("room-number-search").value.trim();
   const checkinStartDate = document.getElementById("checkin-start-date").value;
   const checkinEndDate = document.getElementById("checkin-end-date").value;
 
   const checkoutRef = db.ref("checkout");
 
-  let query = checkoutRef;
+  let query = checkoutRef; 
   if (guestName !== "") {
     query = query.orderByChild("guestName").equalTo(guestName);
   }
 
-  if (guestID !== "") {
-    query = query.orderByChild("guestID").equalTo(guestID);
+  if (rabdanstudentid !== "") {
+    query = query.orderByChild("rabdanstudentid").equalTo(rabdanstudentid);
   }
 
   if (roomNumber !== "") {
@@ -512,7 +525,15 @@ function confirmCheckout() {
             (!checkinEndDate || checkinDate <= endDate)
           ) {
             const listItem = document.createElement("li");
-            listItem.textContent = `Guest Name: ${checkoutData.guestName}, Guest Email: ${checkoutData.guestEmail}, Room Number: ${checkoutData.roomNumber}, Check-in Date: ${checkoutData.arrivalDate},Departure Date: ${checkoutData.departureDate}`;
+            listItem.textContent = `Guest Name: ${checkoutData.guestName},
+ Guest Email: ${checkoutData.guestEmail},
+ Room Number: ${checkoutData.roomNumber},
+Rabdan Student id: ${checkoutData.rabdanstudentid},
+ Check In By: ${checkoutData.checkInBy},
+ CheckOut By: ${checkoutData.checkoutBy},
+ Arrival Date: ${checkoutData.arrivalDate},
+Departure Date: ${checkoutData.departureDate}`;
+
             resultsList.appendChild(listItem);
           }
         });
@@ -541,6 +562,5 @@ function confirmCheckout() {
     // Update the date and time every second
     setInterval(updateDateTime, 1000);
   </script>
-
 </body>
 </html>
