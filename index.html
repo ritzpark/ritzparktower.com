@@ -272,8 +272,8 @@ buttonn {
           <input type="text" class="form-control form-control-blood" id="guest-name" required>
         </div>
         <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-          <label for="guest-email" class="form-label" style="color: #d1fde4; font-weight: bold;">VEHICLE NUMBER</label>
-          <input type="text" class="form-control form-control-blood" id="data-input-2" required>
+          <label for="vechiclenumber" class="form-label" style="color: #d1fde4; font-weight: bold;">VEHICLE NUMBER</label>
+          <input type="text" class="form-control form-control-blood" id="vechiclenumber" required>
         </div>
   
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
@@ -296,7 +296,7 @@ buttonn {
   <input type="text" class="form-control form-control-blood" id="phonenumber" required>
 </div>
 <div style="border-radius: 15px; background-color: #000080; padding: 10px;">
-  <label for="rabdan-student-id" class="form-label" style="color: #d1fde4; font-weight: bold;">RABDAN STUDENT ID</label>
+  <label for="rabdanstudentid" class="form-label" style="color: #d1fde4; font-weight: bold;">RABDAN STUDENT ID</label>
   <input type="text" class="form-control form-control-blood" id="rabdanstudentid" required>
 </div>
 
@@ -673,9 +673,9 @@ const guestEmail = document.getElementById("guest-email").value;
   const selectedRoomNumber = document.getElementById("available-room").value;
 const passportNumber = document.getElementById("passportnumber").value;
     const eidnumber = document.getElementById("eidnumber").value;
-    
+    const vechiclenumber = document.getElementById("vechiclenumber").value;
     const phoneNumber = document.getElementById("phonenumber").value;
-    const rabdanStudentId = document.getElementById("rabdanstudentid").value;
+    const rabdanstudentid = document.getElementById("rabdanstudentid").value;
     const address = document.getElementById("address").value;
     const zipCode = document.getElementById("zipcode").value;
     const guestGender = document.getElementById("guestgender").value;
@@ -749,6 +749,7 @@ child: child,
 arrivalDate: arrivalDate,
 departureDate: departureDate,
 paymenttype: paymenttype,
+ vechiclenumber: vechiclenumber,
       roomType: selectedRoomType,
       bedType: selectedBedType,
       roomNumber: selectedRoomNumber,
@@ -792,7 +793,9 @@ style: {
         document.getElementById("arrivalDate").value = "";
         document.getElementById("departureDate").value = "";
         document.getElementById("paymenttype").value = "";
-       
+        document.getElementById("child").value = "";
+        document.getElementById("passportnumber").value = "";
+      document.getElementById("vechiclenumber").value = "";
         document.getElementById("guest-photo").value = ""; // Reset the guest photo input field
         document.getElementById("idScan").value = ""; // Reset the ID scan input field
       })
