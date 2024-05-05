@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Webpage</title>
+    <style>
+        /* Styling for containers, button, and text views (same as before) */
+        /* ... */
+
+        .button {
+            /* ... */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-wrapper">
+    <div class="container">
+        <div class="inner-container">
+            <div class="text-view" id="textView1">Text Vi</div>
+            <input type="text" class="edit-text" placeholder="Edit Text 1">
+        </div>
+        <div class="inner-container">
+            <div class="text-view" id="textView2">Text View 2</div>
+            <input type="text" class="edit-text" placeholder="Edit Text 2">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="inner-container">
+            <div class="text-view" id="textView3">Text View 3</div>
+            <input type="text" class="edit-text" placeholder="Edit Text 3">
+        </div>
+        <div class="inner-container">
+            <div class="text-view" id="textView4">Text View 4</div>
+            <input type="text" class="edit-text" placeholder="Edit Text 4">
+        </div>
+    </div>
+
+    <!-- Button with onclick attribute to trigger JavaScript function -->
+    <button class="button" onclick="loadData()">Click me</button>
+
+    <div class="container">
+        Container 2
+    </div>
+</div>
+
+<!-- JavaScript code to handle button click and navigate to another page -->
+<script>
+function loadData() {
+    // Retrieve data from textView1
+    var dataFromTextView1 = document.getElementById('textView1').innerText;
+
+    // Store data in localStorage
+    localStorage.setItem('dataFromTextView1', dataFromTextView1);
+
+    // Navigate to other page
+    window.location.href = 'otherpage.html';
+}
+</script>
+
+</body>
+</html>
+
