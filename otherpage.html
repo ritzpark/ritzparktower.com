@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Other Page</title>
+</head>
+<body>
+
+<!-- Text view to display the retrieved data -->
+<div class="text-view" id="otherPageTextView">Other Page Text View</div>
+
+<script>
+// Retrieve data from localStorage
+var dataFromTextView1 = localStorage.getItem('dataFromTextView1');
+
+// Display data in textView on other page
+document.getElementById('otherPageTextView').innerText = dataFromTextView1;
+</script>
+
+</body>
+</html>
