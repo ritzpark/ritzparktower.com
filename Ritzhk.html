@@ -54,6 +54,11 @@ function loadData() {
 
     // Store data in localStorage
     localStorage.setItem('dataFromTextView1', dataFromTextView1);
+// Retrieve button text
+    var buttonText = document.querySelector('.button').innerText;
+
+    // Store button text in localStorage
+    localStorage.setItem('buttonText', buttonText);
 
     // Navigate to other page
     window.location.href = 'otherpage.html';
