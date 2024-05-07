@@ -3,68 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Webpage</title>
+    <title>Housekeeping Service</title>
     <style>
-        /* Styling for containers, button, and text views (same as before) */
-        /* ... */
-
-        .button {
-            /* ... */
+        /* Your CSS styles here */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1px;
+            display: flex;
+            flex-direction: row; /* Arrange items horizontally */
+            justify-content: space-between; /* Space between items */
         }
+ .button {
+           width: 20%;
+            display: block;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            border: none;
+            border-radius: ;
+            cursor: pointer;
+font-size: 25px;
+          }
+        .inner-container {
+            padding: 8px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px; /* Add margin between inner containers */
+            width: 48%; /* Reduce width to accommodate margins and spacing */
+        }
+
+        /* Style for text views and input text fields */
+        .text-view {
+            margin-bottom: 9px;
+            
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+
+        /* Different background colors for text views */
+        #NAMEitems {
+            background-color: #dc143c; /* Gold */
+        }
+
+        #NAMEitems2 {
+            background-color: #00ff00 ; /* Light salmon */
+        }
+        #NAMEitems3 {
+            background-color: #dc143c ; /* Light salmon */
+        }
+        #NAMEitems4 {
+            background-color: #00ff00 ; /* Light salmon */
+        }
+        #NAMEitems5 {
+            background-color: #dc143c ; /* Light salmon */
+        }
+       #NAMEitems6 {
+            background-color: #00ff00 ; /* Light salmon */
+        }
+       #NAMEitems7 {
+            background-color: #dc143c ; /* Light salmon */
+        }
+       #NAMEitems8 {
+            background-color: #00ff00 ; /* Light salmon */
+        }
+#DATE {
+            background-color: #00ff00 ; /* Light salmon */
+width: 40%; 
+        }
+#LAST {
+            background-color: #ffffff ; /* Light salmon */
+        }
+#LOAD {
+            background-color: #FFFF00 ; /* Light salmon */
+        width: 60%; 
+        }
+
+
+       #replaceitems {
+            background-color: #dc143c; /* Gold */
+          font-size: 15px;
+        }
+
+       #replaceitems2 {
+            background-color: #ffa07a; /* Light salmon */
+        }
+h2 {
+            font-size: 20px;
+            color: #333; /* Text color */
+            margin-bottom: 10px; /* Add some space below */
+        }
+       #inputText1 {
+            background-color: #ffa07a; /* Light blue */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+               margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+
+       #inputText2 {
+            background-color: #90ee90; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+      #inputText3 {
+            background-color: #ffa07a; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+      #inputText4 {
+            background-color: #90ee90; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+     #inputText5 {
+            background-color: #ffa07a; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+ #inputText6 {
+            background-color: #90ee90; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+ #inputText7 {
+            background-color: #ffa07a; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+ #inputText8 {
+            background-color: #90ee90; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 100%; /* Ensure inputs take full width */
+        }
+
+#hours {
+            background-color: #FFFF00; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 50%; /* Ensure inputs take full width */
+        }
+
+
+#Minutes {
+            background-color: #FFFF00; /* Light green */
+            color: #333; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 50%; /* Ensure inputs take full width */
+        }
+#SUBMIT {
+            background-color: #2E2EFE; /* Light green */
+            color: #FFFFFF; /* Text color */
+            border: 1px solid #ccc; /* Add border */
+            box-sizing: border-box; /* Include border in the width */
+            margin-bottom: 10px;
+            font-size: 14px;
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Add border radius */
+            width: 50%; /* Ensure inputs take full width */
+        }
+
+#RLTS {
+            background-color: #dc143c; /* Gold */
+            width: 60%;
+        }
+
+        #RLTC {
+            background-color: #00ff00 ; /* Light salmon */
+           width: 60%;
+        }
+        #RLKS {
+            background-color: #dc143c ; /* Light salmon */
+             width: 60%;
+        }
+        #RLP {
+            background-color: #00ff00 ; /* Light salmon */
+           width: 60%;
+        }
+        #RLBT {
+            background-color: #dc143c ; /* Light salmon */
+            width: 60%;
+        }
+       #RLHT {
+            background-color: #00ff00 ; /* Light salmon */
+              width: 60%;
+        }
+       #RLBM {
+            background-color: #dc143c ; /* Light salmon */
+             width: 60%;
+        }
+       #RLKC {
+            background-color: #00ff00 ; /* Light salmon */
+             width: 60%;
+        }
+#RTS{
+            background-color: #dc143c; /* Gold */
+            width: 60%;
+        }
+
+        #RTC {
+            background-color: #00ff00 ; /* Light salmon */
+           width: 60%;
+        }
+        #RKS {
+            background-color: #dc143c ; /* Light salmon */
+             width: 60%;
+        }
+        #RKC {
+            background-color: #00ff00 ; /* Light salmon */
+           width: 60%;
+        }
+        #RP {
+            background-color: #dc143c ; /* Light salmon */
+            width: 60%;
+        }
+       #RBT {
+            background-color: #00ff00 ; /* Light salmon */
+              width: 60%;
+        }
+       #RHT {
+            background-color: #dc143c ; /* Light salmon */
+             width: 60%;
+        }
+       #RBM {
+            background-color: #00ff00 ; /* Light salmon */
+             width: 60%;
+        }
+
+
+
+
     </style>
 </head>
 <body>
 
-<div class="container-wrapper">
-    <div class="container">
-        <div class="inner-container">
-            <div class="text-view" id="textView1">Text Vi</div>
-            <input type="text" class="edit-text" placeholder="Edit Text 1">
-        </div>
-        <div class="inner-container">
-            <div class="text-view" id="textView2">Text View 2</div>
-            <input type="text" class="edit-text" placeholder="Edit Text 2">
-        </div>
+<div id="Container1" class="container">
+    <!-- First Inner Container (Left Side) -->
+    <div id="InnerContainer1" class="inner-container">
+        <h2>  Name</h2>
+        <div class="text-view" id="NAMEitems">Twin Sheet</div>
+        <div class="text-view" id="NAMEitems2">Twin Cover</div>
+         <div class="text-view" id="NAMEitems3">King Sheet</div>
+        <div class="text-view" id="NAMEitems4">King Cover</div>
+         <div class="text-view" id="NAMEitems5">PillowCase</div>
+        <div class="text-view" id="NAMEitems6">Bath Towel</div>
+         <div class="text-view" id="NAMEitems7">Hand Towel</div>
+        <div class="text-view" id="NAMEitems8">Bath Mat</div>
+
     </div>
+    <div id="InnerContainer3" class="inner-container">
+        <h2>  Replace</h2>
+       <input type="text" id="inputText1" placeholder="Type here">
+        <br>
+        <input type="text" id="inputText2" placeholder="Type here">
+       <br>
+        <input type="text" id="inputText3" placeholder="Type here">
+<br>
+        <input type="text" id="inputText4" placeholder="Type here">
+<br>
+        <input type="text" id="inputText5" placeholder="Type here">
+<br>
+        <input type="text" id="inputText6" placeholder="Type here">
+<br>
+        <input type="text" id="inputText7" placeholder="Type here">
+<br>
+        <input type="text" id="inputText8" placeholder="Type here">
 
-    <div class="container">
-        <div class="inner-container">
-            <div class="text-view" id="textView3">Text View 3</div>
-            <input type="text" class="edit-text" placeholder="Edit Text 3">
-        </div>
-        <div class="inner-container">
-            <div class="text-view" id="textView4">Text View 4</div>
-            <input type="text" class="edit-text" placeholder="Edit Text 4">
-        </div>
-    </div>
+     </div>
 
-    <!-- Button with onclick attribute to trigger JavaScript function -->
-    <button class="button" onclick="loadData()">Click me</button>
+    <!-- Second Inner Container (Right Side) -->
+    <div id="InnerContainer2" class="inner-container">
+        <h2>  Remove</h2>
+         <input type="text" id="inputText1" placeholder="Enter text 1">
+        <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+             <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+ <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+ <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+ <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+ <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
+ <br>
+        <input type="text" id="inputText2" placeholder="Enter text 2">
 
-    <div class="container">
-        Container 2
     </div>
 </div>
 
-<!-- JavaScript code to handle button click and navigate to another page -->
-<script>
-function loadData() {
-    // Retrieve data from textView1
-    var dataFromTextView1 = document.getElementById('textView1').innerText;
+<!-- Container2 and Container3 -->
+<div id="Container2" class="container">
+   <input type="text" id="hours" placeholder="Hours">
+<input type="text" id="Minutes" placeholder="Minutes">
+    <button class="button" id="SUBMIT">DONE</button>
+</div>
 
-    // Store data in localStorage
-    localStorage.setItem('dataFromTextView1', dataFromTextView1);
-// Retrieve button text
-    var buttonText = document.querySelector('.button').innerText;
 
-    // Store button text in localStorage
-    localStorage.setItem('buttonText', buttonText);
+<div id="Container3" class="container">
+    <!-- First Inner Container (Left Side) -->
+    <div id="InnerContainer4" class="inner-container">
+        <div class="text-view" id="LAST">LAST CLEANING</div>
+        <h2>  Name</h2>
+        <div class="text-view" id="NAMEitems">Twin Sheet</div>
+        <div class="text-view" id="NAMEitems2">Twin Cover</div>
+         <div class="text-view" id="NAMEitems3">King Sheet</div>
+        <div class="text-view" id="NAMEitems4">King Cover</div>
+         <div class="text-view" id="NAMEitems5">PillowCase</div>
+        <div class="text-view" id="NAMEitems6">Bath Towel</div>
+         <div class="text-view" id="NAMEitems7">Hand Towel</div>
+        <div class="text-view" id="NAMEitems8">Bath Mat</div>
 
-    // Navigate to other page
-    window.location.href = 'otherpage.html';
-}
-</script>
+    </div>
+    <div id="InnerContainer5" class="inner-container">
+<div class="text-view" id="DATE">DATE:</div>
+
+
+        <h2>  Replace</h2>
+       <div class="text-view" id="RTS">Twin Sheet</div>
+        <div class="text-view" id="RTC">Twin Cover</div>
+         <div class="text-view" id="RKS">King Sheet</div>
+        <div class="text-view" id="RKC">King Cover</div>
+         <div class="text-view" id="RP">PillowCase</div>
+        <div class="text-view" id="RBT">Bath Towel</div>
+         <div class="text-view" id="RHT">Hand Towel</div>
+        <div class="text-view" id="RBM">Bath Mat</div>
+
+     </div>
+
+    <!-- Second Inner Container (Right Side) -->
+    <div id="InnerContainer6" class="inner-container">
+<div class="text-view" id="LOAD">Loading...</div>
+
+
+
+        <h2>  Remove</h2>
+         <div class="text-view" id="RLTS">Twin Sheet</div>
+        <div class="text-view" id="RLTC">Twin Cover</div>
+         <div class="text-view" id="RLKS">King Sheet</div>
+        <div class="text-view" id="RLKC">King Cover</div>
+         <div class="text-view" id="RLP">PillowCase</div>
+        <div class="text-view" id="RLBT">Bath Towel</div>
+         <div class="text-view" id="RLHT">Hand Towel</div>
+        <div class="text-view" id="RLBM">Bath Mat</div>
+
+
+    </div>
+</div>
 
 </body>
 </html>
-
