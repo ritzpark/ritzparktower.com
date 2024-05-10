@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        /* Styling for containers */
+        .container {
+            width: 100%;
+            padding: 0px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            margin-bottom: 1px;
+            display: flex; /* Added */
+            justify-content: space-between; /* Added */
+        }
+ input[type="password"] {
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+.LoginContainer { width: 100%; /* Adjust the width if needed */ height: 100vh; /* Make it fill the viewport height */ display: flex; justify-content: center; /* Center horizontally */ align-items: center; /* Center vertically */ }
+
+        /* Styling for button */
+        .button {
+           width: 100%;
+            display: block;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            border: none;
+             border-radius: 5px; /* Add border radius */
+
+            cursor: pointer;
+
+margin-bottom: 5px;
+            
+          
+          }
+ 
+
+
+        /* Flexbox styling */
+        .container-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Styling for inner containers */
+        .inner-container {
+            border: 1px solid #ccc;
+            padding: 5px;
+           
+            margin-bottom: 10px;
+            width: 50%; /* Added */
+        }
+
+.text-view {
+    margin-bottom: 10px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 3px;
+}
+
+#STAFFNAME {
+    background-color: yellow; /* Color for Text View 1 */
+
+}
+
+#STAFFNAME1 {
+    background-color: yellow; /* Color for Text View 2 */
+
+}
+
+#NOTICE {
+
+    background-color: lightgreen; /* Color for Text View 3 */
+
+}
+ #innerContainer1 {
+        width: 30%; /* Adjust the width as needed */
+    }
+#innerContainer2 {
+        width: 70%; /* Adjust the width as needed */
+    }
+#NOTICE1 {
+    background-color: lightgreen; /* Color for Text View 4 */
+   
+}
+#EXTRA1 {
+    background-color: coral; /* Color for Text View 4 */
+
+}
+#EXTRA {
+    background-color: coral; /* Color for Text View 4 */
+
+}
+ #button1 {
+
+            background-color: #007bff; /* Blue color */
+        }
+
+#submitButton { width: 100%; padding: 10px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s ease; } #submitButton:hover { background-color: #0056b3; /* Darker shade on hover */ } /* Styling for login status message */ #loginStatus { color: #ff6347; /* Red color for error messages */ font-size: 14px; 
+
+        /* Color for Button 2 */
+        #button2 {
+            background-color: #28a745; /* Green color */
+        }
+
+     </style>
+</head>
+<body>
+   <div class="container-wrapper LoginContainer" id="loginContainer">
+
+        <div class="container">
+           
+                <form id="loginForm">
+                    <input type="password" id="password" name="password" placeholder="Enter password">
+                    <br>
+                    <input type="submit" value="Submit" id="submitButton">
+                </form>
+                <div id="loginStatus"></div>
+            
+        </div>
+    </div>
+
+    <div class="container-wrapper" id="contentContainer" style="display: none;">
+        <div class="container">
+            <div class="inner-container" id="innerContainer1">
+                <div class="text-view" id="STAFFNAME">STAFF NAME :</div>
+                <div class="text-view" id="NOTICE">NOTICE :</div>
+                <div class="text-view" id="EXTRA">EXTRA ROOMS :</div>
+      
+            </div>
+            <div class="inner-container"id="innerContainer2">
+                <div class="text-view" id="STAFFNAME1">LOADING....</div>
+                <div class="text-view" id="NOTICE1">LOADING....</div>
+                <div class="text-view" id="EXTRA1">LOADING....</div>
+             
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="inner-container">
+                 <button class="button" id="ROOM1" onclick="handleROOM1()">LOADING.</button>
+                <button class="button" id="ROOM2" onclick="handleROOM2()">LOADING.</button>
+<button class="button" id="ROOM3" onclick="handleROOM3()">LOADING.</button>
+
+                <button class="button" id="ROOM4">Click me</button>
+<button class="button" id="ROOM5">Click me</button>
+
+
+            </div>
+            <div class="inner-container">
+                <button class="button" id="ROOM6">Click me</button>
+                <button class="button" id="ROOM7">Click me</button>
+                <button class="button" id="ROOM8">Click me</button>
+                <button class="button" id="ROOM9">Click me</button>
+<button class="button" id="ROOM10">Click me</button>
+
+            </div>
+            <div class="inner-container">
+<button class="button" id="ROOM11">Click me</button>
+                <button class="button" id="ROOM12">Click me</button>
+                <button class="button" id="ROOM13">Click me</button>
+                <button class="button" id="ROOM14">Click me</button>
+<button class="button" id="ROOM15">Click me</button>
+</div>
+          
+            </div>
+<div class="container" >
+ <div class="inner-container">
+                 <button class="button" id="ROOM16">Click me</button>
+                <button class="button" id="ROOM17">Click me</button>
+                <button class="button" id="ROOM18">Click me</button>
+                <button class="button" id="ROOM19">Click me</button>
+<button class="button" id="ROOM20">Click me</button>
+
+
+            </div>
+ <div class="inner-container">
+                 <button class="button" id="ROOM21">Click me</button>
+                <button class="button" id="ROOM22">Click me</button>
+                <button class="button" id="ROOM23">Click me</button>
+                <button class="button" id="ROOM24">Click me</button>
+<button class="button" id="ROOM25">Click me</button>
+
+
+            </div>
+ <div class="inner-container">
+                 <button class="button" id="ROOM26">Click me</button>
+                <button class="button" id="ROOM27">Click me</button>
+                <button class="button" id="ROOM28">Click me</button>
+                <button class="button" id="ROOM29">Click me</button>
+<button class="button" id="ROOM30">Click me</button>
+
+
+            </div>
+      
+            </div>
+
+        </div>
+
+
+
+    <!-- Firebase JavaScript SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase
+       const firebaseConfig = {
+  apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
+  authDomain: "ritz-hk.firebaseapp.com",
+  databaseURL: "https://ritz-hk-default-rtdb.firebaseio.com",
+  projectId: "ritz-hk",
+  storageBucket: "ritz-hk.appspot.com",
+  messagingSenderId: "975572159061",
+  appId: "1:975572159061:web:f280915806e9820abd22dc",
+  measurementId: "G-Z6J3WDJQ4J"
+};
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Define password and data paths
+        const paths = [
+            { passwordPath: 'Password/Key/Pass3', dataPaths: [
+               { dataPath: 'RoomsData/3RD FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/3RD FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/3RD FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/3RD FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/3RD FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/3RD FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/3RD FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/3RD FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/3RD FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+{ passwordPath: 'Password/Key/Pass2', dataPaths: [
+                { dataPath: 'RoomsData/2ND FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/2ND FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/2ND FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/2ND FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/2ND FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/2ND FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/2ND FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/2ND FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/2ND FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass5', dataPaths: [
+               { dataPath: 'RoomsData/5TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/5TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/5TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/5TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/5TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/5TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/5TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/5TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/5TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+
+{ passwordPath: 'Password/Key/Pass6', dataPaths: [
+               { dataPath: 'RoomsData/6TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/6TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/6TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/6TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/6TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/6TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/6TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/6TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/6TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass7', dataPaths: [
+                { dataPath: 'RoomsData/7TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/7TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/7TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/7TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/7TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/7TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/7TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/7TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/7TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass8', dataPaths: [
+                { dataPath: 'RoomsData/8TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/8TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/8TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/8TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/8TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/8TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/8TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/8TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/8TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass9', dataPaths: [
+                { dataPath: 'RoomsData/9TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/9TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/9TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/9TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/9TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/9TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/9TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/9TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/9TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+
+{ passwordPath: 'Password/Key/Pass10', dataPaths: [
+               { dataPath: 'RoomsData/10TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/10TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/10TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/10TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/10TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/10TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/10TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/10TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/10TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass11', dataPaths: [
+                { dataPath: 'RoomsData/11TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/11TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/11TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/11TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/11TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/11TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/11TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/11TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/11TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass12', dataPaths: [
+                { dataPath: 'RoomsData/12TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/12TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/12TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/12TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/12TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/12TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/12TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/12TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/12TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+
+{ passwordPath: 'Password/Key/Pass13', dataPaths: [
+                 { dataPath: 'RoomsData/13TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/13TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/13TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/13TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/13TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/13TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/13TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/13TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/13TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+{ passwordPath: 'Password/Key/Pass14', dataPaths: [
+                { dataPath: 'RoomsData/14TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/14TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/14TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/14TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/14TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/14TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/14TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/14TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/14TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+
+            { passwordPath: 'Password/Key/Pass4', dataPaths: [
+                { dataPath: 'RoomsData/4TH FLOOR/NAME', id: 'STAFFNAME1' },
+                { dataPath: 'RoomsData/4TH FLOOR/NOTICE', id: 'NOTICE1' },
+                { dataPath: 'RoomsData/4TH FLOOR/EXTRA', id: 'EXTRA1' },
+{ dataPath: 'RoomsData/4TH FLOOR/Room2', id: 'ROOM2' }, 
+{ dataPath: 'RoomsData/4TH FLOOR/Room3', id: 'ROOM3' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room4', id: 'ROOM4' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room5', id: 'ROOM5' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room6', id: 'ROOM6' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room7', id: 'ROOM7' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room9', id: 'ROOM8' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room9', id: 'ROOM9' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room10', id: 'ROOM10' },
+{ dataPath: 'RoomsData/4TH FLOOR/Room11', id: 'ROOM11' },
+
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room12', id: 'ROOM12' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room13', id: 'ROOM13' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room14', id: 'ROOM14' },
+
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room15', id: 'ROOM15' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room16', id: 'ROOM16' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room17', id: 'ROOM17' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room18', id: 'ROOM18' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room19', id: 'ROOM19' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/Room20', id: 'ROOM20' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom1', id: 'ROOM21' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom2', id: 'ROOM22' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom3', id: 'ROOM23' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom4', id: 'ROOM24' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom5', id: 'ROOM25' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom6', id: 'ROOM26' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom7', id: 'ROOM27' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom8', id: 'ROOM28' },
+
+{ dataPath: 'RoomsData/4TH FLOOR/ExtraRoom9', id: 'ROOM29' },
+{ dataPath: 'RoomsData/4TH FLOOR/Room30', id: 'ROOM30' },  
+ { dataPath: 'RoomsData/4TH FLOOR/Room1', id: 'ROOM1' }
+            ] },
+            // Add more paths as needed
+        ];
+
+    document.getElementById("ROOM1").addEventListener("click", function() {
+            var text2 = document.getElementById("STAFFNAME1").innerText;
+            var buttonText = this.innerText;
+            window.location.href = "RoomUpdate.html?text2=" + text2 + "&buttonText=" + buttonText;
+        });
+
+        document.getElementById("ROOM2").addEventListener("click", function() {
+                      var text2 = document.getElementById("STAFFNAME1").innerText;
+            var buttonText = this.innerText;
+            window.location.href = "RoomUpdate.html?text2=" + text2 + "&buttonText=" + buttonText;
+        });
+
+        document.getElementById("ROOM3").addEventListener("click", function() {
+                       var text2 = document.getElementById("STAFFNAME1").innerText;
+            var buttonText = this.innerText;
+            window.location.href = "RoomUpdate.html?text2=" + text2 + "&buttonText=" + buttonText;
+        });
+
+
+
+        // Function to handle form submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the entered password
+            const password = document.getElementById('password').value;
+
+            // Loop through paths to check for a matching password
+            for (let i = 0; i < paths.length; i++) {
+                const { passwordPath, dataPaths } = paths[i];
+                // Reference to the password in Firebase database
+                const passwordRef = firebase.database().ref(passwordPath);
+
+                // Check if the entered password matches the stored password
+                passwordRef.once('value', function(snapshot) {
+                    const storedPassword = snapshot.val();
+                    if (password === storedPassword) {
+                        // Password matched, hide login container and show content container
+                        document.getElementById('loginContainer').style.display = 'none';
+                        document.getElementById('contentContainer').style.display = 'block';
+
+
+                        // Fetch text data from Firebase and update Text Views
+                        for (let j = 0; j < dataPaths.length; j++) {
+                            const { dataPath, id } = dataPaths[j];
+                            const textRef = firebase.database().ref(dataPath);
+                            textRef.once('value', (snapshot) => {
+                                const textData = snapshot.val();
+                                document.getElementById(id).textContent = textData;
+                            });
+                        }
+                        return; // Exit the loop if a match is found
+                    } else {
+                        // Password doesn't match, show error message
+                        document.getElementById('loginStatus').textContent = 'Incorrect password. Please try again.';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
