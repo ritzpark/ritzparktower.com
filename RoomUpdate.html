@@ -920,6 +920,156 @@ function constructFirebasePath() {
 
 
 
+// Function to fetch and display second text
+  function showText11() {
+    const path = constructFirebasePath();
+    const tsRef = firebase.database().ref(`${path}/Twin Bed Sheet Remove`);
+
+    tsRef.once('value')
+      .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RLTS').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+
+// Function to fetch and display second text
+  function showText12() {
+    const path = constructFirebasePath();
+    const tcRef = firebase.database().ref(`${path}/Twin Duvet Cover Remove`);
+
+    tcRef.once('value')
+     .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RLTC').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+// Function to fetch and display second text
+  function showText13() {
+    const path = constructFirebasePath();
+    const ksRef = firebase.database().ref(`${path}/King Bed Sheet Remove`);
+
+    ksRef.once('value')
+      .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RLKS').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+
+// Function to fetch and display second text
+  function showText14() {
+    const path = constructFirebasePath();
+    const kcRef = firebase.database().ref(`${path}/King Duvet Cover Remove`);
+
+    kcRef.once('value')
+      .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RLKC').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+// Function to fetch and display second text
+  function showText15() {
+    const path = constructFirebasePath();
+    const rpRef = firebase.database().ref(`${path}/Pillowcase Remove`);
+
+    rpRef.once('value')
+     .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RRLP').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+// Function to fetch and display second text
+  function showText16() {
+    const path = constructFirebasePath();
+    const rbtRef = firebase.database().ref(`${path}/Bath Towel Remove`);
+
+    rbtRef.once('value')
+      .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RRLBT').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+// Function to fetch and display second text
+  function showText17() {
+    const path = constructFirebasePath();
+    const rhtRef = firebase.database().ref(`${path}/Hand Towel Remove`);
+
+    rhtRef.once('value')
+      .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+
+        document.getElementById('RLHT').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+// Function to fetch and display second text
+  function showText18() {
+    const path = constructFirebasePath();
+    const rbmRef = firebase.database().ref(`${path}/Bath Mat Remove`);
+
+    rbmRef.once('value')
+       .then((snapshot) => {
+      let text = snapshot.val();
+      // Append '=' to the beginning of the text
+      text = '=' + text;
+        document.getElementById('RLBM').innerText = text;
+      })
+      .catch((error) => {
+        console.error('Error fetching second text:', error);
+      });
+  }
+
+
+
+
+
+
   // Call the functions to show text
   showText();
  
@@ -931,6 +1081,15 @@ function constructFirebasePath() {
  showText8();
  showText9();
  showText10();
+ showText11();
+ showText12();
+ showText13();
+ showText14();
+ showText15();
+ showText16();
+ showText17();
+ showText18();
+
 
 
 function updateDate() {
