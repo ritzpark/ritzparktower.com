@@ -562,60 +562,63 @@ h2 {
     </div>
 
     <!-- Firebase JavaScript SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-
   // Initialize Firebase
-       const firebaseConfig = {
-  apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
-  authDomain: "ritz-hk.firebaseapp.com",
-  databaseURL: "https://ritz-hk-default-rtdb.firebaseio.com",
-  projectId: "ritz-hk",
-  storageBucket: "ritz-hk.appspot.com",
-  messagingSenderId: "975572159061",
-  appId: "1:975572159061:web:f280915806e9820abd22dc",
-  measurementId: "G-Z6J3WDJQ4J"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
+    authDomain: "ritz-hk.firebaseapp.com",
+    databaseURL: "https://ritz-hk-default-rtdb.firebaseio.com",
+    projectId: "ritz-hk",
+    storageBucket: "ritz-hk.appspot.com",
+    messagingSenderId: "975572159061",
+    appId: "1:975572159061:web:f280915806e9820abd22dc",
+    measurementId: "G-Z6J3WDJQ4J"
+  };
 
+  firebase.initializeApp(firebaseConfig);
 
+  // Reference to your Firebase Realtime Database
+  const databaseRef = firebase.database().ref('DailyAttended');
 
-firebase.initializeApp(firebaseConfig);
-
-// Reference to your Firebase Realtime Database
-const databaseRef = firebase.database().ref('DailyAttended');
-
-// Function to handle form submission
-function handleSubmit() {
-    // Gather text from the STAFFNAME and DATE elements
-    const roomnumber = document.getElementById('ROOMNUMBER').innerText;
+  // Function to handle form submission
+  function handleSubmit() {
+    // Gather text from the STAFFNAME, ROOMNUMBER, and DATE elements
+    const staffName = document.getElementById('STAFFNAME').innerText;
+    const roomNumber = document.getElementById('ROOMNUMBER').innerText;
     const currentDate = document.getElementById('DATE').innerText;
-     const currentTime = new Date().toLocaleTimeString();
-    // Concatenate staffName and currentDate to create the key
-    const dataKey = `${roomnumber}-${currentDate}`;
+    const currentTime = new Date().toLocaleTimeString();
+
+    // Concatenate roomNumber and currentDate to create the key
+    const dataKey = `${roomNumber}-${currentDate}`;
 
     // Initialize an empty JavaScript object to store data
     const formData = {};
- const hoursInput = document.getElementById('hours');
+
+    // Add the staff name to the formData
+    formData['Staff Name'] = staffName;
+
+    const hoursInput = document.getElementById('hours');
     const minutesInput = document.getElementById('Minutes');
     const hours = hoursInput.value.trim();
     const minutes = minutesInput.value.trim();
-    
+
     if (hours === '' || minutes === '') {
-        // Highlight the empty inputs with red border
+        // Highlight the empty inputs with a red border
         if (hours === '') {
             hoursInput.style.border = '2px solid red';
         } else {
             hoursInput.style.border = 'none';
         }
-        
+
         if (minutes === '') {
             minutesInput.style.border = '2px solid red';
         } else {
             minutesInput.style.border = 'none';
         }
-        
+
         // Return to exit the function if inputs are empty
         return;
     }
@@ -638,23 +641,22 @@ function handleSubmit() {
     const handTowelRP = document.getElementById('inputText15').value;
     const bathMatRP = document.getElementById('inputText16').value;
 
-     
+    formData['Time Out'] = currentTime;
 
-formData['Time Out'] = currentTime;
-const now = new Date();
-const currentHours = now.getHours();
-const currentMinutes = now.getMinutes();
-const period = currentHours < 12 ? 'AM' : 'PM';
+    const now = new Date();
+    const currentHours = now.getHours();
+    const currentMinutes = now.getMinutes();
+    const period = currentHours < 12 ? 'AM' : 'PM';
 
-// Format the hours and minutes
-const formattedHours = hours.padStart(2, '0');
-const formattedMinutes = minutes.padStart(2, '0');
+    // Format the hours and minutes
+    const formattedHours = hours.padStart(2, '0');
+    const formattedMinutes = minutes.padStart(2, '0');
 
-// Construct the time string
-const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
+    // Construct the time string
+    const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
 
-// Store the time string in formData
-formData['Time In'] = timeString;
+    // Store the time string in formData
+    formData['Time In'] = timeString;
 
     // Check if input fields have been modified and add to formData
     if (twinSheetRM.trim() !== '') {
@@ -663,93 +665,83 @@ formData['Time In'] = timeString;
     if (twinCoverRM.trim() !== '') {
         formData['Twin Duvet Cover Remove'] = twinCoverRM;
     }
-if (kingSheetRM.trim() !== '') {
+    if (kingSheetRM.trim() !== '') {
         formData['King Bed Sheet Remove'] = kingSheetRM;
     }
     if (kingCoverRM.trim() !== '') {
-        formData['king Duvet Cover Remove'] = kingCoverRM;
+        formData['King Duvet Cover Remove'] = kingCoverRM;
     }
-if (pillowcaseRM.trim() !== '') {
+    if (pillowcaseRM.trim() !== '') {
         formData['Pillowcase Remove'] = pillowcaseRM;
     }
     if (bathTowelRM.trim() !== '') {
         formData['Bath Towel Remove'] = bathTowelRM;
     }
-if (handTowelRM.trim() !== '') {
+    if (handTowelRM.trim() !== '') {
         formData['Hand Towel Remove'] = handTowelRM;
     }
     if (bathMatRM.trim() !== '') {
         formData['Bath Mat Remove'] = bathMatRM;
     }
-if (twinSheetRP.trim() !== '') {
-        formData['Twin Bed Sheet Repalce'] = twinSheetRP;
+    if (twinSheetRP.trim() !== '') {
+        formData['Twin Bed Sheet Replace'] = twinSheetRP;
     }
     if (twinCoverRP.trim() !== '') {
-        formData['Twin Duvet Cover Repalce'] = twinCoverRP;
+        formData['Twin Duvet Cover Replace'] = twinCoverRP;
     }
-if (kingSheetRP.trim() !== '') {
-        formData['King Bed Sheet Repalce'] = kingSheetRP;
+    if (kingSheetRP.trim() !== '') {
+        formData['King Bed Sheet Replace'] = kingSheetRP;
     }
     if (kingCoverRP.trim() !== '') {
-        formData['King Duvet Cover Repalce'] = kingCoverRP;
+        formData['King Duvet Cover Replace'] = kingCoverRP;
     }
-if (pillowcaseRP.trim() !== '') {
-        formData['Pillowcase Repalce'] = pillowcaseRP;
+    if (pillowcaseRP.trim() !== '') {
+        formData['Pillowcase Replace'] = pillowcaseRP;
     }
     if (bathTowelRP.trim() !== '') {
-        formData['Bath Towel Repalce'] = bathTowelRP;
+        formData['Bath Towel Replace'] = bathTowelRP;
     }
-if (handTowelRP.trim() !== '') {
-        formData['Hand Towel Repalce'] = handTowelRP;
+    if (handTowelRP.trim() !== '') {
+        formData['Hand Towel Replace'] = handTowelRP;
     }
     if (bathMatRP.trim() !== '') {
-        formData['Bath Mat Repalce'] = bathMatRP;
+        formData['Bath Mat Replace'] = bathMatRP;
     }
 
-    // Add other fields as needed...
-
-
     // Push the data to your Firebase Realtime Database with the custom key
-    databaseRef.child(dataKey).update(formData) // Use update instead of set
+    databaseRef.child(dataKey).update(formData)
         .then(() => {
             console.log('Data submitted successfully');
-             if (confirm('Submit successful')) {
+            if (confirm('Submit successful')) {
                 // Redirect to Ritz_Hk.html
                 window.location.href = 'Ritz_Hk.html';
             }
         })
         .catch((error) => {
             console.error('Error submitting data:', error);
-            // Optionally, you can show an error message here
         });
-}
-function alertWithRedText(message) {
-    // Create a red text style
+  }
+
+  function alertWithRedText(message) {
     const redTextStyle = 'color: red;';
-
-    // Display the alert with red text
     alert('%c' + message, redTextStyle);
-}
-// Add event listener to the submit button
-document.getElementById('SUBMIT').addEventListener('click', handleSubmit);
+  }
 
-// Add event listener to the submit button
-document.getElementById('SUBMIT').addEventListener('click', handleSubmit);
+  // Add event listener to the submit button
+  document.getElementById('SUBMIT').addEventListener('click', handleSubmit);
 
+  // Get the query parameters from the URL
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
 
-        // Get the query parameters from the URL
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
+  const text2 = urlParams.get('text2');
+  const buttonText = urlParams.get('buttonText');
 
-        const text2 = urlParams.get('text2');
-        const buttonText = urlParams.get('buttonText');
+  // Set the values of the text views
+  document.getElementById("STAFFNAME").innerText = text2;
+  document.getElementById("ROOMNUMBER").innerText = buttonText;
 
-        // Set the values of the text views
-  
-        document.getElementById("STAFFNAME").innerText = text2;
-        document.getElementById("ROOMNUMBER").innerText = buttonText;
-
-function constructFirebasePath() {
+  function constructFirebasePath() {
     const roomNumber = document.getElementById('ROOMNUMBER').innerText;
     return `/LastAttended/${roomNumber}`;
   }
@@ -761,7 +753,6 @@ function constructFirebasePath() {
     dateRef.once('value')
       .then((snapshot) => {
         const text = snapshot.val();
-        // Update the text view with the fetched text
         document.getElementById('DATE1').innerText = text;
       })
       .catch((error) => {
@@ -769,17 +760,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText3() {
     const path = constructFirebasePath();
     const tspRef = firebase.database().ref(`${path}/Twin Bed Sheet Replace`);
 
     tspRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RTS').innerText = text;
       })
       .catch((error) => {
@@ -787,18 +775,14 @@ function constructFirebasePath() {
       });
   }
 
-
-// Function to fetch and display second text
   function showText4() {
     const path = constructFirebasePath();
     const tcpRef = firebase.database().ref(`${path}/Twin Duvet Cover Replace`);
 
     tcpRef.once('value')
-     .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RTC').innerText = text;
       })
       .catch((error) => {
@@ -806,17 +790,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText5() {
     const path = constructFirebasePath();
     const kspRef = firebase.database().ref(`${path}/King Bed Sheet Replace`);
 
     kspRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RKS').innerText = text;
       })
       .catch((error) => {
@@ -824,18 +805,14 @@ function constructFirebasePath() {
       });
   }
 
-
-// Function to fetch and display second text
   function showText6() {
     const path = constructFirebasePath();
     const kcpRef = firebase.database().ref(`${path}/King Duvet Cover Replace`);
 
     kcpRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RKC').innerText = text;
       })
       .catch((error) => {
@@ -843,17 +820,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText7() {
     const path = constructFirebasePath();
-    const rpRef = firebase.database().ref(`${path}/Pillowcase Replace`);
+    const psRef = firebase.database().ref(`${path}/Pillowcase Replace`);
 
-    rpRef.once('value')
-     .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+    psRef.once('value')
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RP').innerText = text;
       })
       .catch((error) => {
@@ -861,17 +835,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText8() {
     const path = constructFirebasePath();
-    const rbtRef = firebase.database().ref(`${path}/Bath Towel Replace`);
+    const btRef = firebase.database().ref(`${path}/Bath Towel Replace`);
 
-    rbtRef.once('value')
+    btRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RBT').innerText = text;
       })
       .catch((error) => {
@@ -879,17 +850,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText9() {
     const path = constructFirebasePath();
-    const rhtRef = firebase.database().ref(`${path}/Hand Towel Replace`);
+    const htRef = firebase.database().ref(`${path}/Hand Towel Replace`);
 
-    rhtRef.once('value')
+    htRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RHT').innerText = text;
       })
       .catch((error) => {
@@ -897,16 +865,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText10() {
     const path = constructFirebasePath();
-    const rbmRef = firebase.database().ref(`${path}/Bath Mat Replace`);
+    const bmRef = firebase.database().ref(`${path}/Bath Mat Replace`);
 
-    rbmRef.once('value')
-       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
+    bmRef.once('value')
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RBM').innerText = text;
       })
       .catch((error) => {
@@ -914,23 +880,14 @@ function constructFirebasePath() {
       });
   }
 
-
-
-
-
-
-
-// Function to fetch and display second text
   function showText11() {
     const path = constructFirebasePath();
-    const tsRef = firebase.database().ref(`${path}/Twin Bed Sheet Remove`);
+    const tlsRef = firebase.database().ref(`${path}/Twin Bed Sheet Remove`);
 
-    tsRef.once('value')
+    tlsRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLTS').innerText = text;
       })
       .catch((error) => {
@@ -938,18 +895,14 @@ function constructFirebasePath() {
       });
   }
 
-
-// Function to fetch and display second text
   function showText12() {
     const path = constructFirebasePath();
-    const tcRef = firebase.database().ref(`${path}/Twin Duvet Cover Remove`);
+    const tlcRef = firebase.database().ref(`${path}/Twin Duvet Cover Remove`);
 
-    tcRef.once('value')
-     .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+    tlcRef.once('value')
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLTC').innerText = text;
       })
       .catch((error) => {
@@ -957,17 +910,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText13() {
     const path = constructFirebasePath();
-    const ksRef = firebase.database().ref(`${path}/King Bed Sheet Remove`);
+    const klsRef = firebase.database().ref(`${path}/King Bed Sheet Remove`);
 
-    ksRef.once('value')
+    klsRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLKS').innerText = text;
       })
       .catch((error) => {
@@ -975,18 +925,14 @@ function constructFirebasePath() {
       });
   }
 
-
-// Function to fetch and display second text
   function showText14() {
     const path = constructFirebasePath();
-    const kcRef = firebase.database().ref(`${path}/King Duvet Cover Remove`);
+    const klcRef = firebase.database().ref(`${path}/King Duvet Cover Remove`);
 
-    kcRef.once('value')
+    klcRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLKC').innerText = text;
       })
       .catch((error) => {
@@ -994,17 +940,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText15() {
     const path = constructFirebasePath();
-    const rpRef = firebase.database().ref(`${path}/Pillowcase Remove`);
+    const plsRef = firebase.database().ref(`${path}/Pillowcase Remove`);
 
-    rpRef.once('value')
-     .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+    plsRef.once('value')
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RRLP').innerText = text;
       })
       .catch((error) => {
@@ -1012,17 +955,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText16() {
     const path = constructFirebasePath();
-    const rbtRef = firebase.database().ref(`${path}/Bath Towel Remove`);
+    const btRef = firebase.database().ref(`${path}/Bath Towel Remove`);
 
-    rbtRef.once('value')
+    btRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RRLBT').innerText = text;
       })
       .catch((error) => {
@@ -1030,17 +970,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText17() {
     const path = constructFirebasePath();
-    const rhtRef = firebase.database().ref(`${path}/Hand Towel Remove`);
+    const htRef = firebase.database().ref(`${path}/Hand Towel Remove`);
 
-    rhtRef.once('value')
+    htRef.once('value')
       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
-
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLHT').innerText = text;
       })
       .catch((error) => {
@@ -1048,16 +985,14 @@ function constructFirebasePath() {
       });
   }
 
-// Function to fetch and display second text
   function showText18() {
     const path = constructFirebasePath();
-    const rbmRef = firebase.database().ref(`${path}/Bath Mat Remove`);
+    const bmRef = firebase.database().ref(`${path}/Bath Mat Remove`);
 
-    rbmRef.once('value')
-       .then((snapshot) => {
-      let text = snapshot.val();
-      // Append '=' to the beginning of the text
-      text = '=' + text;
+    bmRef.once('value')
+      .then((snapshot) => {
+        let text = snapshot.val();
+        text = '=' + text;
         document.getElementById('RLBM').innerText = text;
       })
       .catch((error) => {
@@ -1065,45 +1000,39 @@ function constructFirebasePath() {
       });
   }
 
-
-
-
-
-
-  // Call the functions to show text
   showText();
- 
- showText3();
- showText4();
- showText5();
- showText6();
- showText7();
- showText8();
- showText9();
- showText10();
- showText11();
- showText12();
- showText13();
- showText14();
- showText15();
- showText16();
- showText17();
- showText18();
+  showText3();
+  showText4();
+  showText5();
+  showText6();
+  showText7();
+  showText8();
+  showText9();
+  showText10();
+  showText11();
+  showText12();
+  showText13();
+  showText14();
+  showText15();
+  showText16();
+  showText17();
+  showText18();
 
+  function updateDate() {
+    const date = new Date();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const formattedDate = `${month}-${day}-${year}`;
+    document.getElementById('DATE').textContent = formattedDate;
+  }
 
+  // Update the date initially and every second
+  updateDate();
+  setInterval(updateDate, 1000);
 
-function updateDate() {
-        var date = new Date();
-        var formattedDate = (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0') + '-' + date.getFullYear();
-        document.getElementById('DATE').textContent = formattedDate;
-    }
+</script>
 
-    // Update the date initially
-    updateDate();
-
-    // Update the date every second (optional)
-    setInterval(updateDate, 1000);
-    </script>
 
 </body>
 </html>
