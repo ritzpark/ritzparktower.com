@@ -225,7 +225,9 @@ margin-bottom: 5px;
   measurementId: "G-Z6J3WDJQ4J"
 };
 
-        firebase.initializeApp(firebaseConfig);
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
 
         // Define password and data paths
         const paths = [
@@ -1272,51 +1274,94 @@ document.getElementById("ROOM28").addEventListener("click", function() {
 
 
 
+       
 
 
+// Function to handle form submission
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
+    // Get the entered password
+    const password = document.getElementById('password').value;
 
+    // Loop through paths to check for a matching password
+    for (let i = 0; i < paths.length; i++) {
+        const { passwordPath, dataPaths } = paths[i];
+        // Reference to the password in Firebase database
+        const passwordRef = firebase.database().ref(passwordPath);
 
+        // Check if the entered password matches the stored password
+        passwordRef.once('value', function(snapshot) {
+            const storedPassword = snapshot.val();
+            if (password === storedPassword) {
+                // Password matched, hide login container and show content container
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('contentContainer').style.display = 'block';
 
-        // Function to handle form submission
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get the entered password
-            const password = document.getElementById('password').value;
-
-            // Loop through paths to check for a matching password
-            for (let i = 0; i < paths.length; i++) {
-                const { passwordPath, dataPaths } = paths[i];
-                // Reference to the password in Firebase database
-                const passwordRef = firebase.database().ref(passwordPath);
-
-                // Check if the entered password matches the stored password
-                passwordRef.once('value', function(snapshot) {
-                    const storedPassword = snapshot.val();
-                    if (password === storedPassword) {
-                        // Password matched, hide login container and show content container
-                        document.getElementById('loginContainer').style.display = 'none';
-                        document.getElementById('contentContainer').style.display = 'block';
-
-
-                        // Fetch text data from Firebase and update Text Views
-                        for (let j = 0; j < dataPaths.length; j++) {
-                            const { dataPath, id } = dataPaths[j];
-                            const textRef = firebase.database().ref(dataPath);
-                            textRef.once('value', (snapshot) => {
-                                const textData = snapshot.val();
-                                document.getElementById(id).textContent = textData;
-                            });
-                        }
-                        return; // Exit the loop if a match is found
-                    } else {
-                        // Password doesn't match, show error message
-                        document.getElementById('loginStatus').textContent = 'Incorrect password. Please try again.';
-                    }
-                });
+                // Fetch text data from Firebase and update Text Views
+                for (let j = 0; j < dataPaths.length; j++) {
+                    const { dataPath, id } = dataPaths[j];
+                    const textRef = firebase.database().ref(dataPath);
+                    textRef.once('value', (snapshot) => {
+                        const textData = snapshot.val();
+                        document.getElementById(id).textContent = textData;
+                    });
+                }
+                return; // Exit the loop if a match is found
+            } else {
+                // Password doesn't match, show error message
+                document.getElementById('loginStatus').textContent = 'Incorrect password. Please try again.';
             }
         });
-    </script>
+    }
+});
+
+// Function to check the path and update button color
+function checkPathAndUpdateButton(buttonId) {
+    const button = document.getElementById(buttonId);
+    const buttonText = button.textContent;
+
+    // Sanitize button text to remove invalid characters for Firebase paths
+    const sanitizedButtonText = buttonText.replace(/[.#$\[\]]/g, '');
+
+    // Get today's date and format it
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = today.getFullYear();
+
+    // Use the sanitized button text to construct the formatted date
+    const formattedDate = `${sanitizedButtonText}-${month}-${day}-${year}`;
+    const checkPath = `/DailyAttended/${formattedDate}`;
+const colorCode = '#00FF00'; // Green color code
+    // Check if the key exists
+    database.ref(checkPath).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+             button.style.backgroundColor = colorCode
+        } else {
+            console.log(`No data available at the specified path: ${checkPath}`);
+        }
+    }).catch((error) => {
+        console.error('Error checking path:', error);
+    });
+}
+
+// Function to initialize all buttons
+function initializeButtons() {
+    const buttons = document.getElementsByClassName('button');
+    for (let button of buttons) {
+        checkPathAndUpdateButton(button.id);
+    }
+}
+
+// Interval in milliseconds (e.g., 60000 ms = 1 minute)
+const interval = 10000;
+
+document.addEventListener('DOMContentLoaded', () => {
+    setInterval(() => {
+        initializeButtons();
+    }, interval);
+});
+</script>
 </body>
 </html>
