@@ -443,7 +443,7 @@ h2 {
 <div id="Container1" class="container">
     <!-- First Inner Container (Left Side) -->
     <div id="InnerContainer1" class="inner-container">
-<div class="text-view" id="ROOMNUMBER">Loading</div>
+<div class="text-view" id="ROOMNUMBER">2001</div>
 
         <h2>  Name</h2>
         <div class="text-view" id="NAMEitems">Twin Sheet</div>
@@ -1026,6 +1026,272 @@ h2 {
     const formattedDate = `${month}-${day}-${year}`;
     document.getElementById('DATE').textContent = formattedDate;
   }
+
+
+    // Function to get the current date in the format 'dd-mm-yyyy'
+    function getCurrentDate() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so add 1
+      const year = today.getFullYear();
+
+      return `${month}-${day}-${year}`; // Return date in 'dd-mm-yyyy' format
+    }
+
+    // Function to get the dynamic Firebase path based on the TextView value, date, and sub-path
+    function getFirebasePath(subPath) {
+      const pathValue = document.getElementById('ROOMNUMBER').innerText;
+      const currentDate = getCurrentDate();  // Get today's date in 'dd-mm-yyyy' format
+      return `/DailyAttended/${pathValue}-${currentDate}/${subPath}`;  // Construct the dynamic path: 'data/3003-dd-mm-yyyy/subPath'
+    }
+
+    // Function to fetch data from the dynamic Firebase Realtime Database path
+     function fetchData() {
+      // Fetch data for /towel path
+      const  twinBedSheetRemovePath = getFirebasePath('Twin Bed Sheet Remove');  // Get the dynamic path for /towel
+      const  twinBedSheetRemoveRef = firebase.database().ref(twinBedSheetRemovePath);  // Use the dynamic path
+
+       twinBedSheetRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText9').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText9').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+      // Fetch data for /towelRP path
+      const twinDuvetCoverRemovePath = getFirebasePath('Twin Duvet Cover Remove');  // Get the dynamic path for /towelRP
+      const twinDuvetCoverRemoveRef = firebase.database().ref(twinDuvetCoverRemovePath);  // Use the dynamic path
+
+     twinDuvetCoverRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText10').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText10').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+
+      // Fetch data for /towelRP path
+      const kingBedSheetRemovePath = getFirebasePath('King Bed Sheet Remove');  // Get the dynamic path for /towelRP
+      const kingBedSheetRemoveRef = firebase.database().ref(kingBedSheetRemovePath);  // Use the dynamic path
+
+     kingBedSheetRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText11').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText11').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+ // Fetch data for /towelRP path
+      const kingDuvetCoverRemovePath = getFirebasePath('King Duvet Cover Remove');  // Get the dynamic path for /towelRP
+      const kingDuvetCoverRemoveRef = firebase.database().ref(kingDuvetCoverRemovePath);  // Use the dynamic path
+
+     kingDuvetCoverRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText12').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText12').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const pillowcaseRemovePath = getFirebasePath('Pillowcase Remove');  // Get the dynamic path for /towelRP
+      const pillowcaseRemoveRef = firebase.database().ref(pillowcaseRemovePath);  // Use the dynamic path
+
+     pillowcaseRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText13').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText13').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+// Fetch data for /towelRP path
+      const bathTowelRemovePath = getFirebasePath('Bath Towel Remove');  // Get the dynamic path for /towelRP
+      const bathTowelRemoveRef = firebase.database().ref(bathTowelRemovePath);  // Use the dynamic path
+
+     bathTowelRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText14').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText14').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const handTowelRemovePath = getFirebasePath('Hand Towel Remove');  // Get the dynamic path for /towelRP
+      const handTowelRemoveRef = firebase.database().ref(handTowelRemovePath);  // Use the dynamic path
+
+     handTowelRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText15').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText15').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const matRemovePath = getFirebasePath('Bath Mat Remove');  // Get the dynamic path for /towelRP
+      const matRemoveRef = firebase.database().ref(matRemovePath);  // Use the dynamic path
+
+     matRemoveRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText16').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText16').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+
+      // Fetch data for /towel path
+      const  winBedSheetReplacePath = getFirebasePath('Twin Bed Sheet Replace');  // Get the dynamic path for /towel
+      const  winBedSheetReplaceRef = firebase.database().ref(winBedSheetReplacePath);  // Use the dynamic path
+
+       winBedSheetReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText1').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText1').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+      // Fetch data for /towelRP path
+      const tinDuvetCoverReplacePath = getFirebasePath('Twin Duvet Cover Replace');  // Get the dynamic path for /towelRP
+      const tinDuvetCoverReplaceRef = firebase.database().ref(tinDuvetCoverReplacePath);  // Use the dynamic path
+
+     tinDuvetCoverReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText2').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText2').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+
+      // Fetch data for /towelRP path
+      const ingBedSheetReplacePath = getFirebasePath('King Bed Sheet Replace');  // Get the dynamic path for /towelRP
+      const ingBedSheetReplaceRef = firebase.database().ref(ingBedSheetReplacePath);  // Use the dynamic path
+
+     ingBedSheetReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText3').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText3').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+ // Fetch data for /towelRP path
+      const kngDuvetCoverReplacePath = getFirebasePath('King Duvet Cover Replace');  // Get the dynamic path for /towelRP
+      const kngDuvetCoverReplaceRef = firebase.database().ref(kngDuvetCoverReplacePath);  // Use the dynamic path
+
+     kngDuvetCoverReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText4').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText4').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const illowcaseReplacePath = getFirebasePath('Pillowcase Replace');  // Get the dynamic path for /towelRP
+      const illowcaseReplaceRef = firebase.database().ref(illowcaseReplacePath);  // Use the dynamic path
+
+     illowcaseReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText5').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText5').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+// Fetch data for /towelRP path
+      const athTowelReplacePath = getFirebasePath('Bath Towel Replace');  // Get the dynamic path for /towelRP
+      const athTowelReplaceRef = firebase.database().ref(athTowelReplacePath);  // Use the dynamic path
+
+     athTowelReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText6').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText6').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const andTowelReplacePath = getFirebasePath('Hand Towel Replace');  // Get the dynamic path for /towelRP
+      const andTowelReplaceRef = firebase.database().ref(andTowelReplacePath);  // Use the dynamic path
+
+     andTowelReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText7').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText7').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+ // Fetch data for /towelRP path
+      const aathMatReplacePath = getFirebasePath('Bath Mat Replace');  // Get the dynamic path for /towelRP
+      const aathMatReplaceRef = firebase.database().ref(aathMatReplacePath);  // Use the dynamic path
+
+     aathMatReplaceRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          document.getElementById('inputText8').setAttribute('placeholder', data);  // Set the placeholder if data is not null
+        } else {
+          document.getElementById('inputText8').setAttribute('placeholder', 'Type here');  // Handle empty data
+        }
+      }, (error) => {
+        console.error('Error', error);
+      });
+
+     }
+// Fetch data every 5 seconds
+    setInterval(fetchData, 5000);
+
+    // Initial data fetch on page load
+    fetchData();
 
   // Update the date initially and every second
   updateDate();
