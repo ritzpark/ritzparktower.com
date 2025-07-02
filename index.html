@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Smart Motion & Human Detection</title>
+  <title>Human Detection</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <style>
     body {
       background: #111;
@@ -53,7 +50,7 @@
   </style>
 </head>
 <body>
-  <h2>Motion + Human Detection</h2>
+  <h2>Human Detection</h2>
   <button onclick="switchCamera()">🔄 Switch Camera</button>
   <div class="video-container">
     <video id="video" autoplay muted playsinline></video>
@@ -61,9 +58,8 @@
   </div>
   <div id="status">Initializing...</div>
   <div class="tag" id="tagLabel">—</div>
-
   <script>
-    // Firebase config (replace with your own!)
+    // FIREBASE
     const firebaseConfig = {
   apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
   authDomain: "motionsoul-11477.firebaseapp.com",
@@ -74,10 +70,8 @@
   appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
   measurementId: "G-11L9N0R0HY"
 };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
     const storage = firebase.storage();
 
     const video = document.getElementById("video");
@@ -88,16 +82,11 @@
 
     let model = null;
     let currentFacing = "environment";
-    let lastGray = null;
-    let motionCooldown = 0;
+    let stream = null;
     let lastSnapTime = 0;
     let detectLoopRunning = false;
-    let stream = null;
 
-    const MOTION_THRESHOLD = 50;
-    const MOTION_AREA_THRESHOLD = 2500;
-    const COOLDOWN_FRAMES = 20;
-    const SNAP_INTERVAL_MS = 15000;
+    const SNAP_INTERVAL_MS = 1000; // 1 second
     const MODEL_THROTTLE_MS = 500;
     let lastModelRun = 0;
 
@@ -126,57 +115,15 @@
       });
     }
 
-    function getGrayscale(frame) {
-      const gray = new Uint8ClampedArray(frame.width * frame.height);
-      const data = frame.data;
-      for (let i = 0; i < data.length; i += 4) {
-        gray[i / 4] = (data[i] + data[i + 1] + data[i + 2]) / 3;
-      }
-      return gray;
-    }
-
     async function detectLoop() {
       if (!detectLoopRunning || !model) return;
-
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const gray = getGrayscale(frame);
 
-      let motionPixels = 0;
-      if (lastGray) {
-        for (let i = 0; i < gray.length; i++) {
-          if (Math.abs(gray[i] - lastGray[i]) > MOTION_THRESHOLD) {
-            motionPixels++;
-          }
-        }
-      }
-
-      let motionDetected = false;
-      if (motionPixels > MOTION_AREA_THRESHOLD) {
-        motionDetected = true;
-        motionCooldown = COOLDOWN_FRAMES;
-      } else if (motionCooldown > 0) {
-        motionDetected = true;
-        motionCooldown--;
-      }
-
-      if (motionDetected) {
-        statusText.textContent = "🔔 Motion detected!";
-        statusText.style.color = "orange";
-        await detectHumanAndSnap();
-      } else {
-        statusText.textContent = "No motion";
-        statusText.style.color = "lightgreen";
-        tagLabel.textContent = "—";
-      }
-
-      lastGray = gray;
-      requestAnimationFrame(detectLoop);
-    }
-
-    async function detectHumanAndSnap() {
       const now = Date.now();
-      if (now - lastModelRun < MODEL_THROTTLE_MS) return;
+      if (now - lastModelRun < MODEL_THROTTLE_MS) {
+        requestAnimationFrame(detectLoop);
+        return;
+      }
       lastModelRun = now;
 
       const predictions = await model.detect(video);
@@ -187,70 +134,58 @@
           humanDetected = true;
           tagLabel.textContent = "👤 Human detected";
           ctx.strokeStyle = "yellow";
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 4;
           ctx.strokeRect(p.bbox[0], p.bbox[1], p.bbox[2], p.bbox[3]);
+          ctx.font = "20px sans-serif";
+          ctx.fillStyle = "yellow";
+          ctx.fillText(
+            `${p.class} ${(p.score * 100).toFixed(1)}%`,
+            p.bbox[0],
+            p.bbox[1] > 20 ? p.bbox[1] - 5 : 20
+          );
 
           if (now - lastSnapTime >= SNAP_INTERVAL_MS) {
-            await uploadSnapshotToFirebase("Human");
+            saveSnapshotAndUpload();
             lastSnapTime = now;
           }
-          break;
+          break; // just one person enough
         }
       }
+
       if (!humanDetected) {
         tagLabel.textContent = "—";
       }
+
+      requestAnimationFrame(detectLoop);
     }
 
-    async function uploadSnapshotToFirebase(label) {
-      try {
-        // Create snapshot canvas
-        const snapCanvas = document.createElement("canvas");
-        snapCanvas.width = 1080;
-        snapCanvas.height = 1280;
-        const snapCtx = snapCanvas.getContext("2d");
-        snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
-
-        // Convert to blob for upload
-        const blob = await new Promise(resolve => snapCanvas.toBlob(resolve, "image/jpeg", 0.8));
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-        const filename = `${timestamp}_${label}.jpg`;
-
-        // Upload to Firebase Storage
-        const storageRef = storage.ref().child(`snapshots/${filename}`);
-        await storageRef.put(blob);
-
-        console.log("Uploaded snapshot to Firebase Storage:", filename);
-      } catch (err) {
-        console.warn("Upload failed, saving locally:", err);
-        saveSnapshotLocally(label);
-      }
-    }
-
-    function saveSnapshotLocally(label) {
+    function saveSnapshotAndUpload() {
       const snapCanvas = document.createElement("canvas");
       snapCanvas.width = 1080;
       snapCanvas.height = 1280;
       const snapCtx = snapCanvas.getContext("2d");
       snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const link = document.createElement("a");
-      link.download = `${timestamp}_${label}.jpg`;
-      link.href = snapCanvas.toDataURL("image/jpeg");
-      link.click();
+      snapCanvas.toBlob(async blob => {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const ref = storage.ref(`snapshots/${timestamp}.jpg`);
+        try {
+          await ref.put(blob);
+          console.log("Uploaded to Firebase");
+        } catch (e) {
+          console.warn("Upload failed, saving locally", e);
+          const link = document.createElement("a");
+          link.download = `${timestamp}_Human.jpg`;
+          link.href = snapCanvas.toDataURL("image/jpeg");
+          link.click();
+        }
+      }, "image/jpeg");
     }
 
     async function switchCamera() {
       currentFacing = currentFacing === "user" ? "environment" : "user";
-
       detectLoopRunning = false;
       statusText.textContent = "Switching camera...";
-
       await startCamera(currentFacing);
-
-      lastGray = null;
-      statusText.textContent = "Ready";
-
       detectLoopRunning = true;
       requestAnimationFrame(detectLoop);
     }
@@ -261,15 +196,13 @@
       try {
         model = await cocoSsd.load();
         statusText.textContent = "Ready";
-
-        // Auto-set Firebase Realtime DB /system = 1 on first load
-        database.ref("system").set(1)
-          .then(() => console.log("System value set to 1"))
-          .catch(err => console.error("Failed to set system value:", err));
       } catch (e) {
-        console.error("Model load failed", e);
+        console.error(e);
         statusText.textContent = "Model load failed";
+        return;
       }
+      // first time autoset
+      db.ref("system").set(1);
       detectLoopRunning = true;
       requestAnimationFrame(detectLoop);
     }
