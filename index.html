@@ -13,53 +13,36 @@
     body {
       background: #111;
       color: white;
-      font-family: sans-serif;
       text-align: center;
       margin: 0;
       padding: 10px;
-      overflow-x: hidden;
-    }
-    .video-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
+      font-family: sans-serif;
     }
     video, canvas {
-      width: 1080px;
-      height: 1280px;
-      background: black;
+      width: 100%;
+      max-width: 640px;
       border: 2px solid #333;
-      object-fit: cover;
+      margin-top: 10px;
     }
     #status {
       margin-top: 10px;
       font-size: 1.2em;
     }
-    .tag {
-      font-size: 1.1em;
-      margin-top: 6px;
-      color: yellow;
-    }
     button {
+      margin-top: 10px;
       padding: 8px 16px;
       font-size: 1em;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <h2>Human Detection</h2>
   <button onclick="switchCamera()">🔄 Switch Camera</button>
-  <div class="video-container">
-    <video id="video" autoplay muted playsinline></video>
-    <canvas id="canvas" width="1080" height="1280"></canvas>
-  </div>
+  <video id="video" autoplay muted playsinline></video>
+  <canvas id="canvas"></canvas>
   <div id="status">Initializing...</div>
-  <div class="tag" id="tagLabel">—</div>
+
   <script>
-    // FIREBASE
     const firebaseConfig = {
   apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
   authDomain: "motionsoul-11477.firebaseapp.com",
@@ -70,6 +53,7 @@
   appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
   measurementId: "G-11L9N0R0HY"
 };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
@@ -78,36 +62,28 @@
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const statusText = document.getElementById("status");
-    const tagLabel = document.getElementById("tagLabel");
 
-    let model = null;
-    let currentFacing = "environment";
+    let model;
+    let systemEnabled = true;
     let stream = null;
-    let lastSnapTime = 0;
-    let detectLoopRunning = false;
-
-    const SNAP_INTERVAL_MS = 1000; // 1 second
-    const MODEL_THROTTLE_MS = 500;
-    let lastModelRun = 0;
+    let currentFacing = "environment";
 
     async function startCamera(facingMode = "environment") {
       if (stream) stream.getTracks().forEach(track => track.stop());
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: {
-            width: { ideal: 1080 },
-            height: { ideal: 1280 },
             facingMode: { exact: facingMode }
           }
         });
       } catch (err) {
         console.warn("Fallback to default camera");
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 1080, height: 1280 }
+          video: true
         });
       }
       video.srcObject = stream;
-      return new Promise(resolve => {
+      await new Promise(resolve => {
         video.onloadedmetadata = () => {
           video.play();
           resolve();
@@ -116,95 +92,77 @@
     }
 
     async function detectLoop() {
-      if (!detectLoopRunning || !model) return;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const now = Date.now();
-      if (now - lastModelRun < MODEL_THROTTLE_MS) {
+      if (!model || !systemEnabled) {
         requestAnimationFrame(detectLoop);
         return;
       }
-      lastModelRun = now;
 
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const predictions = await model.detect(video);
-      let humanDetected = false;
 
-      for (const p of predictions) {
-        if (p.class === "person" && p.score > 0.6) {
-          humanDetected = true;
-          tagLabel.textContent = "👤 Human detected";
-          ctx.strokeStyle = "yellow";
-          ctx.lineWidth = 4;
-          ctx.strokeRect(p.bbox[0], p.bbox[1], p.bbox[2], p.bbox[3]);
-          ctx.font = "20px sans-serif";
-          ctx.fillStyle = "yellow";
-          ctx.fillText(
-            `${p.class} ${(p.score * 100).toFixed(1)}%`,
-            p.bbox[0],
-            p.bbox[1] > 20 ? p.bbox[1] - 5 : 20
-          );
+      let found = predictions.some(p => p.class === "person" && p.score > 0.6);
 
-          if (now - lastSnapTime >= SNAP_INTERVAL_MS) {
-            saveSnapshotAndUpload();
-            lastSnapTime = now;
-          }
-          break; // just one person enough
-        }
-      }
-
-      if (!humanDetected) {
-        tagLabel.textContent = "—";
+      if (found) {
+        statusText.textContent = "👤 Human detected!";
+        statusText.style.color = "orange";
+        handleSnapshot();
+      } else {
+        statusText.textContent = "No human";
+        statusText.style.color = "lightgreen";
       }
 
       requestAnimationFrame(detectLoop);
     }
 
-    function saveSnapshotAndUpload() {
-      const snapCanvas = document.createElement("canvas");
-      snapCanvas.width = 1080;
-      snapCanvas.height = 1280;
-      const snapCtx = snapCanvas.getContext("2d");
-      snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
-      snapCanvas.toBlob(async blob => {
+    async function handleSnapshot() {
+      try {
+        const snapCanvas = document.createElement("canvas");
+        snapCanvas.width = video.videoWidth;
+        snapCanvas.height = video.videoHeight;
+        snapCanvas.getContext("2d").drawImage(video, 0, 0);
+        const blob = await new Promise(resolve => snapCanvas.toBlob(resolve, "image/jpeg", 0.8));
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-        const ref = storage.ref(`snapshots/${timestamp}.jpg`);
-        try {
-          await ref.put(blob);
-          console.log("Uploaded to Firebase");
-        } catch (e) {
-          console.warn("Upload failed, saving locally", e);
-          const link = document.createElement("a");
-          link.download = `${timestamp}_Human.jpg`;
-          link.href = snapCanvas.toDataURL("image/jpeg");
-          link.click();
-        }
-      }, "image/jpeg");
+        const ref = storage.ref(`detections/${timestamp}.jpg`);
+        await ref.put(blob);
+        console.log("Uploaded to Firebase Storage");
+      } catch (e) {
+        console.warn("Upload failed, saving to phone", e);
+        const link = document.createElement("a");
+        link.download = `human_${Date.now()}.jpg`;
+        link.href = snapCanvas.toDataURL("image/jpeg");
+        link.click();
+      }
     }
 
     async function switchCamera() {
       currentFacing = currentFacing === "user" ? "environment" : "user";
-      detectLoopRunning = false;
       statusText.textContent = "Switching camera...";
       await startCamera(currentFacing);
-      detectLoopRunning = true;
-      requestAnimationFrame(detectLoop);
     }
 
     async function init() {
+      statusText.textContent = "Starting camera...";
       await startCamera(currentFacing);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // set system = 1 on first load
+      db.ref("system").set(1);
+
+      db.ref("system").on("value", snapshot => {
+        systemEnabled = snapshot.val() === 1;
+        console.log("system mode:", systemEnabled ? "enabled" : "disabled");
+      });
+
       statusText.textContent = "Loading model...";
       try {
         model = await cocoSsd.load();
         statusText.textContent = "Ready";
+        requestAnimationFrame(detectLoop);
       } catch (e) {
         console.error(e);
         statusText.textContent = "Model load failed";
-        return;
       }
-      // first time autoset
-      db.ref("system").set(1);
-      detectLoopRunning = true;
-      requestAnimationFrame(detectLoop);
     }
 
     init();
