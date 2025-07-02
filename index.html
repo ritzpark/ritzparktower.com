@@ -6,6 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage-compat.js"></script>
   <style>
     body {
       background: #111;
@@ -16,7 +19,6 @@
       padding: 10px;
       overflow-x: hidden;
     }
-
     .video-container {
       display: flex;
       flex-direction: column;
@@ -24,49 +26,36 @@
       gap: 10px;
       margin-top: 10px;
     }
-
     video, canvas {
       width: 360px;
-      height: 640px;
+      height: 480px;
       background: black;
       border: 2px solid #333;
       object-fit: cover;
-      transform: rotate(0deg); /* stays horizontal on mobile */
     }
-
     #status {
       margin-top: 10px;
       font-size: 1.2em;
     }
-
     .tag {
       font-size: 1.1em;
       margin-top: 6px;
       color: yellow;
     }
-
     button {
       padding: 8px 16px;
       font-size: 1em;
       margin-top: 10px;
-    }
-
-    @media (orientation: portrait) {
-      video, canvas {
-        transform: rotate(0deg); /* You can also force -90deg if needed */
-      }
     }
   </style>
 </head>
 <body>
   <h2>Motion + Human Detection</h2>
   <button onclick="switchCamera()">🔄 Switch Camera</button>
-
   <div class="video-container">
     <video id="video" autoplay muted playsinline></video>
-    <canvas id="canvas" width="360" height="640"></canvas>
+    <canvas id="canvas" width="360" height="480"></canvas>
   </div>
-
   <div id="status">Initializing...</div>
   <div class="tag" id="tagLabel">—</div>
 
@@ -89,26 +78,54 @@
     const MOTION_AREA_THRESHOLD = 2500;
     const COOLDOWN_FRAMES = 20;
     const SNAP_INTERVAL_MS = 15000;
+    const MODEL_THROTTLE_MS = 500;
+    let lastModelRun = 0;
+
+    // --- Firebase Setup ---
+    const firebaseConfig = {
+  apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
+  authDomain: "motionsoul-11477.firebaseapp.com",
+  databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
+  projectId: "motionsoul-11477",
+  storageBucket: "motionsoul-11477.appspot.com",
+  messagingSenderId: "413864739170",
+  appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
+  measurementId: "G-11L9N0R0HY"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    // initialize system value to 1 on first run
+    db.ref("system").set(1);
+
+    let systemActive = true;
+
+    const systemRef = db.ref("system");
+    systemRef.on("value", snapshot => {
+      const val = snapshot.val();
+      systemActive = val === 1;
+      console.log("System status:", systemActive ? "active" : "paused");
+    });
+
+    // --------------
 
     async function startCamera(facingMode = "environment") {
       if (stream) stream.getTracks().forEach(track => track.stop());
-
       try {
-        const constraints = {
+        stream = await navigator.mediaDevices.getUserMedia({
           video: {
             width: { ideal: 360 },
-            height: { ideal: 640 },
+            height: { ideal: 480 },
             facingMode: { exact: facingMode }
           }
-        };
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        });
       } catch (err) {
         console.warn("Fallback to default camera");
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 480, height: 270 }
+          video: { width: 360, height: 480 }
         });
       }
-
       video.srcObject = stream;
       return new Promise(resolve => {
         video.onloadedmetadata = () => {
@@ -129,6 +146,12 @@
 
     async function detectLoop() {
       if (!detectLoopRunning || !model) return;
+
+      if (!systemActive) {
+        statusText.textContent = "⏸️ System paused (remote)";
+        requestAnimationFrame(detectLoop);
+        return;
+      }
 
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -168,6 +191,9 @@
 
     async function detectHumanAndSnap() {
       const now = Date.now();
+      if (now - lastModelRun < MODEL_THROTTLE_MS) return;
+      lastModelRun = now;
+
       const predictions = await model.detect(video);
       let humanDetected = false;
 
@@ -175,35 +201,56 @@
         if (p.class === "person" && p.score > 0.6) {
           humanDetected = true;
           tagLabel.textContent = "👤 Human detected";
-
           ctx.strokeStyle = "yellow";
           ctx.lineWidth = 2;
           ctx.strokeRect(p.bbox[0], p.bbox[1], p.bbox[2], p.bbox[3]);
-
           if (now - lastSnapTime >= SNAP_INTERVAL_MS) {
-            saveSnapshot("Human");
+            saveSnapshotToFirebase("Human");
             lastSnapTime = now;
           }
           break;
         }
       }
-
       if (!humanDetected) {
         tagLabel.textContent = "—";
       }
     }
 
-    function saveSnapshot(label) {
+    function saveSnapshotToFirebase(label) {
       const snapCanvas = document.createElement("canvas");
-      snapCanvas.width = 640;
-      snapCanvas.height = 360;
+      snapCanvas.width = 360;
+      snapCanvas.height = 480;
       const snapCtx = snapCanvas.getContext("2d");
       snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const link = document.createElement("a");
-      link.download = `${timestamp}_${label}.jpg`;
-      link.href = snapCanvas.toDataURL("image/jpeg");
-      link.click();
+
+      snapCanvas.toBlob(async function(blob) {
+        try {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+          const filename = `snapshots/${timestamp}_${label}.jpg`;
+          const ref = storage.ref(filename);
+          const uploadTask = await ref.put(blob);
+          const downloadURL = await uploadTask.ref.getDownloadURL();
+
+          await db.ref("humanEvents").push({
+            timestamp: timestamp,
+            label: label,
+            snapshotUrl: downloadURL
+          });
+
+          console.log("✅ Uploaded snapshot to Firebase:", downloadURL);
+          statusText.textContent = "✅ Uploaded to Firebase";
+        } catch (err) {
+          console.error("⚠️ Upload failed, saving locally", err);
+          statusText.textContent = "⚠️ Upload failed, saved locally";
+
+          // fallback download
+          const fallbackUrl = snapCanvas.toDataURL("image/jpeg");
+          const link = document.createElement("a");
+          link.download = `${new Date().toISOString().replace(/[:.]/g, "-")}_${label}.jpg`;
+          link.href = fallbackUrl;
+          link.click();
+        }
+      }, "image/jpeg");
     }
 
     async function switchCamera() {
@@ -219,8 +266,13 @@
     async function init() {
       await startCamera(currentFacing);
       statusText.textContent = "Loading model...";
-      model = await cocoSsd.load();
-      statusText.textContent = "Ready";
+      try {
+        model = await cocoSsd.load();
+        statusText.textContent = "Ready";
+      } catch (e) {
+        console.error(e);
+        statusText.textContent = "Model load failed";
+      }
       detectLoopRunning = true;
       requestAnimationFrame(detectLoop);
     }
