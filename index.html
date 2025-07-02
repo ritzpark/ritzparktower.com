@@ -44,15 +44,15 @@
 
   <script>
     const firebaseConfig = {
-  apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
-  authDomain: "motionsoul-11477.firebaseapp.com",
-  databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
-  projectId: "motionsoul-11477",
-  storageBucket: "motionsoul-11477.appspot.com",
-  messagingSenderId: "413864739170",
-  appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
-  measurementId: "G-11L9N0R0HY"
-};
+      apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
+      authDomain: "motionsoul-11477.firebaseapp.com",
+      databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
+      projectId: "motionsoul-11477",
+      storageBucket: "motionsoul-11477.appspot.com",
+      messagingSenderId: "413864739170",
+      appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
+      measurementId: "G-11L9N0R0HY"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -68,13 +68,14 @@
     let stream = null;
     let currentFacing = "environment";
 
+    let lastSnap = 0;
+    const SNAP_INTERVAL = 1000; // 1 second
+
     async function startCamera(facingMode = "environment") {
       if (stream) stream.getTracks().forEach(track => track.stop());
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { exact: facingMode }
-          }
+          video: { facingMode: { exact: facingMode } }
         });
       } catch (err) {
         console.warn("Fallback to default camera");
@@ -86,6 +87,8 @@
       await new Promise(resolve => {
         video.onloadedmetadata = () => {
           video.play();
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
           resolve();
         };
       });
@@ -105,7 +108,11 @@
       if (found) {
         statusText.textContent = "👤 Human detected!";
         statusText.style.color = "orange";
-        handleSnapshot();
+
+        if (Date.now() - lastSnap > SNAP_INTERVAL) {
+          lastSnap = Date.now();
+          handleSnapshot();
+        }
       } else {
         statusText.textContent = "No human";
         statusText.style.color = "lightgreen";
@@ -126,7 +133,7 @@
         await ref.put(blob);
         console.log("Uploaded to Firebase Storage");
       } catch (e) {
-        console.warn("Upload failed, saving to phone", e);
+        console.warn("Upload failed, saving locally", e);
         const link = document.createElement("a");
         link.download = `human_${Date.now()}.jpg`;
         link.href = snapCanvas.toDataURL("image/jpeg");
@@ -143,8 +150,6 @@
     async function init() {
       statusText.textContent = "Starting camera...";
       await startCamera(currentFacing);
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
 
       // set system = 1 on first load
       db.ref("system").set(1);
