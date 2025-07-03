@@ -1,99 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Detection Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <title>Human Detection Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <style>
     body {
-      background: #111;
-      color: #eee;
+      background: #222;
+      color: #fff;
       font-family: sans-serif;
       padding: 20px;
     }
     h2 {
-      text-align: center;
+      margin-top: 0;
     }
-    .gallery {
+    .grid {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
+      gap: 15px;
     }
-    .gallery img {
-      width: 150px;
-      border: 2px solid #333;
-      cursor: pointer;
+    .item {
+      border: 2px solid #444;
+      border-radius: 8px;
+      background: #333;
+      padding: 5px;
+      width: 220px;
+      text-align: center;
+    }
+    .item img {
+      width: 100%;
       border-radius: 6px;
-      transition: transform 0.3s;
     }
-    .gallery img:hover {
-      transform: scale(1.1);
+    .time {
+      margin-top: 5px;
+      font-size: 0.9em;
+      color: #ccc;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border: 4px solid #fff;
+    button {
+      margin-bottom: 15px;
+      padding: 8px 16px;
     }
   </style>
 </head>
 <body>
-  <h2>🛡️ Human Detection Admin Panel</h2>
-  <div class="gallery" id="gallery">Loading...</div>
-  <div class="modal" id="modal" onclick="this.style.display='none'">
-    <img id="modalImg" src="" />
-  </div>
+  <h2>Human Detection Admin Panel</h2>
+  <button onclick="loadImages()">🔄 Refresh</button>
+  <div class="grid" id="imageGrid"></div>
 
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
       authDomain: "motionsoul-11477.firebaseapp.com",
-      databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
       projectId: "motionsoul-11477",
       storageBucket: "motionsoul-11477.appspot.com",
-      messagingSenderId: "413864739170",
-      appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
-      measurementId: "G-11L9N0R0HY"
     };
 
     firebase.initializeApp(firebaseConfig);
     const storage = firebase.storage();
-    const gallery = document.getElementById("gallery");
 
     async function loadImages() {
+      const imageGrid = document.getElementById("imageGrid");
+      imageGrid.innerHTML = "Loading...";
+
       try {
         const listRef = storage.ref("detections");
-        const result = await listRef.listAll();
-        gallery.innerHTML = "";
-        if (result.items.length === 0) {
-          gallery.innerHTML = "No images found";
-        }
-        result.items.reverse().forEach(async itemRef => {
+        const res = await listRef.listAll();
+
+        const items = res.items;
+
+        // sort descending by filename
+        const sorted = items.sort((a, b) => b.name.localeCompare(a.name));
+
+        imageGrid.innerHTML = "";
+
+        for (const itemRef of sorted) {
           const url = await itemRef.getDownloadURL();
+
+          // parse timestamp
+          const name = itemRef.name.replace(".jpg", "");
+          const parsed = name.replace(/-/g, ":").replace("T", " ");
+          const humanTime = parsed.replace(/:/g, (c, i) => i === 13 || i === 16 ? "-" : c); 
+          // fixes the HH-MM-SS part back to colons
+          const finalTime = name
+            .replace(/-/g, ":")
+            .replace("T", " ")
+            .replace(/(\d{2}):(\d{2}):(\d{2})$/, (_, h, m, s) => `${h}:${m}:${s}`);
+
+          const container = document.createElement("div");
+          container.className = "item";
+
           const img = document.createElement("img");
           img.src = url;
-          img.title = itemRef.name;
-          img.onclick = () => {
-            document.getElementById("modalImg").src = url;
-            document.getElementById("modal").style.display = "flex";
-          }
-          gallery.appendChild(img);
-        });
+          img.alt = itemRef.name;
+
+          const time = document.createElement("div");
+          time.className = "time";
+          time.textContent = `🕒 ${finalTime}`;
+
+          container.appendChild(img);
+          container.appendChild(time);
+
+          imageGrid.appendChild(container);
+        }
       } catch (e) {
-        console.error("Error loading images", e);
-        gallery.innerHTML = "Error loading images.";
+        console.error(e);
+        imageGrid.innerHTML = "Error loading images";
       }
     }
 
