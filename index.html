@@ -75,6 +75,11 @@
     async function detectLoop() {
       const now = Date.now();
 
+      if (!systemEnabled) {
+        setTimeout(detectLoop, 100);
+        return;
+      }
+
       try {
         const predictions = await model.detect(video);
         let found = predictions.some(p => p.class === "person" && p.score > 0.6);
@@ -83,8 +88,7 @@
           statusText.textContent = "👤 Human detected!";
           statusText.style.color = "orange";
 
-          // snapshot upload only once per second
-          if (now - lastSnapshotTime > 1000) {
+          if (now - lastSnapshotTime > 1000) { // upload 1 per second
             lastSnapshotTime = now;
             await handleSnapshot();
           }
@@ -97,7 +101,7 @@
         console.error("Detection error", e);
       }
 
-      setTimeout(detectLoop, 200); // 5 FPS detection
+      setTimeout(detectLoop, 100); // 10 FPS detection
     }
 
     async function handleSnapshot() {
