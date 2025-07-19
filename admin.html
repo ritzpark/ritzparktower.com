@@ -41,14 +41,60 @@
     button {
       margin-bottom: 15px;
       padding: 8px 16px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .spinner {
+      border: 4px solid #444;
+      border-top: 4px solid #0f0;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 30px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+  <!-- 🔐 Password Protection -->
+  <script>
+    async function hash(input) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+    const expectedHash = "582805509f9d2caccff234659fbe720460b0b8971262f0b9f82f6602a70835c2"; // SHA-256 of "01010011"
+
+    (async () => {
+      const entered = prompt("Enter admin password:");
+      if (!entered) {
+        document.body.innerHTML = "<h2 style='color:red'>Access Denied</h2>";
+        throw new Error("No password entered");
+      }
+      const enteredHash = await hash(entered.trim());
+      if (enteredHash !== expectedHash) {
+        document.body.innerHTML = "<h2 style='color:red'>Access Denied</h2>";
+        throw new Error("Unauthorized access");
+      }
+    })();
+  </script>
+
   <h2>Human Detection Admin Panel</h2>
   <button onclick="loadImages()">🔄 Refresh</button>
   <div class="grid" id="imageGrid"></div>
 
+  <!-- 🚀 Firebase Image Loader -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
@@ -62,31 +108,39 @@
 
     async function loadImages() {
       const imageGrid = document.getElementById("imageGrid");
-      imageGrid.innerHTML = "Loading...";
+      imageGrid.innerHTML = '<div class="spinner"></div>';
 
       try {
         const listRef = storage.ref("detections");
         const res = await listRef.listAll();
-
         const items = res.items;
 
-        // sort descending by filename
-        const sorted = items.sort((a, b) => b.name.localeCompare(a.name));
+        // Sort by timestamp from filenames like: 2025-07-17T12-25-34-166Z.jpg
+        const sorted = items.sort((a, b) => {
+          const parseTime = (name) => {
+            const cleaned = name.replace(".jpg", "");
+            const match = cleaned.match(/(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z/);
+            if (!match) return 0;
+            const iso = `${match[1]}T${match[2]}:${match[3]}:${match[4]}.${match[5]}Z`;
+            return new Date(iso).getTime();
+          };
+          return parseTime(b.name) - parseTime(a.name); // newest first
+        });
+
+        if (sorted.length === 0) {
+          imageGrid.innerHTML = "<p>No detection images found.</p>";
+          return;
+        }
 
         imageGrid.innerHTML = "";
 
         for (const itemRef of sorted) {
           const url = await itemRef.getDownloadURL();
-
-          // parse timestamp
           const name = itemRef.name.replace(".jpg", "");
-          const parsed = name.replace(/-/g, ":").replace("T", " ");
-          const humanTime = parsed.replace(/:/g, (c, i) => i === 13 || i === 16 ? "-" : c); 
-          // fixes the HH-MM-SS part back to colons
-          const finalTime = name
-            .replace(/-/g, ":")
-            .replace("T", " ")
-            .replace(/(\d{2}):(\d{2}):(\d{2})$/, (_, h, m, s) => `${h}:${m}:${s}`);
+          const match = name.match(/(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z/);
+          const formattedTime = match
+            ? `${match[1]} ${match[2]}:${match[3]}:${match[4]}.${match[5]}`
+            : name;
 
           const container = document.createElement("div");
           container.className = "item";
@@ -97,11 +151,10 @@
 
           const time = document.createElement("div");
           time.className = "time";
-          time.textContent = `🕒 ${finalTime}`;
+          time.textContent = `🕒 ${formattedTime}`;
 
           container.appendChild(img);
           container.appendChild(time);
-
           imageGrid.appendChild(container);
         }
       } catch (e) {
@@ -110,6 +163,7 @@
       }
     }
 
+    // Auto-load on page open
     loadImages();
   </script>
 </body>
