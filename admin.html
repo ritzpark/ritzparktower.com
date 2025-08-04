@@ -7,9 +7,10 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     body { background:#111; color:#fff; font-family:Arial, sans-serif; padding:20px; }
-    #loginForm, #adminContent { max-width:400px; margin:auto; }
+    #loginForm, #adminContent { max-width:500px; margin:auto; }
     input { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:none; }
     button { width:100%; padding:10px; margin-top:10px; background:#444; color:#fff; border:none; border-radius:6px; cursor:pointer; }
     button:hover { background:#666; }
@@ -18,6 +19,22 @@
     .item img { width:100%; border-radius:6px; max-height:200px; object-fit:cover; }
     .time { margin-top:5px; font-size:0.85em; color:#ccc; }
     #loader { text-align:center; font-size:1.2em; margin:20px 0; }
+    h2 span#darkIndicator {
+      width:15px;
+      height:15px;
+      border-radius:50%;
+      background:red;
+      display:inline-block;
+      margin-left:10px;
+      visibility:hidden;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,50%,100%{opacity:1;} 25%,75%{opacity:0;} }
+    table { width:100%; border-collapse:collapse; margin-top:20px; background:#222; border-radius:8px; overflow:hidden; }
+    th, td { padding:10px; text-align:left; border-bottom:1px solid #333; }
+    th { background:#333; }
+    .status-dark { color:red; font-weight:bold; }
+    .status-normal { color:lightgreen; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -33,16 +50,31 @@
 
   <!-- Admin Panel -->
   <div id="adminContent" style="display:none;">
-    <h2>Human Detection Admin Panel</h2>
+    <h2>
+      Human Detection Admin Panel <span id="darkIndicator"></span>
+    </h2>
     <button onclick="logout()">Logout</button>
+
+    <h3>Images</h3>
     <div id="loader">⏳ Loading images...</div>
     <div class="grid" id="imageGrid"></div>
+
+    <h3>Dark/Normal Logs</h3>
+    <table>
+      <thead>
+        <tr><th>Status</th><th>Time</th></tr>
+      </thead>
+      <tbody id="logsTable">
+        <tr><td colspan="2">Loading logs...</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
       authDomain: "motionsoul-11477.firebaseapp.com",
+      databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
       projectId: "motionsoul-11477",
       storageBucket: "motionsoul-11477.appspot.com",
     };
@@ -50,6 +82,7 @@
     firebase.initializeApp(firebaseConfig);
     const storage = firebase.storage();
     const auth = firebase.auth();
+    const db = firebase.database();
 
     const allowedEmail = "aj@gmail.com";
 
@@ -69,9 +102,7 @@
           return;
         }
 
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-        loadImages();
+        showAdminPanel();
 
       } catch (error) {
         status.textContent = "❌ " + error.message;
@@ -86,14 +117,20 @@
 
     auth.onAuthStateChanged((user) => {
       if (user && user.email.toLowerCase() === allowedEmail.toLowerCase()) {
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-        loadImages();
+        showAdminPanel();
       } else {
         document.getElementById("adminContent").style.display = "none";
         document.getElementById("loginForm").style.display = "block";
       }
     });
+
+    function showAdminPanel() {
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("adminContent").style.display = "block";
+      loadImages();
+      startLogsListener();
+      startDarkIndicatorListener();
+    }
 
     async function loadImages() {
       const imageGrid = document.getElementById("imageGrid");
@@ -105,7 +142,6 @@
         const listRef = storage.ref("detections");
         const res = await listRef.listAll();
 
-        // Sort by newest first using name parsing fallback
         const sortedItems = res.items.sort((a, b) => {
           const extractDate = (name) => {
             const match = name.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})/);
@@ -122,7 +158,6 @@
           return;
         }
 
-        // Sequentially load & append images one by one
         for (const item of sortedItems) {
           try {
             const url = await item.getDownloadURL();
@@ -133,7 +168,6 @@
 
             const img = document.createElement("img");
             img.src = url;
-            img.alt = item.name;
 
             const timeDiv = document.createElement("div");
             timeDiv.className = "time";
@@ -142,6 +176,7 @@
             container.appendChild(img);
             container.appendChild(timeDiv);
             imageGrid.appendChild(container);
+            await new Promise(r => setTimeout(r, 200));
           } catch (imgErr) {
             console.error("Failed to load an image:", imgErr);
           }
@@ -152,7 +187,48 @@
         imageGrid.innerHTML = "❌ Failed to load images";
       }
     }
-  </script>
 
+    function formatTimestamp(ms) {
+      const date = new Date(ms);
+      return date.toLocaleString();
+    }
+
+    function startLogsListener() {
+      const logsTable = document.getElementById("logsTable");
+      db.ref("logs").limitToLast(50).on("value", snapshot => {
+        const logs = snapshot.val();
+        logsTable.innerHTML = "";
+        if (!logs) {
+          logsTable.innerHTML = "<tr><td colspan='2'>No logs yet</td></tr>";
+          return;
+        }
+        const entries = Object.values(logs).sort((a, b) => b.time - a.time);
+        for (const log of entries) {
+          const tr = document.createElement("tr");
+          const statusTd = document.createElement("td");
+          statusTd.textContent = log.status;
+          statusTd.className = log.status === "dark" ? "status-dark" : "status-normal";
+
+          const timeTd = document.createElement("td");
+          timeTd.textContent = formatTimestamp(log.time);
+
+          tr.appendChild(statusTd);
+          tr.appendChild(timeTd);
+          logsTable.appendChild(tr);
+        }
+      });
+    }
+
+    function startDarkIndicatorListener() {
+      const darkIndicator = document.getElementById("darkIndicator");
+      db.ref("darkStatus").on("value", snapshot => {
+        if (snapshot.exists()) {
+          darkIndicator.style.visibility = "visible";
+        } else {
+          darkIndicator.style.visibility = "hidden";
+        }
+      });
+    }
+  </script>
 </body>
 </html>
