@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Human Detection</title>
+  <title>Human Detection with Dark Detection & Logs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <style>
     body {
       background: #111;
@@ -19,18 +20,57 @@
       font-family: sans-serif;
     }
     video {
-      display: none; /* hide preview */
+      display: none;
     }
     #status {
       margin-top: 20px;
       font-size: 1.3em;
     }
+    #loginForm {
+      max-width: 320px;
+      margin: auto;
+      margin-top: 40px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #444;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #666;
+    }
+    #logoutBtn {
+      margin-top: 10px;
+      background: #800;
+    }
   </style>
 </head>
 <body>
-  <h2>Human Detection (Background)</h2>
-  <div id="status">Initializing...</div>
+
+  <div id="loginForm">
+    <h2>Login to Human Detection</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="loginStatus" style="color: #f88;"></p>
+  </div>
+
+  <h2 id="title" style="display:none;">Human Detection (Background)</h2>
+  <div id="status"></div>
   <video id="video" autoplay muted playsinline></video>
+  <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
 
   <script>
     const firebaseConfig = {
@@ -47,14 +87,22 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const storage = firebase.storage();
+    const auth = firebase.auth();
+
+    const allowedEmail = "aj@gmail.com";
 
     const video = document.getElementById("video");
     const statusText = document.getElementById("status");
+    const loginForm = document.getElementById("loginForm");
+    const loginStatus = document.getElementById("loginStatus");
+    const title = document.getElementById("title");
+    const logoutBtn = document.getElementById("logoutBtn");
 
     let model;
     let systemEnabled = true;
     let stream = null;
     let lastSnapshotTime = 0;
+    let isCurrentlyDark = false;
 
     async function startCamera() {
       try {
@@ -62,46 +110,101 @@
         video.srcObject = stream;
         await new Promise(resolve => {
           video.onloadedmetadata = () => {
+            console.log("✅ Camera ready: videoWidth =", video.videoWidth);
             video.play();
             resolve();
           };
         });
       } catch (e) {
-        console.error("Camera error", e);
+        console.error("❌ Camera error", e);
         statusText.textContent = "Camera error";
       }
+    }
+
+    function isFrameBlack(video) {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const width = 160;
+      const height = 120;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(video, 0, 0, width, height);
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+
+      let blackPixels = 0;
+      const totalPixels = width * height;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+        const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+        if (lum < 10) blackPixels++;
+      }
+
+      return (blackPixels / totalPixels) > 0.95;
     }
 
     async function detectLoop() {
       const now = Date.now();
 
-      if (!systemEnabled) {
-        setTimeout(detectLoop, 100);
+      if (!systemEnabled || video.videoWidth === 0) {
+        setTimeout(detectLoop, 200);
         return;
       }
 
-      try {
-        const predictions = await model.detect(video);
-        let found = predictions.some(p => p.class === "person" && p.score > 0.6);
-
-        if (found) {
-          statusText.textContent = "👤 Human detected!";
-          statusText.style.color = "orange";
-
-          if (now - lastSnapshotTime > 1000) { // upload 1 per second
-            lastSnapshotTime = now;
-            await handleSnapshot();
+      // DARK DETECTION
+      if (isFrameBlack(video)) {
+        if (!isCurrentlyDark) {
+          isCurrentlyDark = true;
+          console.log("🔴 Dark detected. Logging event...");
+          if (auth.currentUser) {
+            db.ref("logs").push({
+              status: "dark",
+              time: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => console.log("✅ Dark event logged"));
+            db.ref("darkStatus").set({ lastDetected: firebase.database.ServerValue.TIMESTAMP });
           }
-
-        } else {
-          statusText.textContent = "No human";
-          statusText.style.color = "lightgreen";
         }
-      } catch (e) {
-        console.error("Detection error", e);
+        statusText.textContent = "⚫ Camera covered or dark detected!";
+        statusText.style.color = "red";
+      } else {
+        if (isCurrentlyDark) {
+          isCurrentlyDark = false;
+          console.log("🟢 Light returned. Logging event...");
+          if (auth.currentUser) {
+            db.ref("logs").push({
+              status: "normal",
+              time: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => console.log("✅ Normal event logged"));
+            db.ref("darkStatus").remove();
+          }
+        }
+
+        // HUMAN DETECTION
+        try {
+          const predictions = await model.detect(video);
+          const found = predictions.some(p => p.class === "person" && p.score > 0.6);
+
+          if (found) {
+            statusText.textContent = "👤 Human detected!";
+            statusText.style.color = "orange";
+
+            if (now - lastSnapshotTime > 1000) {
+              lastSnapshotTime = now;
+              await handleSnapshot();
+            }
+          } else {
+            statusText.textContent = "No human";
+            statusText.style.color = "lightgreen";
+          }
+        } catch (e) {
+          console.error("Detection error", e);
+        }
       }
 
-      setTimeout(detectLoop, 100); // 10 FPS detection
+      setTimeout(detectLoop, 150);
     }
 
     async function handleSnapshot() {
@@ -115,34 +218,63 @@
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         const ref = storage.ref(`detections/${timestamp}.jpg`);
         await ref.put(blob);
-        console.log("Uploaded snapshot to Firebase");
+        console.log("✅ Snapshot uploaded");
       } catch (e) {
-        console.warn("Snapshot upload failed", e);
+        console.warn("❌ Snapshot upload failed", e);
       }
     }
 
-    async function init() {
-      statusText.textContent = "Starting camera...";
-      await startCamera();
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      loginStatus.textContent = "";
 
-      db.ref("system").set(1);
-      db.ref("system").on("value", snapshot => {
-        systemEnabled = snapshot.val() === 1;
-        console.log("system mode:", systemEnabled ? "enabled" : "disabled");
-      });
-
-      statusText.textContent = "Loading model...";
       try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        if (user.email.toLowerCase() !== allowedEmail.toLowerCase()) {
+          await auth.signOut();
+          loginStatus.textContent = "❌ Access Denied: Unauthorized User";
+          return;
+        }
+
+        loginForm.style.display = "none";
+        title.style.display = "block";
+        logoutBtn.style.display = "inline-block";
+        statusText.textContent = "Starting camera...";
+        await startCamera();
+
+        db.ref("system").set(1);
+        db.ref("system").on("value", snapshot => {
+          systemEnabled = snapshot.val() === 1;
+          console.log("System mode:", systemEnabled ? "enabled" : "disabled");
+        });
+
+        statusText.textContent = "Loading model...";
         model = await cocoSsd.load();
+        console.log("✅ Model loaded");
         statusText.textContent = "Ready";
         detectLoop();
-      } catch (e) {
-        console.error("Model load failed", e);
-        statusText.textContent = "Model load failed";
+
+      } catch (error) {
+        loginStatus.textContent = "❌ " + error.message;
       }
     }
 
-    init();
+    function logout() {
+      auth.signOut();
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      loginForm.style.display = "block";
+      title.style.display = "none";
+      logoutBtn.style.display = "none";
+      statusText.textContent = "";
+      loginStatus.textContent = "";
+    }
   </script>
 </body>
 </html>
