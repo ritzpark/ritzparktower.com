@@ -6,65 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    #adminContent { display: none; }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    .item {
-      border: 2px solid #444;
-      border-radius: 8px;
-      background: #333;
-      padding: 5px;
-      width: 220px;
-      text-align: center;
-    }
-    .item img {
-      width: 100%;
-      border-radius: 6px;
-    }
-    .time {
-      margin-top: 5px;
-      font-size: 0.9em;
-      color: #ccc;
-    }
+    body { background:#111; color:#fff; font-family:Arial, sans-serif; padding:20px; }
+    #loginForm, #adminContent { max-width:400px; margin:auto; }
+    input { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:none; }
+    button { width:100%; padding:10px; margin-top:10px; background:#444; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+    button:hover { background:#666; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:15px; margin-top:20px; }
+    .item { border:2px solid #444; border-radius:8px; background:#222; padding:10px; text-align:center; }
+    .item img { width:100%; border-radius:6px; max-height:200px; object-fit:cover; }
+    .time { margin-top:5px; font-size:0.85em; color:#ccc; }
+    #loader { text-align:center; font-size:1.2em; margin:20px 0; }
   </style>
 </head>
 <body>
 
-  <div id="adminContent">
+  <!-- Login Form -->
+  <div id="loginForm">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p id="loginStatus" style="color:red;"></p>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminContent" style="display:none;">
     <h2>Human Detection Admin Panel</h2>
-    <button onclick="loadImages()">🔄 Refresh</button>
-    <div class="grid" id="imageGrid">Loading...</div>
+    <button onclick="logout()">Logout</button>
+    <div id="loader">⏳ Loading images...</div>
+    <div class="grid" id="imageGrid"></div>
   </div>
 
   <script>
-    const PASSWORD = "AJ";
-
-    function askPassword() {
-      const pass = prompt("Enter password:");
-
-      if (pass === null || pass.trim() !== PASSWORD) {
-        alert("Access Denied");
-        // Optionally, you can keep prompting until correct, or just do nothing
-        // For now, just hide the content if wrong or cancelled
-        document.getElementById("adminContent").style.display = "none";
-      } else {
-        document.getElementById("adminContent").style.display = "block";
-        loadImages();
-      }
-    }
-
-    askPassword();
-
     const firebaseConfig = {
       apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
       authDomain: "motionsoul-11477.firebaseapp.com",
@@ -74,46 +49,106 @@
 
     firebase.initializeApp(firebaseConfig);
     const storage = firebase.storage();
+    const auth = firebase.auth();
+
+    const allowedEmail = "aj@gmail.com";
+
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("loginStatus");
+      status.textContent = "";
+
+      try {
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        if (user.email.toLowerCase() !== allowedEmail.toLowerCase()) {
+          await auth.signOut();
+          status.textContent = "❌ Access Denied: Unauthorized User";
+          return;
+        }
+
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        loadImages();
+
+      } catch (error) {
+        status.textContent = "❌ " + error.message;
+      }
+    }
+
+    function logout() {
+      auth.signOut();
+      document.getElementById("adminContent").style.display = "none";
+      document.getElementById("loginForm").style.display = "block";
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user && user.email.toLowerCase() === allowedEmail.toLowerCase()) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        loadImages();
+      } else {
+        document.getElementById("adminContent").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      }
+    });
 
     async function loadImages() {
       const imageGrid = document.getElementById("imageGrid");
-      imageGrid.innerHTML = "Loading...";
+      const loader = document.getElementById("loader");
+      imageGrid.innerHTML = "";
+      loader.style.display = "block";
 
       try {
         const listRef = storage.ref("detections");
         const res = await listRef.listAll();
 
-        const sorted = res.items.sort((a, b) => {
-          const parseTime = name => {
+        // Sort by newest first using name parsing fallback
+        const sortedItems = res.items.sort((a, b) => {
+          const extractDate = (name) => {
             const match = name.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2})-(\d{2})-(\d{2})/);
             if (!match) return 0;
             return new Date(`${match[1]}-${match[2]}-${match[3]}T${match[4]}:${match[5]}:${match[6]}Z`).getTime();
           };
-          return parseTime(b.name) - parseTime(a.name);
+          return extractDate(b.name) - extractDate(a.name);
         });
 
-        imageGrid.innerHTML = "";
+        loader.style.display = "none";
 
-        for (const item of sorted) {
-          const url = await item.getDownloadURL();
-          const timestamp = item.name.replace(".jpg", "").replace("T", " ").replace(/-/g, ":").replace(/:(\d+)$/, "-$1");
-          const timeDiv = document.createElement("div");
-          timeDiv.className = "time";
-          timeDiv.textContent = "🕒 " + timestamp;
+        if (sortedItems.length === 0) {
+          imageGrid.innerHTML = "<p>No images found.</p>";
+          return;
+        }
 
-          const container = document.createElement("div");
-          container.className = "item";
+        // Sequentially load & append images one by one
+        for (const item of sortedItems) {
+          try {
+            const url = await item.getDownloadURL();
+            const meta = await item.getMetadata();
 
-          const img = document.createElement("img");
-          img.src = url;
-          img.alt = item.name;
+            const container = document.createElement("div");
+            container.className = "item";
 
-          container.appendChild(img);
-          container.appendChild(timeDiv);
-          imageGrid.appendChild(container);
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = item.name;
+
+            const timeDiv = document.createElement("div");
+            timeDiv.className = "time";
+            timeDiv.textContent = "🕒 " + new Date(meta.timeCreated).toLocaleString();
+
+            container.appendChild(img);
+            container.appendChild(timeDiv);
+            imageGrid.appendChild(container);
+          } catch (imgErr) {
+            console.error("Failed to load an image:", imgErr);
+          }
         }
       } catch (err) {
         console.error(err);
+        loader.style.display = "none";
         imageGrid.innerHTML = "❌ Failed to load images";
       }
     }
