@@ -1,280 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Human Detection with Dark Detection & Logs</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <style>
-    body {
-      background: #111;
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 10px;
-      font-family: sans-serif;
-    }
-    video {
-      display: none;
-    }
-    #status {
-      margin-top: 20px;
-      font-size: 1.3em;
-    }
-    #loginForm {
-      max-width: 320px;
-      margin: auto;
-      margin-top: 40px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 6px;
-      border: none;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border: none;
-      background: #444;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #666;
-    }
-    #logoutBtn {
-      margin-top: 10px;
-      background: #800;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Optimized Human & Cover Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<style>
+body { background: #111; color: white; text-align: center; margin: 0; padding: 10px; font-family: sans-serif; }
+video { display: none; }
+#status { margin-top: 20px; font-size: 1.3em; }
+#loginForm { max-width: 320px; margin: auto; margin-top: 40px; }
+input { width: 100%; padding: 10px; margin: 6px 0; border-radius: 6px; border: none; }
+button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 6px; border: none; background: #444; color: white; cursor: pointer; }
+button:hover { background: #666; }
+#logoutBtn { margin-top: 10px; background: #800; }
+</style>
 </head>
 <body>
 
-  <div id="loginForm">
-    <h2>Login to Human Detection</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <p id="loginStatus" style="color: #f88;"></p>
-  </div>
+<div id="loginForm">
+  <h2>Login to Human Detection</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+  <p id="loginStatus" style="color: #f88;"></p>
+</div>
 
-  <h2 id="title" style="display:none;">Human Detection (Background)</h2>
-  <div id="status"></div>
-  <video id="video" autoplay muted playsinline></video>
-  <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
+<h2 id="title" style="display:none;">Human Detection (Background)</h2>
+<div id="status"></div>
+<video id="video" autoplay muted playsinline></video>
+<button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
-      authDomain: "motionsoul-11477.firebaseapp.com",
-      databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
-      projectId: "motionsoul-11477",
-      storageBucket: "motionsoul-11477.appspot.com",
-      messagingSenderId: "413864739170",
-      appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
-      measurementId: "G-11L9N0R0HY"
-    };
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA8puGnhnQHX3NslAAz7vCzuYQ5GNXmmps",
+  authDomain: "motionsoul-11477.firebaseapp.com",
+  databaseURL: "https://motionsoul-11477-default-rtdb.firebaseio.com",
+  projectId: "motionsoul-11477",
+  storageBucket: "motionsoul-11477.appspot.com",
+  messagingSenderId: "413864739170",
+  appId: "1:413864739170:web:5c24d726f702e69d0cac3b",
+  measurementId: "G-11L9N0R0HY"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+const auth = firebase.auth();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const storage = firebase.storage();
-    const auth = firebase.auth();
+const allowedEmail = "aj@gmail.com";
 
-    const allowedEmail = "aj@gmail.com";
+const video = document.getElementById("video");
+const statusText = document.getElementById("status");
+const loginForm = document.getElementById("loginForm");
+const loginStatus = document.getElementById("loginStatus");
+const title = document.getElementById("title");
+const logoutBtn = document.getElementById("logoutBtn");
 
-    const video = document.getElementById("video");
-    const statusText = document.getElementById("status");
-    const loginForm = document.getElementById("loginForm");
-    const loginStatus = document.getElementById("loginStatus");
-    const title = document.getElementById("title");
-    const logoutBtn = document.getElementById("logoutBtn");
+let model;
+let systemEnabled = true;
+let stream = null;
+let lastSnapshotTime = 0;
+let isCurrentlyCovered = false;
+let currentCoverColor = null;
 
-    let model;
-    let systemEnabled = true;
-    let stream = null;
-    let lastSnapshotTime = 0;
-    let isCurrentlyDark = false;
+// Canvas for cover detection
+const detectCanvas = document.createElement("canvas");
+const detectCtx = detectCanvas.getContext("2d");
+detectCanvas.width = 160;
+detectCanvas.height = 120;
 
-    async function startCamera() {
+// Mobile-friendly camera start
+async function startCamera() {
+  try {
+    try {
+      // Try exact rear camera first
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
+    } catch {
       try {
+        // Fallback to rear camera without exact
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        video.srcObject = stream;
-        await new Promise(resolve => {
-          video.onloadedmetadata = () => {
-            console.log("✅ Camera ready: videoWidth =", video.videoWidth);
-            video.play();
-            resolve();
-          };
-        });
-      } catch (e) {
-        console.error("❌ Camera error", e);
-        statusText.textContent = "Camera error";
+      } catch {
+        // Fallback to any camera
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      }
+    }
+    video.srcObject = stream;
+    await video.play();
+    console.log("✅ Camera ready:", video.videoWidth, "x", video.videoHeight);
+  } catch (e) {
+    console.error("❌ Camera error", e);
+    statusText.textContent = "Camera error. Allow access and reload.";
+  }
+}
+
+// Optimized 7-color cover detection using every 2nd pixel
+function checkCoverColor(video){
+  detectCtx.drawImage(video, 0, 0, detectCanvas.width, detectCanvas.height);
+  const data = detectCtx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
+  const totalPixels = (detectCanvas.width*detectCanvas.height)/4; 
+  let counts={black:0,white:0,red:0,green:0,blue:0,yellow:0,purple:0};
+
+  for(let i=0;i<data.length;i+=8){ // every 2nd pixel
+    const r=data[i], g=data[i+1], b=data[i+2];
+    const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+
+    if(lum<50) counts.black++;
+    else if(lum>160 && r>150 && g>150 && b>150) counts.white++;
+    else if(r>100 && g<90 && b<90) counts.red++;
+    else if(g>100 && r<90 && b<90) counts.green++;
+    else if(b>100 && r<90 && g<90) counts.blue++;
+    else if(r>140 && g>140 && b<100) counts.yellow++;
+    else if(r>110 && b>110 && g<100) counts.purple++;
+
+    for(const color in counts){
+      if(counts[color]/totalPixels>=0.9) return color;
+    }
+  }
+  return null;
+}
+
+// Detect loop
+async function detectLoop(){
+  if(!systemEnabled || video.videoWidth===0){ setTimeout(detectLoop,250); return; }
+
+  const coverColor = checkCoverColor(video);
+
+  if(coverColor){
+    statusText.textContent = `⚠️ Camera covered (${coverColor})`;
+    statusText.style.color="red";
+
+    if(!isCurrentlyCovered){
+      isCurrentlyCovered=true;
+      currentCoverColor=coverColor;
+      console.log(`🔴 Covered by ${coverColor}. Logging event...`);
+
+      if(auth.currentUser){
+        db.ref("logs").push({ status: coverColor, time: firebase.database.ServerValue.TIMESTAMP });
+        db.ref("darkStatus").set({ lastDetected: firebase.database.ServerValue.TIMESTAMP, coverColor });
+      }
+
+      // Take exactly 2 snapshots per cover
+      handleSnapshot(coverColor);
+      setTimeout(()=>handleSnapshot(coverColor),300);
+    }
+
+  } else {
+    if(isCurrentlyCovered){
+      isCurrentlyCovered=false;
+      console.log("🟢 Camera uncovered. Logging event...");
+      if(auth.currentUser){
+        db.ref("logs").push({ status:"normal", time: firebase.database.ServerValue.TIMESTAMP });
+        db.ref("darkStatus").remove();
       }
     }
 
-    function isFrameBlack(video) {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const width = 160;
-      const height = 120;
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(video, 0, 0, width, height);
-      const imageData = ctx.getImageData(0, 0, width, height);
-      const data = imageData.data;
-
-      let blackPixels = 0;
-      const totalPixels = width * height;
-
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i+1];
-        const b = data[i+2];
-        const lum = 0.2126*r + 0.7152*g + 0.0722*b;
-        if (lum < 10) blackPixels++;
-      }
-
-      return (blackPixels / totalPixels) > 0.95;
-    }
-
-    async function detectLoop() {
-      const now = Date.now();
-
-      if (!systemEnabled || video.videoWidth === 0) {
-        setTimeout(detectLoop, 200);
-        return;
-      }
-
-      // DARK DETECTION
-      if (isFrameBlack(video)) {
-        if (!isCurrentlyDark) {
-          isCurrentlyDark = true;
-          console.log("🔴 Dark detected. Logging event...");
-          if (auth.currentUser) {
-            db.ref("logs").push({
-              status: "dark",
-              time: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => console.log("✅ Dark event logged"));
-            db.ref("darkStatus").set({ lastDetected: firebase.database.ServerValue.TIMESTAMP });
-          }
+    // Human detection
+    try{
+      const predictions = await model.detect(video);
+      const found = predictions.some(p=>p.class==="person" && p.score>0.6);
+      if(found){
+        statusText.textContent="👤 Human detected!";
+        statusText.style.color="orange";
+        const now = Date.now();
+        if(now-lastSnapshotTime>500){
+          lastSnapshotTime=now;
+          handleSnapshot("human");
         }
-        statusText.textContent = "⚫ Camera covered or dark detected!";
-        statusText.style.color = "red";
       } else {
-        if (isCurrentlyDark) {
-          isCurrentlyDark = false;
-          console.log("🟢 Light returned. Logging event...");
-          if (auth.currentUser) {
-            db.ref("logs").push({
-              status: "normal",
-              time: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => console.log("✅ Normal event logged"));
-            db.ref("darkStatus").remove();
-          }
-        }
-
-        // HUMAN DETECTION
-        try {
-          const predictions = await model.detect(video);
-          const found = predictions.some(p => p.class === "person" && p.score > 0.6);
-
-          if (found) {
-            statusText.textContent = "👤 Human detected!";
-            statusText.style.color = "orange";
-
-            if (now - lastSnapshotTime > 1000) {
-              lastSnapshotTime = now;
-              await handleSnapshot();
-            }
-          } else {
-            statusText.textContent = "No human";
-            statusText.style.color = "lightgreen";
-          }
-        } catch (e) {
-          console.error("Detection error", e);
-        }
+        statusText.textContent="No human";
+        statusText.style.color="lightgreen";
       }
+    } catch(e){ console.error("Detection error", e); }
+  }
 
-      setTimeout(detectLoop, 150);
+  setTimeout(detectLoop,250);
+}
+
+// Snapshot function
+async function handleSnapshot(tag){
+  try{
+    const snapCanvas = document.createElement("canvas");
+    snapCanvas.width=video.videoWidth;
+    snapCanvas.height=video.videoHeight;
+    snapCanvas.getContext("2d").drawImage(video,0,0);
+    const blob = await new Promise(res=>snapCanvas.toBlob(res,"image/jpeg",0.8));
+    const timestamp = new Date().toISOString().replace(/[:.]/g,"-");
+    const ref = storage.ref(`detections/${timestamp}_${tag}.jpg`);
+    ref.put(blob); // fire-and-forget
+    console.log(`✅ Snapshot uploaded (${tag}):`, timestamp);
+  } catch(e){ console.warn("❌ Snapshot upload failed", e); }
+}
+
+// Login
+async function login(){
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value.trim();
+  loginStatus.textContent="";
+
+  try{
+    const userCredential = await auth.signInWithEmailAndPassword(email,password);
+    const user=userCredential.user;
+    if(user.email.toLowerCase()!==allowedEmail.toLowerCase()){
+      await auth.signOut();
+      loginStatus.textContent="❌ Access Denied: Unauthorized User";
+      return;
     }
 
-    async function handleSnapshot() {
-      try {
-        const snapCanvas = document.createElement("canvas");
-        snapCanvas.width = video.videoWidth;
-        snapCanvas.height = video.videoHeight;
-        snapCanvas.getContext("2d").drawImage(video, 0, 0);
+    loginForm.style.display="none";
+    title.style.display="block";
+    logoutBtn.style.display="inline-block";
+    statusText.textContent="Starting camera...";
+    await startCamera();
 
-        const blob = await new Promise(resolve => snapCanvas.toBlob(resolve, "image/jpeg", 0.8));
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-        const ref = storage.ref(`detections/${timestamp}.jpg`);
-        await ref.put(blob);
-        console.log("✅ Snapshot uploaded");
-      } catch (e) {
-        console.warn("❌ Snapshot upload failed", e);
-      }
-    }
+    await new Promise(resolve=>{
+      const check=()=>{ video.videoWidth>0?resolve():setTimeout(check,100); }; check();
+    });
 
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      loginStatus.textContent = "";
+    statusText.textContent="Loading model...";
+    model=await cocoSsd.load();
+    console.log("✅ Model loaded");
+    statusText.textContent="Ready";
 
-      try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+    db.ref("system").set(1);
+    db.ref("system").on("value",snap=>systemEnabled=snap.val()===1);
 
-        if (user.email.toLowerCase() !== allowedEmail.toLowerCase()) {
-          await auth.signOut();
-          loginStatus.textContent = "❌ Access Denied: Unauthorized User";
-          return;
-        }
+    detectLoop();
+  } catch(err){ loginStatus.textContent="❌ "+err.message; }
+}
 
-        loginForm.style.display = "none";
-        title.style.display = "block";
-        logoutBtn.style.display = "inline-block";
-        statusText.textContent = "Starting camera...";
-        await startCamera();
-
-        db.ref("system").set(1);
-        db.ref("system").on("value", snapshot => {
-          systemEnabled = snapshot.val() === 1;
-          console.log("System mode:", systemEnabled ? "enabled" : "disabled");
-        });
-
-        statusText.textContent = "Loading model...";
-        model = await cocoSsd.load();
-        console.log("✅ Model loaded");
-        statusText.textContent = "Ready";
-        detectLoop();
-
-      } catch (error) {
-        loginStatus.textContent = "❌ " + error.message;
-      }
-    }
-
-    function logout() {
-      auth.signOut();
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-      video.srcObject = null;
-      loginForm.style.display = "block";
-      title.style.display = "none";
-      logoutBtn.style.display = "none";
-      statusText.textContent = "";
-      loginStatus.textContent = "";
-    }
-  </script>
+// Logout
+function logout(){
+  auth.signOut();
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  video.srcObject=null;
+  loginForm.style.display="block";
+  title.style.display="none";
+  logoutBtn.style.display="none";
+  statusText.textContent="";
+  loginStatus.textContent="";
+}
+</script>
 </body>
 </html>
