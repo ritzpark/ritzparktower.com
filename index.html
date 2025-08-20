@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Optimized Human & Cover Detection</title>
+<title>Human & Cover Detection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
@@ -24,14 +24,14 @@ button:hover { background: #666; }
 <body>
 
 <div id="loginForm">
-  <h2>Login to Human Detection</h2>
+  <h2>Login</h2>
   <input type="email" id="email" placeholder="Email" />
   <input type="password" id="password" placeholder="Password" />
   <button onclick="login()">Login</button>
   <p id="loginStatus" style="color: #f88;"></p>
 </div>
 
-<h2 id="title" style="display:none;">Human Detection (Background)</h2>
+<h2 id="title" style="display:none;">Human Detection</h2>
 <div id="status"></div>
 <video id="video" autoplay muted playsinline></video>
 <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
@@ -68,47 +68,29 @@ let lastSnapshotTime = 0;
 let isCurrentlyCovered = false;
 let currentCoverColor = null;
 
-// Canvas for cover detection
 const detectCanvas = document.createElement("canvas");
 const detectCtx = detectCanvas.getContext("2d");
 detectCanvas.width = 160;
 detectCanvas.height = 120;
 
-// Mobile-friendly camera start
 async function startCamera() {
   try {
-    try {
-      // Try exact rear camera first
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } });
-    } catch {
-      try {
-        // Fallback to rear camera without exact
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      } catch {
-        // Fallback to any camera
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      }
-    }
+    try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } }); }
+    catch { try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); }
+    catch { stream = await navigator.mediaDevices.getUserMedia({ video: true }); } }
     video.srcObject = stream;
     await video.play();
-    console.log("✅ Camera ready:", video.videoWidth, "x", video.videoHeight);
-  } catch (e) {
-    console.error("❌ Camera error", e);
-    statusText.textContent = "Camera error. Allow access and reload.";
-  }
+  } catch (e) { console.error("Camera error", e); statusText.textContent="Camera error. Allow access and reload."; }
 }
 
-// Optimized 7-color cover detection using every 2nd pixel
 function checkCoverColor(video){
-  detectCtx.drawImage(video, 0, 0, detectCanvas.width, detectCanvas.height);
-  const data = detectCtx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
-  const totalPixels = (detectCanvas.width*detectCanvas.height)/4; 
+  detectCtx.drawImage(video,0,0,detectCanvas.width,detectCanvas.height);
+  const data=detectCtx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
+  const totalPixels=(detectCanvas.width*detectCanvas.height)/4;
   let counts={black:0,white:0,red:0,green:0,blue:0,yellow:0,purple:0};
-
-  for(let i=0;i<data.length;i+=8){ // every 2nd pixel
-    const r=data[i], g=data[i+1], b=data[i+2];
-    const lum = 0.2126*r + 0.7152*g + 0.0722*b;
-
+  for(let i=0;i<data.length;i+=8){
+    const r=data[i],g=data[i+1],b=data[i+2];
+    const lum=0.2126*r + 0.7152*g + 0.0722*b;
     if(lum<50) counts.black++;
     else if(lum>160 && r>150 && g>150 && b>150) counts.white++;
     else if(r>100 && g<90 && b<90) counts.red++;
@@ -116,15 +98,25 @@ function checkCoverColor(video){
     else if(b>100 && r<90 && g<90) counts.blue++;
     else if(r>140 && g>140 && b<100) counts.yellow++;
     else if(r>110 && b>110 && g<100) counts.purple++;
-
-    for(const color in counts){
-      if(counts[color]/totalPixels>=0.9) return color;
-    }
+    for(const color in counts){ if(counts[color]/totalPixels>=0.9) return color; }
   }
   return null;
 }
 
-// Detect loop
+async function handleSnapshot(tag){
+  try{
+    const snapCanvas=document.createElement("canvas");
+    snapCanvas.width=video.videoWidth;
+    snapCanvas.height=video.videoHeight;
+    snapCanvas.getContext("2d").drawImage(video,0,0);
+    const blob = await new Promise(res=>snapCanvas.toBlob(res,"image/jpeg",0.8));
+    const timestamp = new Date().toISOString().replace(/[:.]/g,"-");
+    const ref = storage.ref(`detections/${timestamp}_${tag}.jpg`);
+    ref.put(blob);
+    console.log(`Snapshot uploaded (${tag})`);
+  }catch(e){console.warn("Snapshot upload failed", e);}
+}
+
 async function detectLoop(){
   if(!systemEnabled || video.videoWidth===0){ setTimeout(detectLoop,250); return; }
 
@@ -133,81 +125,54 @@ async function detectLoop(){
   if(coverColor){
     statusText.textContent = `⚠️ Camera covered (${coverColor})`;
     statusText.style.color="red";
-
     if(!isCurrentlyCovered){
-      isCurrentlyCovered=true;
-      currentCoverColor=coverColor;
-      console.log(`🔴 Covered by ${coverColor}. Logging event...`);
-
-      if(auth.currentUser){
-        db.ref("logs").push({ status: coverColor, time: firebase.database.ServerValue.TIMESTAMP });
-        db.ref("darkStatus").set({ lastDetected: firebase.database.ServerValue.TIMESTAMP, coverColor });
-      }
-
-      // Take exactly 2 snapshots per cover
+      isCurrentlyCovered = true;
+      currentCoverColor = coverColor;
+      db.ref("logs").push({ status: coverColor, time: firebase.database.ServerValue.TIMESTAMP });
+      db.ref("darkStatus").set({ lastDetected: firebase.database.ServerValue.TIMESTAMP, coverColor });
       handleSnapshot(coverColor);
       setTimeout(()=>handleSnapshot(coverColor),300);
     }
-
   } else {
     if(isCurrentlyCovered){
-      isCurrentlyCovered=false;
-      console.log("🟢 Camera uncovered. Logging event...");
-      if(auth.currentUser){
-        db.ref("logs").push({ status:"normal", time: firebase.database.ServerValue.TIMESTAMP });
-        db.ref("darkStatus").remove();
-      }
+      isCurrentlyCovered = false;
+      db.ref("logs").push({ status:"normal", time: firebase.database.ServerValue.TIMESTAMP });
+      db.ref("darkStatus").remove();
     }
 
-    // Human detection
-    try{
-      const predictions = await model.detect(video);
-      const found = predictions.some(p=>p.class==="person" && p.score>0.6);
-      if(found){
-        statusText.textContent="👤 Human detected!";
-        statusText.style.color="orange";
-        const now = Date.now();
-        if(now-lastSnapshotTime>500){
-          lastSnapshotTime=now;
-          handleSnapshot("human");
+    if(model){
+      try{
+        const predictions = await model.detect(video);
+        const found = predictions.some(p=>p.class==="person" && p.score>0.6);
+        if(found){
+          statusText.textContent="👤 Human detected!";
+          statusText.style.color="orange";
+          const now = Date.now();
+          if(now-lastSnapshotTime>500){
+            lastSnapshotTime = now;
+            handleSnapshot("human");
+          }
+        } else {
+          statusText.textContent="No human";
+          statusText.style.color="lightgreen";
         }
-      } else {
-        statusText.textContent="No human";
-        statusText.style.color="lightgreen";
-      }
-    } catch(e){ console.error("Detection error", e); }
+      } catch(e){ console.error("Detection error", e); }
+    }
   }
 
   setTimeout(detectLoop,250);
 }
 
-// Snapshot function
-async function handleSnapshot(tag){
-  try{
-    const snapCanvas = document.createElement("canvas");
-    snapCanvas.width=video.videoWidth;
-    snapCanvas.height=video.videoHeight;
-    snapCanvas.getContext("2d").drawImage(video,0,0);
-    const blob = await new Promise(res=>snapCanvas.toBlob(res,"image/jpeg",0.8));
-    const timestamp = new Date().toISOString().replace(/[:.]/g,"-");
-    const ref = storage.ref(`detections/${timestamp}_${tag}.jpg`);
-    ref.put(blob); // fire-and-forget
-    console.log(`✅ Snapshot uploaded (${tag}):`, timestamp);
-  } catch(e){ console.warn("❌ Snapshot upload failed", e); }
-}
-
-// Login
 async function login(){
   const email=document.getElementById("email").value.trim();
   const password=document.getElementById("password").value.trim();
   loginStatus.textContent="";
-
   try{
     const userCredential = await auth.signInWithEmailAndPassword(email,password);
     const user=userCredential.user;
     if(user.email.toLowerCase()!==allowedEmail.toLowerCase()){
       await auth.signOut();
-      loginStatus.textContent="❌ Access Denied: Unauthorized User";
+      loginStatus.textContent="❌ Access Denied";
       return;
     }
 
@@ -218,22 +183,22 @@ async function login(){
     await startCamera();
 
     await new Promise(resolve=>{
-      const check=()=>{ video.videoWidth>0?resolve():setTimeout(check,100); }; check();
+      if(video.readyState>=2) resolve();
+      else video.onloadedmetadata=()=>resolve();
     });
 
     statusText.textContent="Loading model...";
-    model=await cocoSsd.load();
+    model = await cocoSsd.load();
     console.log("✅ Model loaded");
     statusText.textContent="Ready";
 
     db.ref("system").set(1);
-    db.ref("system").on("value",snap=>systemEnabled=snap.val()===1);
+    db.ref("system").on("value",snap=>systemEnabled = snap.val()===1);
 
     detectLoop();
-  } catch(err){ loginStatus.textContent="❌ "+err.message; }
+  }catch(err){ loginStatus.textContent="❌ "+err.message; }
 }
 
-// Logout
 function logout(){
   auth.signOut();
   if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
@@ -242,8 +207,8 @@ function logout(){
   title.style.display="none";
   logoutBtn.style.display="none";
   statusText.textContent="";
-  loginStatus.textContent="";
 }
+
 </script>
 </body>
 </html>
