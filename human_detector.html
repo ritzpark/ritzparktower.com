@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Human & Cover Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<style>
+body { background: #111; color: white; text-align: center; margin: 0; padding: 10px; font-family: sans-serif; }
+video { display: none; }
+#status { margin-top: 20px; font-size: 1.3em; }
+</style>
+</head>
+<body>
+
+<h2>Human Detection System (Telegram)</h2>
+<div id="status">Initializing...</div>
+<video id="video" autoplay muted playsinline></video>
+
+<script>
+// ====== Telegram Bot Config ======
+const BOT_TOKEN = "8264698597:AAHXw66ZYixJOgw2D6bgSkMk6uzl5gsfIUE";
+const CHAT_ID = -4610726835; // MotionDetector group
+
+// ====== Telegram Send Function ======
+async function sendPhotoToTelegram(blob, caption="Snapshot") {
+  const formData = new FormData();
+  formData.append("chat_id", CHAT_ID);
+  formData.append("photo", blob, "snapshot.jpg");
+  formData.append("caption", caption);
+
+  try {
+    let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+      method: "POST",
+      body: formData
+    });
+    let data = await res.json();
+    console.log("Telegram send result:", data);
+    if (!data.ok) saveLocal(blob, caption);
+  } catch (e) {
+    console.error("Telegram send failed", e);
+    saveLocal(blob, caption);
+  }
+}
+
+// ====== Local Save Fallback ======
+function saveLocal(blob, tag) {
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  const ts = new Date().toISOString().replace(/[:.]/g,"-");
+  a.href = url;
+  a.download = `snapshot_${tag}_${ts}.jpg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  console.log("💾 Snapshot saved locally:", a.download);
+}
+
+// ====== Video + Detection ======
+const video = document.getElementById("video");
+const statusText = document.getElementById("status");
+
+let model;
+let lastSnapshotTime = 0;
+let isCurrentlyCovered = false;
+
+const detectCanvas = document.createElement("canvas");
+const detectCtx = detectCanvas.getContext("2d");
+detectCanvas.width = 160;
+detectCanvas.height = 120;
+
+async function startCamera() {
+  try {
+    try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } }); }
+    catch { try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); }
+    catch { stream = await navigator.mediaDevices.getUserMedia({ video: true }); } }
+    video.srcObject = stream;
+    await video.play();
+  } catch (e) {
+    console.error("Camera error", e);
+    statusText.textContent="Camera error. Allow access and reload.";
+  }
+}
+
+// ====== Cover Check ======
+function checkCoverColor(video){
+  detectCtx.drawImage(video,0,0,detectCanvas.width,detectCanvas.height);
+  const data=detectCtx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
+  const totalPixels=(detectCanvas.width*detectCanvas.height);
+  let counts={black:0,white:0,red:0,green:0,blue:0,yellow:0,purple:0};
+
+  for(let i=0;i<data.length;i+=4){
+    const r=data[i],g=data[i+1],b=data[i+2];
+    const lum=0.2126*r + 0.7152*g + 0.0722*b;
+    if(lum<40) counts.black++;
+    else if(lum>180 && r>170 && g>170 && b>170) counts.white++;
+    else if(r>150 && g<80 && b<80) counts.red++;
+    else if(g>150 && r<80 && b<80) counts.green++;
+    else if(b>150 && r<80 && g<80) counts.blue++;
+    else if(r>150 && g>150 && b<100) counts.yellow++;
+    else if(r>120 && b>120 && g<100) counts.purple++;
+  }
+
+  // pick dominant color if >90%
+  let dominant = null;
+  for(const color in counts){
+    if(counts[color] / totalPixels > 0.9) dominant = color;
+  }
+  return dominant;
+}
+
+// ====== Snapshot ======
+async function handleSnapshot(tag){
+  try{
+    const snapCanvas=document.createElement("canvas");
+    snapCanvas.width=video.videoWidth;
+    snapCanvas.height=video.videoHeight;
+    snapCanvas.getContext("2d").drawImage(video,0,0);
+    const blob = await new Promise(res=>snapCanvas.toBlob(res,"image/jpeg",0.8));
+
+    await sendPhotoToTelegram(blob, `${tag} @ ${new Date().toLocaleString()}`);
+    console.log(`📸 Snapshot sent (${tag})`);
+  }catch(e){console.warn("Snapshot failed", e);}
+}
+
+// ====== Main Detection Loop ======
+async function detectLoop(){
+  if(video.videoWidth===0){ setTimeout(detectLoop,250); return; }
+
+  const coverColor = checkCoverColor(video);
+
+  if(coverColor && !isCurrentlyCovered){
+    // just became covered
+    isCurrentlyCovered = true;
+    statusText.textContent = `⚠️ Camera covered (${coverColor})`;
+    statusText.style.color="red";
+    await handleSnapshot("COVERED-"+coverColor);
+    setTimeout(()=>handleSnapshot("COVERED-"+coverColor),300);
+
+  } else if(!coverColor && isCurrentlyCovered){
+    // just became normal
+    isCurrentlyCovered = false;
+    statusText.textContent="✅ Camera normal";
+    statusText.style.color="lightgreen";
+    await handleSnapshot("UNCOVERED");
+    setTimeout(()=>handleSnapshot("UNCOVERED"),300);
+
+  } else if(!coverColor && !isCurrentlyCovered){
+    // normal → run human detection
+    if(model){
+      try{
+        const predictions = await model.detect(video);
+        const found = predictions.some(p=>p.class==="person" && p.score>0.6);
+        if(found){
+          statusText.textContent="👤 Human detected!";
+          statusText.style.color="orange";
+          const now = Date.now();
+          if(now-lastSnapshotTime>1500){
+            lastSnapshotTime = now;
+            handleSnapshot("HUMAN");
+          }
+        } else {
+          statusText.textContent="No human";
+          statusText.style.color="lightgreen";
+        }
+      } catch(e){ console.error("Detection error", e); }
+    }
+  }
+
+  setTimeout(detectLoop,250);
+}
+
+// ====== Init ======
+(async ()=>{
+  statusText.textContent="Starting camera...";
+  await startCamera();
+
+  await new Promise(resolve=>{
+    if(video.readyState>=2) resolve();
+    else video.onloadedmetadata=()=>resolve();
+  });
+
+  statusText.textContent="Loading model...";
+  model = await cocoSsd.load();
+  console.log("✅ Model loaded");
+  statusText.textContent="Ready";
+
+  detectLoop();
+})();
+</script>
+</body>
+</html>
