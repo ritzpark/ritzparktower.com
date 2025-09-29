@@ -157,7 +157,7 @@ async function detectLoop(){
           statusText.textContent="👤 Human detected!";
           statusText.style.color="orange";
           const now = Date.now();
-          if(now-lastSnapshotTime>1500){
+          if(now-lastSnapshotTime>500){
             lastSnapshotTime = now;
             handleSnapshot("HUMAN");
           }
