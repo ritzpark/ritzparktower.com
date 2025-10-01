@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Housekeeping App</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <!-- Login -->
+  <div id="loginPage" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm">
+    <h1 class="text-2xl font-bold text-center mb-4">Staff Login</h1>
+    <input id="password" type="password" placeholder="Enter Password"
+      class="w-full p-3 border rounded mb-4 focus:ring focus:ring-blue-200" />
+    <button onclick="login()" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold">Login</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden w-full">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Welcome, <span id="staffName"></span></h2>
+      <p class="text-gray-500">Date: <span id="todayDate"></span></p>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border border-gray-200 text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border p-2">Room</th>
+            <th class="border p-2">Status</th>
+            <th class="border p-2">Last Update</th>
+            <th class="border p-2">Action</th>
+          </tr>
+        </thead>
+        <tbody id="roomTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white w-11/12 max-w-2xl rounded-2xl shadow-xl p-6 overflow-y-auto max-h-[90vh]">
+      <h2 class="text-xl font-bold mb-4">Update Room <span id="modalRoom"></span></h2>
+
+      <div class="flex justify-between mb-4 text-sm text-gray-600">
+        <p><strong>Staff:</strong> <span id="modalStaff"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+      </div>
+
+      <table class="w-full border border-gray-300 text-center text-sm">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="border border-gray-300 p-2">Item</th>
+            <th class="border border-gray-300 p-2">Replace</th>
+            <th class="border border-gray-300 p-2">Remove</th>
+          </tr>
+        </thead>
+        <tbody id="itemRows"></tbody>
+      </table>
+
+      <div class="flex justify-end gap-3 mt-6">
+        <button onclick="closeModal()" class="bg-gray-300 px-4 py-2 rounded-lg">Cancel</button>
+        <button onclick="saveRoom()" class="bg-green-600 text-white px-4 py-2 rounded-lg">Save</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Firebase Config (replace with your project details)
+  const firebaseConfig = {
+  apiKey: "AIzaSyAkeOg03o7UEQgSQFgcvIF9wlDJk1ysvEU",
+  authDomain: "olxdgf.firebaseapp.com",
+  databaseURL: "https://olxdgf-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "olxdgf",
+  storageBucket: "olxdgf.appspot.com",
+  messagingSenderId: "667703552288",
+  appId: "1:667703552288:web:bcff35c77f872078c20f45",
+  measurementId: "G-C9XQPGWTJV"
+};
+
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  let currentStaff = "";
+  let currentFloor = "";
+  let currentRoom = "";
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("todayDate").innerText = today;
+
+  // Items
+  const items = [
+    "Twin Sheet","Twin Cover","King Sheet","King Cover",
+    "Pillow Case","Bath Towel","Hand Towel","Bath Mat"
+  ];
+
+  function createCounterCell(id) {
+    return `
+      <div class="flex items-center justify-center gap-2">
+        <button onclick="changeCount('${id}', -1)" class="bg-red-500 text-white px-2 rounded">-</button>
+        <span id="${id}" class="min-w-[20px] text-center">0</span>
+        <button onclick="changeCount('${id}', 1)" class="bg-green-500 text-white px-2 rounded">+</button>
+      </div>
+    `;
+  }
+
+  function login() {
+    const pass = document.getElementById("password").value.trim();
+    db.ref("Setup/passwords/" + pass).once("value").then(snap => {
+      if (snap.exists()) {
+        let data = snap.val();
+        currentStaff = data.staff;
+        currentFloor = data.floor;
+        document.getElementById("staffName").innerText = currentStaff;
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        loadRooms();
+      } else {
+        alert("Invalid password!");
+      }
+    });
+  }
+
+  function loadRooms() {
+    const table = document.getElementById("roomTable");
+    table.innerHTML = "";
+
+    for (let i = 1; i <= 20; i++) {
+      const roomNo = (currentFloor * 1000) + i;
+      const row = document.createElement("tr");
+      row.id = "row" + roomNo;
+      row.innerHTML = `
+        <td class="border p-2 text-center">${roomNo}</td>
+        <td class="border p-2 text-center" id="status${roomNo}">❌ Not Done</td>
+        <td class="border p-2 text-center" id="time${roomNo}">-</td>
+        <td class="border p-2 text-center">
+          <button onclick="openModal(${roomNo})" class="bg-blue-500 text-white px-3 py-1 rounded">Update</button>
+        </td>
+      `;
+      table.appendChild(row);
+
+      // Watch Firebase for updates
+      db.ref("Attendance/" + today + "/" + currentStaff + "/Room" + roomNo)
+        .on("value", snap => {
+          if (snap.exists()) {
+            let data = snap.val();
+            let statusCell = document.getElementById("status" + roomNo);
+            let timeCell = document.getElementById("time" + roomNo);
+
+            // Detect status
+            let total = 0, sum = 0;
+            items.forEach(item => {
+              let replace = parseInt(data[item]?.replace || 0);
+              let remove = parseInt(data[item]?.remove || 0);
+              total += replace + remove;
+              if (replace > 0 || remove > 0) sum++;
+            });
+
+            if (sum === 0) {
+              statusCell.innerHTML = "❌ Not Done";
+              statusCell.className = "border p-2 text-center text-red-600 font-bold";
+            } else if (sum < items.length) {
+              statusCell.innerHTML = "⚠ Partial";
+              statusCell.className = "border p-2 text-center text-yellow-600 font-bold";
+            } else {
+              statusCell.innerHTML = "✔ Cleaned";
+              statusCell.className = "border p-2 text-center text-green-600 font-bold";
+            }
+
+            timeCell.innerText = data.time || "-";
+          }
+        });
+    }
+  }
+
+  function openModal(room) {
+    currentRoom = room;
+    document.getElementById("modalRoom").innerText = room;
+    document.getElementById("modalStaff").innerText = currentStaff;
+    document.getElementById("modalDate").innerText = today;
+
+    const rows = document.getElementById("itemRows");
+    rows.innerHTML = "";
+
+    // Load saved values if exist
+    db.ref("Attendance/" + today + "/" + currentStaff + "/Room" + room).once("value").then(snap => {
+      let saved = snap.val() || {};
+
+      items.forEach(item => {
+        const key = item.replace(/\s+/g, '_');
+        const replaceVal = saved[item]?.replace || 0;
+        const removeVal = saved[item]?.remove || 0;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="border border-gray-300 p-2">${item}</td>
+          <td class="border border-gray-300 p-2">${createCounterCell("replace_" + key)}</td>
+          <td class="border border-gray-300 p-2">${createCounterCell("remove_" + key)}</td>
+        `;
+        rows.appendChild(row);
+
+        document.getElementById("replace_" + key).innerText = replaceVal;
+        document.getElementById("remove_" + key).innerText = removeVal;
+      });
+
+      document.getElementById("modal").classList.remove("hidden");
+    });
+  }
+
+  function changeCount(id, delta) {
+    let el = document.getElementById(id);
+    let value = parseInt(el.innerText) || 0;
+    value = Math.max(0, value + delta);
+    el.innerText = value;
+  }
+
+  function saveRoom() {
+    let data = { time: new Date().toLocaleTimeString() };
+
+    items.forEach(item => {
+      const key = item.replace(/\s+/g, '_');
+      data[item] = {
+        replace: document.getElementById("replace_" + key).innerText,
+        remove: document.getElementById("remove_" + key).innerText
+      };
+    });
+
+    db.ref("Attendance/" + today + "/" + currentStaff + "/Room" + currentRoom).set(data);
+    closeModal();
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+  }
+</script>
+</body>
+</html>
