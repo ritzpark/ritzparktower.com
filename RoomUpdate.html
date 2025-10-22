@@ -1,1304 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Housekeeping Service</title>
-    <style>
-        /* Your CSS styles here */
-        .container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 1px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1px;
-            display: flex;
-            flex-direction: row; /* Arrange items horizontally */
-            justify-content: space-between; /* Space between items */
-        }
- .button {
-           width: 20%;
-            display: block;
-            padding: 15px;
-            background-color: #007bff;
-            color: #fff;
-            text-align: center;
-            border: none;
-            border-radius: ;
-            cursor: pointer;
-font-size: 25px;
-          }
-        .inner-container {
-            padding: 8px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-bottom: 10px; /* Add margin between inner containers */
-            width: 48%; /* Reduce width to accommodate margins and spacing */
-        }
-
-        /* Style for text views and input text fields */
-        .text-view {
-            margin-bottom: 10px;
-            font-size: 12px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-
-        /* Different background colors for text views */
-        #NAMEitems {
-            background-color: #dc143c; /* Gold */
-        }
-
-        #NAMEitems2 {
-            background-color: #00ff00 ; /* Light salmon */
-        }
-        #NAMEitems3 {
-            background-color: #dc143c ; /* Light salmon */
-        }
-        #NAMEitems4 {
-            background-color: #00ff00 ; /* Light salmon */
-        }
-        #NAMEitems5 {
-            background-color: #dc143c ; /* Light salmon */
-        }
-       #NAMEitems6 {
-            background-color: #00ff00 ; /* Light salmon */
-        }
-       #NAMEitems7 {
-            background-color: #dc143c ; /* Light salmon */
-        }
-       #NAMEitems8 {
-            background-color: #00ff00 ; /* Light salmon */
-        }
-#DATE {
-            background-color: #00ff00 ; /* Light salmon */
-width: 40%; 
-        }
-#LAST {
-            background-color: #ffffff ; /* Light salmon */
-        }
-#LOAD {
-            background-color: #FFFF00 ; /* Light salmon */
-        width: 60%; 
-        }
-
-
-       #replaceitems {
-            background-color: #dc143c; /* Gold */
-          font-size: 15px;
-        }
-
-       #replaceitems2 {
-            background-color: #ffa07a; /* Light salmon */
-        }
-h2 {
-            font-size: 20px;
-            color: #333; /* Text color */
-            margin-bottom: 10px; /* Add some space below */
-                }
-
- #inputText1 {
-            background-color: #ffa07a; /* Light blue */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-               margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-
-       #inputText2 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-      #inputText3 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-      #inputText4 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-     #inputText5 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText6 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText7 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText8 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-
-#inputText9 {
-            background-color: #ffa07a; /* Light blue */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-               margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-
-       #inputText10 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-      #inputText11 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-      #inputText12 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-     #inputText13 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText14 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText15 {
-            background-color: #ffa07a; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
- #inputText16 {
-            background-color: #90ee90; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 11px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 100%; /* Ensure inputs take full width */
-        }
-
-
-
-
-
-
-#hours {
-            background-color: #FFFF00; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 14px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 50%; /* Ensure inputs take full width */
-        }
-
-
-#Minutes {
-            background-color: #FFFF00; /* Light green */
-            color: #333; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 14px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 50%; /* Ensure inputs take full width */
-        }
-#SUBMIT {
-            background-color: #2E2EFE; /* Light green */
-            color: #FFFFFF; /* Text color */
-            border: 1px solid #ccc; /* Add border */
-            box-sizing: border-box; /* Include border in the width */
-            margin-bottom: 10px;
-            font-size: 14px;
-            padding: 10px; /* Add padding */
-            border-radius: 5px; /* Add border radius */
-            width: 50%; /* Ensure inputs take full width */
-        }
-
-        #staffname {
-             color: #f9f9f9; /* Text color */
-
-                     width: 100%;
-        }
-
-
-               #RLTS {
-            background-color: #dc143c; /* Gold */
-          width: 90%;
-        }
-
-#ROOMNUMBER
- {
-            background-color: #00ff00 ; /* Light salmon */
-        width: 90%;
-        }
-#DATE
- {
-            background-color: #00ff00 ; /* Light salmon */
-        width: 90%;
-        }
-#DATE1
- {
-            background-color: #00ff00 ; /* Light salmon */
-        width: 90%;
-        }
-
-#LASTDATA
- {
-            background-color: #00ff00 ; /* Light salmon */
-        width: 90%;
-        }
-
-        #RLTC {
-            background-color: #00ff00 ; /* Light salmon */
-        width: 90%;
-        }
-
-        #RLKS {
-            background-color: #dc143c ; /* Light salmon */
-         width: 90%;
-        }
-
-        #RRLP {
-            background-color: #dc143c ; /* Light salmon */
-          width: 90%;
-        }
-
-        #RRLBT {
-            background-color: #00ff00 ; /* Light salmon */
-            width: 90%;
-        }
-
-       #RLHT {
-            background-color: #dc143c ; /* Light salmon */
-       width: 90%;
-        }
-
-       #RLBM {
-            background-color: #00ff00 ; /* Light salmon */
-           width: 90%;
-        }
-
-       #RLKC {
-            background-color: #00ff00 ; /* Light salmon */
-             width: 90%;
-        }
-
-         #RTS{
-            background-color: #dc143c; /* Gold */
-         width: 100%;
-        }
-
-        #RTC {
-            background-color: #00ff00 ; /* Light salmon */
-         width: 100%;
-        }
-        #RKS {
-            background-color: #dc143c ; /* Light salmon */
-              width: 100%;
-        }
-        #RKC {
-            background-color: #00ff00 ; /* Light salmon */
-             width: 100%;
-        }
-        #RP {
-            background-color: #dc143c ; /* Light salmon */
-             width: 100%;
-        }
-       #RBT {
-            background-color: #00ff00 ; /* Light salmon */
-              width: 100%;
-        }
-       #RHT {
-            background-color: #dc143c ; /* Light salmon */
-            width: 100%;
-        }
-       #RBM {
-            background-color: #00ff00 ; /* Light salmon */
-             width: 100%;
-        }
-#STAFFNAME{
-            background-color: #00ff00 ; /* Light salmon */
-             width: 100%;
-        }
-#LOAD{
-            background-color: #00ff00 ; /* Light salmon */
-             width: 90%;
-        }
-
-
-
-
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Housekeeping Admin Panel</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{
+    --bg:#f2f4f8; --card:#ffffff; --muted:#6b7280;
+    --accent:#1f6feb; --ok:#1e7e34; --warn:#d6333f;
+    --glass: rgba(255,255,255,0.8);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#f6f8fb 0%,var(--bg) 100%);color:#0f1724}
+  .container{max-width:1200px;margin:28px auto;padding:22px}
+  .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6b90ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+  h1{margin:0;font-size:20px}
+  .controls{display:flex;align-items:center;gap:8px}
+  input[type="date"]{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;background:#fff}
+  button.btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+  button.primary{background:var(--accent);color:#fff}
+  button.ghost{background:transparent;border:1px solid #e6e9ef;color:var(--muted)}
+  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(19,24,47,0.06)}
+  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:72vh}
+  .login-card{width:520px;padding:28px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfdff);box-shadow:0 10px 30px rgba(2,6,23,0.08)}
+  .login-card h2{margin:0 0 8px 0;font-size:22px}
+  .muted{color:var(--muted);font-size:14px}
+  .field{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  input[type="password"]{padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:15px}
+  .error{color:var(--warn);margin-top:8px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
+  .floor-card{padding:18px;border-radius:12px;transition:transform .12s,box-shadow .12s;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+  .floor-card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(12,22,60,0.08)}
+  .floor-title{display:flex;align-items:center;justify-content:space-between}
+  .floor-name{font-weight:700;font-size:16px}
+  .stats{display:flex;gap:10px;align-items:center}
+  .stat{padding:8px 12px;border-radius:8px;background:rgba(15,23,36,0.03);font-weight:600}
+  .stat.small{font-weight:500;font-size:13px}
+  .ok{color:var(--ok);font-weight:700}
+  .bad{color:var(--warn);font-weight:700}
+  .floor-meta{color:var(--muted);font-size:13px}
+  .back-btn{margin-bottom:12px}
+  .table-wrap{overflow:auto;background:transparent;margin-top:8px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eef2f6}
+  th{font-size:13px;color:var(--muted);font-weight:700}
+  td .small{font-size:13px;color:var(--muted)}
+  tr.okrow{background:linear-gradient(90deg,rgba(34,197,94,0.06),transparent)}
+  tr.badrow{background:linear-gradient(90deg,rgba(214,51,63,0.05),transparent)}
+  .pill{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px}
+  .pill.ok{background:rgba(34,197,94,0.12);color:var(--ok)}
+  .pill.bad{background:rgba(214,51,63,0.08);color:var(--warn)}
+  @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}.container{padding:12px}}
+</style>
 </head>
 <body>
+<div class="container">
 
-<div id="Container1" class="container">
-    <!-- First Inner Container (Left Side) -->
-    <div id="InnerContainer1" class="inner-container">
-<div class="text-view" id="ROOMNUMBER">2001</div>
-
-        <h2>  Name</h2>
-        <div class="text-view" id="NAMEitems">Twin Sheet</div>
-        <div class="text-view" id="NAMEitems2">Twin Cover</div>
-         <div class="text-view" id="NAMEitems3">King Sheet</div>
-        <div class="text-view" id="NAMEitems4">King Cover</div>
-         <div class="text-view" id="NAMEitems5">PillowCase</div>
-        <div class="text-view" id="NAMEitems6">Bath Towel</div>
-         <div class="text-view" id="NAMEitems7">Hand Towel</div>
-        <div class="text-view" id="NAMEitems8">Bath Mat</div>
-
+  <div id="headerTop" class="header card">
+    <div class="brand">
+      <div class="logo">HK</div>
+      <div>
+        <h1>Housekeeping — Admin Panel</h1>
+        <div class="muted">Supervisor dashboard — monitor floors, rooms & reports</div>
+      </div>
     </div>
-    <div id="InnerContainer3" class="inner-container">
-<div class="text-view" id="STAFFNAME">Loading</div>
-        <h2>  Replace</h2>
-       <input type="text" id="inputText1" placeholder="Type here">
-        <br>
-        <input type="text" id="inputText2" placeholder="Type here">
-       <br>
-        <input type="text" id="inputText3" placeholder="Type here">
-<br>
-        <input type="text" id="inputText4" placeholder="Type here">
-<br>
-        <input type="text" id="inputText5" placeholder="Type here">
-<br>
-        <input type="text" id="inputText6" placeholder="Type here">
-<br>
-        <input type="text" id="inputText7" placeholder="Type here">
-<br>
-        <input type="text" id="inputText8" placeholder="Type here">
-
-     </div>
-
-    <!-- Second Inner Container (Right Side) -->
-    <div id="InnerContainer2" class="inner-container">
-<div class="text-view" id="DATE">Loading</div>
-
-        <h2>  Remove</h2>
-         <input type="text" id="inputText9" placeholder="Type here">
-        <br>
-        <input type="text" id="inputText10" placeholder="Type here">
-             <br>
-        <input type="text" id="inputText11" placeholder="Type here">
- <br>
-        <input type="text" id="inputText12" placeholder="Type here">
- <br>
-        <input type="text" id="inputText13" placeholder="Type here">
- <br>
-        <input type="text" id="inputText14" placeholder="Type here">
- <br>
-        <input type="text" id="inputText15" placeholder="Type here">
- <br>
-        <input type="text" id="inputText16" placeholder="Type here">
-
+    <div class="controls">
+      <label class="muted">Date</label>
+      <input id="datePicker" type="date">
+      <button id="btnLogout" class="btn ghost" style="display:none">Logout</button>
     </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="screen-login" class="login-wrap">
+    <div class="login-card card">
+      <h2>Admin Login</h2>
+      <div class="muted">Enter password stored in <code>Password/AdminKey</code></div>
+      <div class="field">
+        <input id="adminPass" type="password" placeholder="Admin password">
+        <div style="display:flex;gap:8px;">
+          <button id="btnAdminLogin" class="btn primary">Login</button>
+          <button id="btnDemo" class="btn ghost">Demo</button>
+        </div>
+        <div id="loginErr" class="error" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="screen-dashboard" class="card" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <h2 style="margin:0">Overview</h2>
+        <div class="muted">Floors 2 — 14. Click any floor for details.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="btnRefreshDashboard" class="btn ghost">Refresh</button>
+        <button id="btnExportAll" class="btn ghost">Export All CSV</button>
+      </div>
+    </div>
+
+    <!-- Add Extra Room -->
+    <div id="extraRoomPanel" style="margin-top:20px;padding:14px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;">
+      <h3 style="margin-top:0;">➕ Add Extra Room</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <select id="floorSelect" style="padding:8px;border-radius:8px;border:1px solid #ccc;">
+          <option value="">Select Floor</option>
+          <option>2ND FLOOR</option><option>3RD FLOOR</option><option>4TH FLOOR</option>
+          <option>5TH FLOOR</option><option>6TH FLOOR</option><option>7TH FLOOR</option>
+          <option>8TH FLOOR</option><option>9TH FLOOR</option><option>10TH FLOOR</option>
+          <option>11TH FLOOR</option><option>12TH FLOOR</option><option>13TH FLOOR</option><option>14TH FLOOR</option>
+        </select>
+        <input id="extraRoomNumber" type="text" placeholder="Enter room number" style="padding:8px;border-radius:8px;border:1px solid #ccc;width:150px;">
+        <button id="btnAddExtraRoom" class="btn primary">Add Room</button>
+        <div id="extraRoomMsg" class="muted" style="margin-left:8px;"></div>
+      </div>
+    </div>
+
+    <div id="floorsGrid" class="grid" style="margin-top:14px"></div>
+  </div>
+
+  <!-- FLOOR DETAILS -->
+  <div id="screen-floor" class="card" style="display:none">
+    <button id="btnBackToDash" class="btn ghost back-btn">← Back</button>
+    <h2 id="floorTitle">Floor</h2>
+    <div id="floorSummary" class="muted" style="font-weight:600"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Room</th><th>Staff</th><th>Time In</th><th>Time Out</th><th>Replace</th><th>Remove</th><th>Status</th></tr>
+        </thead>
+        <tbody id="roomTableBody"></tbody>
+      </table>
+    </div>
+    <button id="btnExportCSV" class="btn primary" style="margin-top:10px;">Export CSV</button>
+  </div>
+
 </div>
 
-<!-- Container2 and Container3 -->
-<div id="Container2" class="container">
-   <input type="text" id="hours" placeholder="Hours">
-<input type="text" id="Minutes" placeholder="Minutes">
-    <button class="button" id="SUBMIT">DONE</button>
-</div>
-
-
-<div id="Container3" class="container">
-    <!-- First Inner Container (Left Side) -->
-    <div id="InnerContainer4" class="inner-container">
-        <div class="text-view" id="LASTDATA">Last Data</div>
-        <h2>  Name</h2>
-        <div class="text-view" id="NAMEitems">Twin Sheet</div>
-        <div class="text-view" id="NAMEitems2">Twin Cover</div>
-         <div class="text-view" id="NAMEitems3">King Sheet</div>
-        <div class="text-view" id="NAMEitems4">King Cover</div>
-         <div class="text-view" id="NAMEitems5">PillowCase</div>
-        <div class="text-view" id="NAMEitems6">Bath Towel</div>
-         <div class="text-view" id="NAMEitems7">Hand Towel</div>
-        <div class="text-view" id="NAMEitems8">Bath Mat</div>
-
-    </div>
-    <div id="InnerContainer5" class="inner-container">
-<div class="text-view" id="DATE1">DATE:</div>
-
-
-        <h2>  Replace</h2>
-       <div class="text-view" id="RTS">Twin Sheet</div>
-        <div class="text-view" id="RTC">Twin Cover</div>
-         <div class="text-view" id="RKS">King Sheet</div>
-        <div class="text-view" id="RKC">King Cover</div>
-         <div class="text-view" id="RP">PillowCase</div>
-        <div class="text-view" id="RBT">Bath Towel</div>
-         <div class="text-view" id="RHT">Hand Towel</div>
-        <div class="text-view" id="RBM">Bath Mat</div>
-
-     </div>
-
-    <!-- Second Inner Container (Right Side) -->
-    <div id="InnerContainer6" class="inner-container">
-<div class="text-view" id="LOAD">Loading...</div>
-
-
-
-        <h2>  Remove</h2>
-         <div class="text-view" id="RLTS">Twin Sheet</div>
-        <div class="text-view" id="RLTC">Twin Cover</div>
-         <div class="text-view" id="RLKS">King Sheet</div>
-        <div class="text-view" id="RLKC">King Cover</div>
-         <div class="text-view" id="RRLP">PillowCase</div>
-        <div class="text-view" id="RRLBT">Bath Towel</div>
-         <div class="text-view" id="RLHT">Hand Towel</div>
-        <div class="text-view" id="RLBM">Bath Mat</div>
-
-
-    </div>
-
-    </div>
-
-    <!-- Firebase JavaScript SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
 <script>
-  // Initialize Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
-    authDomain: "ritz-hk.firebaseapp.com",
-    databaseURL: "https://ritz-hk-default-rtdb.firebaseio.com",
-    projectId: "ritz-hk",
-    storageBucket: "ritz-hk.appspot.com",
-    messagingSenderId: "975572159061",
-    appId: "1:975572159061:web:f280915806e9820abd22dc",
-    measurementId: "G-Z6J3WDJQ4J"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
+  authDomain: "ritz-hk.firebaseapp.com",
+  databaseURL: "https://ritz-hk-default-rtdb.firebaseio.com",
+  projectId: "ritz-hk",
+  storageBucket: "ritz-hk.appspot.com",
+  messagingSenderId: "975572159061",
+  appId: "1:975572159061:web:f280915806e9820abd22dc",
+  measurementId: "G-Z6J3WDJQ4J"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+function $(id){return document.getElementById(id);}
+function todayISO(){const d=new Date();return d.toISOString().split('T')[0];}
+function keyFromISO(iso){const d=new Date(iso);return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;}
+const FLOORS=["2ND FLOOR","3RD FLOOR","4TH FLOOR","5TH FLOOR","6TH FLOOR","7TH FLOOR","8TH FLOOR","9TH FLOOR","10TH FLOOR","11TH FLOOR","12TH FLOOR","13TH FLOOR","14TH FLOOR"];
+const REPLACE_KEYS=['Twin Bed Sheet Replace','Twin Duvet Cover Replace','King Bed Sheet Replace','King Duvet Cover Replace','Pillowcase Replace','Bath Towel Replace','Hand Towel Replace','Bath Mat Replace'];
+const REMOVE_KEYS=['Twin Bed Sheet Remove','Twin Duvet Cover Remove','King Bed Sheet Remove','King Duvet Cover Remove','Pillowcase Remove','Bath Towel Remove','Hand Towel Remove','Bath Mat Remove'];
 
-  firebase.initializeApp(firebaseConfig);
+let ADMIN_OK=false,currentFloor=null,currentDateKey=keyFromISO(todayISO());
+$('datePicker').value=todayISO();
+$('datePicker').addEventListener('change',()=>{currentDateKey=keyFromISO($('datePicker').value);if($('screen-dashboard').style.display!=='none')loadDashboardFast();});
+async function getAdminKey(){try{const s=await db.ref('Password/AdminKey').once('value');return s.val();}catch(e){return null;}}
+$('btnAdminLogin').onclick=async()=>{const pw=$('adminPass').value.trim();if(!pw)return;const key=await getAdminKey();if(String(key).trim()===pw){ADMIN_OK=true;showDashboard();}else alert('Invalid password');};
+$('btnDemo').onclick=()=>{ADMIN_OK=true;showDashboard();};
+$('btnLogout').onclick=()=>{ADMIN_OK=false;$('screen-login').style.display='flex';$('screen-dashboard').style.display='none';$('btnLogout').style.display='none';};
+function showDashboard(){$('screen-login').style.display='none';$('screen-dashboard').style.display='block';$('btnLogout').style.display='inline-block';loadDashboardFast();}
+async function loadDashboardFast(){const grid=$('floorsGrid');grid.innerHTML='';FLOORS.forEach(f=>{const c=document.createElement('div');c.className='card floor-card';c.innerHTML=`<div class="floor-title"><div class="floor-name">${f}</div><div class="floor-meta muted">--</div></div><div style="display:flex;justify-content:space-between"><div><div class="muted">Total</div><div class="stat small">--</div></div><div><div class="muted">Completed</div><div class="stat small ok">--</div></div><div><div class="muted">Mismatch</div><div class="stat small bad">--</div></div></div>`;c.onclick=()=>openFloorDetails(f);grid.appendChild(c);});setTimeout(()=>loadDashboardSummary(currentDateKey),200);}
+async function loadDashboardSummary(dateKey){try{const roomSnaps=await Promise.all(FLOORS.map(f=>db.ref(`RoomsData/${f}`).once('value')));const dailySnap=await db.ref('DailyAttended').once('value');const daily=dailySnap.val()||{};FLOORS.forEach((f,i)=>{const card=[...$('floorsGrid').children].find(x=>x.querySelector('.floor-name').textContent===f);const d=roomSnaps[i].val()||{};const rooms=Object.entries(d).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);let total=rooms.length,done=0,bad=0;rooms.forEach(r=>{const rec=daily[`${r}-${dateKey}`];if(rec){let all=REPLACE_KEYS.every((k,j)=>Number(rec[k]||0)===Number(rec[REMOVE_KEYS[j]]||0));if(all)done++;else bad++;}});card.querySelector('.stat.small').textContent=total;card.querySelector('.stat.small.ok').textContent=done;card.querySelector('.stat.small.bad').textContent=bad;card.style.borderLeft=bad?'4px solid var(--warn)':done?'4px solid var(--ok)':'4px solid transparent';});}catch(e){console.error(e);}}
+$('btnRefreshDashboard').onclick=()=>loadDashboardFast();
+async function openFloorDetails(floor){currentFloor=floor;$('screen-dashboard').style.display='none';$('screen-floor').style.display='block';$('floorTitle').textContent=floor;const snap=await db.ref(`RoomsData/${floor}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);$('roomTableBody').innerHTML='';let ok=0,bad=0;for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};let all=REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));if(Object.keys(val).length){if(all)ok++;else bad++;}const rep=REPLACE_KEYS.map(k=>`${k.split(' ')[0]}:${val[k]||0}`).join('<br>');const rem=REMOVE_KEYS.map(k=>`${k.split(' ')[0]}:${val[k]||0}`).join('<br>');$('roomTableBody').innerHTML+=`<tr class="${all?'okrow':Object.keys(val).length&&!all?'badrow':''}"><td>${r}</td><td>${val['Staff Name']||'-'}</td><td>${val['Time In']||'-'}</td><td>${val['Time Out']||'-'}</td><td>${rep}</td><td>${rem}</td><td>${Object.keys(val).length?(all?'<span class="pill ok">OK</span>':'<span class="pill bad">Mismatch</span>'):'<span class="pill">No Data</span>'}</td></tr>`;}
+$('floorSummary').textContent=`Total ${rooms.length}, OK ${ok}, Mismatch ${bad}`;}
+$('btnBackToDash').onclick=()=>{$('screen-floor').style.display='none';$('screen-dashboard').style.display='block';};
+$('btnExportCSV').onclick=async()=>{if(!currentFloor)return;const rows=[['Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];const snap=await db.ref(`RoomsData/${currentFloor}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};const ok=Object.keys(val).length&&REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));rows.push([r,val['Staff Name']||'',val['Time In']||'',val['Time Out']||'',...REPLACE_KEYS.map(k=>val[k]||0),...REMOVE_KEYS.map(k=>val[k]||0),ok?'OK':'Mismatch']);}const csv=rows.map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${currentFloor.replace(/\s+/g,'_')}_${currentDateKey}.csv`;a.click();};
+$('btnExportAll').onclick=async()=>{const rows=[['Floor','Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];for(const f of FLOORS){const snap=await db.ref(`RoomsData/${f}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};const ok=Object.keys(val).length&&REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));rows.push([f,r,val['Staff Name']||'',val['Time In']||'',val['Time Out']||'',...REPLACE_KEYS.map(k=>val[k]||0),...REMOVE_KEYS.map(k=>val[k]||0),ok?'OK':'Mismatch']);}}const csv=rows.map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`AllFloors_${currentDateKey}.csv`;a.click();};
 
-  // Reference to your Firebase Realtime Database
-  const databaseRef = firebase.database().ref('DailyAttended');
-
-  // Function to handle form submission
-  function handleSubmit() {
-    // Gather text from the STAFFNAME, ROOMNUMBER, and DATE elements
-    const staffName = document.getElementById('STAFFNAME').innerText;
-    const roomNumber = document.getElementById('ROOMNUMBER').innerText;
-    const currentDate = document.getElementById('DATE').innerText;
-    const currentTime = new Date().toLocaleTimeString();
-
-    // Concatenate roomNumber and currentDate to create the key
-    const dataKey = `${roomNumber}-${currentDate}`;
-
-    // Initialize an empty JavaScript object to store data
-    const formData = {};
-
-    // Add the staff name to the formData
-    formData['Staff Name'] = staffName;
-
-    const hoursInput = document.getElementById('hours');
-    const minutesInput = document.getElementById('Minutes');
-    const hours = hoursInput.value.trim();
-    const minutes = minutesInput.value.trim();
-
-    if (hours === '' || minutes === '') {
-        // Highlight the empty inputs with a red border
-        if (hours === '') {
-            hoursInput.style.border = '2px solid red';
-        } else {
-            hoursInput.style.border = 'none';
-        }
-
-        if (minutes === '') {
-            minutesInput.style.border = '2px solid red';
-        } else {
-            minutesInput.style.border = 'none';
-        }
-
-        // Return to exit the function if inputs are empty
-        return;
+/* ADD EXTRA ROOM FEATURE */
+$('btnAddExtraRoom').addEventListener('click', async ()=>{
+  const floor=$('floorSelect').value.trim();
+  const room=$('extraRoomNumber').value.trim();
+  const msg=$('extraRoomMsg');
+  msg.textContent='';
+  if(!floor||!room){msg.textContent='⚠️ Select floor and enter room';return;}
+  try{
+    const ref=db.ref(`RoomsData/${floor}`);
+    const snap=await ref.once('value');
+    const data=snap.val()||{};
+    let slot=null;
+    for(let i=1;i<=5;i++){
+      const key=`ExtraRoom${i}`;
+      const val=(data[key]||'').toString().trim().toLowerCase();
+      if(!val||val==='no extra'||val==='no'||val==='noextra'){slot=key;break;}
     }
-
-    // Gather text from the input fields and text views
-    const twinSheetRM = document.getElementById('inputText9').value;
-    const twinCoverRM = document.getElementById('inputText10').value;
-    const kingSheetRM = document.getElementById('inputText11').value;
-    const kingCoverRM = document.getElementById('inputText12').value;
-    const pillowcaseRM = document.getElementById('inputText13').value;
-    const bathTowelRM = document.getElementById('inputText14').value;
-    const handTowelRM = document.getElementById('inputText15').value;
-    const bathMatRM = document.getElementById('inputText16').value;
-    const twinSheetRP = document.getElementById('inputText1').value;
-    const twinCoverRP = document.getElementById('inputText2').value;
-    const kingSheetRP = document.getElementById('inputText3').value;
-    const kingCoverRP = document.getElementById('inputText4').value;
-    const pillowcaseRP = document.getElementById('inputText5').value;
-    const bathTowelRP = document.getElementById('inputText6').value;
-    const handTowelRP = document.getElementById('inputText7').value;
-    const bathMatRP = document.getElementById('inputText8').value;
-
-    formData['Time Out'] = currentTime;
-
-    const now = new Date();
-    const currentHours = now.getHours();
-    const currentMinutes = now.getMinutes();
-    const period = currentHours < 12 ? 'AM' : 'PM';
-
-    // Format the hours and minutes
-    const formattedHours = hours.padStart(2, '0');
-    const formattedMinutes = minutes.padStart(2, '0');
-
-    // Construct the time string
-    const timeString = `${formattedHours}:${formattedMinutes} ${period}`;
-
-    // Store the time string in formData
-    formData['Time In'] = timeString;
-
-    // Check if input fields have been modified and add to formData
-    if (twinSheetRM.trim() !== '') {
-        formData['Twin Bed Sheet Remove'] = twinSheetRM;
-    }
-    if (twinCoverRM.trim() !== '') {
-        formData['Twin Duvet Cover Remove'] = twinCoverRM;
-    }
-    if (kingSheetRM.trim() !== '') {
-        formData['King Bed Sheet Remove'] = kingSheetRM;
-    }
-    if (kingCoverRM.trim() !== '') {
-        formData['King Duvet Cover Remove'] = kingCoverRM;
-    }
-    if (pillowcaseRM.trim() !== '') {
-        formData['Pillowcase Remove'] = pillowcaseRM;
-    }
-    if (bathTowelRM.trim() !== '') {
-        formData['Bath Towel Remove'] = bathTowelRM;
-    }
-    if (handTowelRM.trim() !== '') {
-        formData['Hand Towel Remove'] = handTowelRM;
-    }
-    if (bathMatRM.trim() !== '') {
-        formData['Bath Mat Remove'] = bathMatRM;
-    }
-    if (twinSheetRP.trim() !== '') {
-        formData['Twin Bed Sheet Replace'] = twinSheetRP;
-    }
-    if (twinCoverRP.trim() !== '') {
-        formData['Twin Duvet Cover Replace'] = twinCoverRP;
-    }
-    if (kingSheetRP.trim() !== '') {
-        formData['King Bed Sheet Replace'] = kingSheetRP;
-    }
-    if (kingCoverRP.trim() !== '') {
-        formData['King Duvet Cover Replace'] = kingCoverRP;
-    }
-    if (pillowcaseRP.trim() !== '') {
-        formData['Pillowcase Replace'] = pillowcaseRP;
-    }
-    if (bathTowelRP.trim() !== '') {
-        formData['Bath Towel Replace'] = bathTowelRP;
-    }
-    if (handTowelRP.trim() !== '') {
-        formData['Hand Towel Replace'] = handTowelRP;
-    }
-    if (bathMatRP.trim() !== '') {
-        formData['Bath Mat Replace'] = bathMatRP;
-    }
-
-    // Push the data to your Firebase Realtime Database with the custom key
-    databaseRef.child(dataKey).update(formData)
-        .then(() => {
-            console.log('Data submitted successfully');
-            if (confirm('Submit successful')) {
-                // Redirect to Ritz_Hk.html
-                window.location.href = 'Ritz_Hk.html';
-            }
-        })
-        .catch((error) => {
-            console.error('Error submitting data:', error);
-        });
-  }
-
-  function alertWithRedText(message) {
-    const redTextStyle = 'color: red;';
-    alert('%c' + message, redTextStyle);
-  }
-
-  // Add event listener to the submit button
-  document.getElementById('SUBMIT').addEventListener('click', handleSubmit);
-
-  // Get the query parameters from the URL
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-
-  const text2 = urlParams.get('text2');
-  const buttonText = urlParams.get('buttonText');
-
-  // Set the values of the text views
-  document.getElementById("STAFFNAME").innerText = text2;
-  document.getElementById("ROOMNUMBER").innerText = buttonText;
-
-  function constructFirebasePath() {
-    const roomNumber = document.getElementById('ROOMNUMBER').innerText;
-    return `/LastAttended/${roomNumber}`;
-  }
-
-  // Function to fetch and display text
-  function showText() {
-    const path = constructFirebasePath();
-    const dateRef = firebase.database().ref(`${path}/Date`);
-    dateRef.once('value')
-      .then((snapshot) => {
-        const text = snapshot.val();
-        document.getElementById('DATE1').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching text:', error);
-      });
-  }
-
-  function showText3() {
-    const path = constructFirebasePath();
-    const tspRef = firebase.database().ref(`${path}/Twin Bed Sheet Replace`);
-
-    tspRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RTS').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText4() {
-    const path = constructFirebasePath();
-    const tcpRef = firebase.database().ref(`${path}/Twin Duvet Cover Replace`);
-
-    tcpRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RTC').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText5() {
-    const path = constructFirebasePath();
-    const kspRef = firebase.database().ref(`${path}/King Bed Sheet Replace`);
-
-    kspRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RKS').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText6() {
-    const path = constructFirebasePath();
-    const kcpRef = firebase.database().ref(`${path}/King Duvet Cover Replace`);
-
-    kcpRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RKC').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText7() {
-    const path = constructFirebasePath();
-    const psRef = firebase.database().ref(`${path}/Pillowcase Replace`);
-
-    psRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RP').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText8() {
-    const path = constructFirebasePath();
-    const btRef = firebase.database().ref(`${path}/Bath Towel Replace`);
-
-    btRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RBT').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText9() {
-    const path = constructFirebasePath();
-    const htRef = firebase.database().ref(`${path}/Hand Towel Replace`);
-
-    htRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RHT').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText10() {
-    const path = constructFirebasePath();
-    const bmRef = firebase.database().ref(`${path}/Bath Mat Replace`);
-
-    bmRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RBM').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText11() {
-    const path = constructFirebasePath();
-    const tlsRef = firebase.database().ref(`${path}/Twin Bed Sheet Remove`);
-
-    tlsRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLTS').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText12() {
-    const path = constructFirebasePath();
-    const tlcRef = firebase.database().ref(`${path}/Twin Duvet Cover Remove`);
-
-    tlcRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLTC').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText13() {
-    const path = constructFirebasePath();
-    const klsRef = firebase.database().ref(`${path}/King Bed Sheet Remove`);
-
-    klsRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLKS').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText14() {
-    const path = constructFirebasePath();
-    const klcRef = firebase.database().ref(`${path}/King Duvet Cover Remove`);
-
-    klcRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLKC').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText15() {
-    const path = constructFirebasePath();
-    const plsRef = firebase.database().ref(`${path}/Pillowcase Remove`);
-
-    plsRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RRLP').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText16() {
-    const path = constructFirebasePath();
-    const btRef = firebase.database().ref(`${path}/Bath Towel Remove`);
-
-    btRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RRLBT').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText17() {
-    const path = constructFirebasePath();
-    const htRef = firebase.database().ref(`${path}/Hand Towel Remove`);
-
-    htRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLHT').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  function showText18() {
-    const path = constructFirebasePath();
-    const bmRef = firebase.database().ref(`${path}/Bath Mat Remove`);
-
-    bmRef.once('value')
-      .then((snapshot) => {
-        let text = snapshot.val();
-        text = '=' + text;
-        document.getElementById('RLBM').innerText = text;
-      })
-      .catch((error) => {
-        console.error('Error fetching second text:', error);
-      });
-  }
-
-  showText();
-  showText3();
-  showText4();
-  showText5();
-  showText6();
-  showText7();
-  showText8();
-  showText9();
-  showText10();
-  showText11();
-  showText12();
-  showText13();
-  showText14();
-  showText15();
-  showText16();
-  showText17();
-  showText18();
-
-  function updateDate() {
-    const date = new Date();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const formattedDate = `${month}-${day}-${year}`;
-    document.getElementById('DATE').textContent = formattedDate;
-  }
-
-
-    // Function to get the current date in the format 'dd-mm-yyyy'
-    function getCurrentDate() {
-      const today = new Date();
-      const day = String(today.getDate()).padStart(2, '0');
-      const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so add 1
-      const year = today.getFullYear();
-
-      return `${month}-${day}-${year}`; // Return date in 'dd-mm-yyyy' format
-    }
-
-    // Function to get the dynamic Firebase path based on the TextView value, date, and sub-path
-    function getFirebasePath(subPath) {
-      const pathValue = document.getElementById('ROOMNUMBER').innerText;
-      const currentDate = getCurrentDate();  // Get today's date in 'dd-mm-yyyy' format
-      return `/DailyAttended/${pathValue}-${currentDate}/${subPath}`;  // Construct the dynamic path: 'data/3003-dd-mm-yyyy/subPath'
-    }
-
-    // Function to fetch data from the dynamic Firebase Realtime Database path
-     function fetchData() {
-      // Fetch data for /towel path
-      const  twinBedSheetRemovePath = getFirebasePath('Twin Bed Sheet Remove');  // Get the dynamic path for /towel
-      const  twinBedSheetRemoveRef = firebase.database().ref(twinBedSheetRemovePath);  // Use the dynamic path
-
-       twinBedSheetRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText9').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText9').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-      // Fetch data for /towelRP path
-      const twinDuvetCoverRemovePath = getFirebasePath('Twin Duvet Cover Remove');  // Get the dynamic path for /towelRP
-      const twinDuvetCoverRemoveRef = firebase.database().ref(twinDuvetCoverRemovePath);  // Use the dynamic path
-
-     twinDuvetCoverRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText10').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText10').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-
-      // Fetch data for /towelRP path
-      const kingBedSheetRemovePath = getFirebasePath('King Bed Sheet Remove');  // Get the dynamic path for /towelRP
-      const kingBedSheetRemoveRef = firebase.database().ref(kingBedSheetRemovePath);  // Use the dynamic path
-
-     kingBedSheetRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText11').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText11').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
- // Fetch data for /towelRP path
-      const kingDuvetCoverRemovePath = getFirebasePath('King Duvet Cover Remove');  // Get the dynamic path for /towelRP
-      const kingDuvetCoverRemoveRef = firebase.database().ref(kingDuvetCoverRemovePath);  // Use the dynamic path
-
-     kingDuvetCoverRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText12').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText12').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const pillowcaseRemovePath = getFirebasePath('Pillowcase Remove');  // Get the dynamic path for /towelRP
-      const pillowcaseRemoveRef = firebase.database().ref(pillowcaseRemovePath);  // Use the dynamic path
-
-     pillowcaseRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText13').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText13').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-// Fetch data for /towelRP path
-      const bathTowelRemovePath = getFirebasePath('Bath Towel Remove');  // Get the dynamic path for /towelRP
-      const bathTowelRemoveRef = firebase.database().ref(bathTowelRemovePath);  // Use the dynamic path
-
-     bathTowelRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText14').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText14').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const handTowelRemovePath = getFirebasePath('Hand Towel Remove');  // Get the dynamic path for /towelRP
-      const handTowelRemoveRef = firebase.database().ref(handTowelRemovePath);  // Use the dynamic path
-
-     handTowelRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText15').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText15').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const matRemovePath = getFirebasePath('Bath Mat Remove');  // Get the dynamic path for /towelRP
-      const matRemoveRef = firebase.database().ref(matRemovePath);  // Use the dynamic path
-
-     matRemoveRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText16').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText16').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-
-      // Fetch data for /towel path
-      const  winBedSheetReplacePath = getFirebasePath('Twin Bed Sheet Replace');  // Get the dynamic path for /towel
-      const  winBedSheetReplaceRef = firebase.database().ref(winBedSheetReplacePath);  // Use the dynamic path
-
-       winBedSheetReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText1').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText1').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-      // Fetch data for /towelRP path
-      const tinDuvetCoverReplacePath = getFirebasePath('Twin Duvet Cover Replace');  // Get the dynamic path for /towelRP
-      const tinDuvetCoverReplaceRef = firebase.database().ref(tinDuvetCoverReplacePath);  // Use the dynamic path
-
-     tinDuvetCoverReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText2').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText2').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-
-      // Fetch data for /towelRP path
-      const ingBedSheetReplacePath = getFirebasePath('King Bed Sheet Replace');  // Get the dynamic path for /towelRP
-      const ingBedSheetReplaceRef = firebase.database().ref(ingBedSheetReplacePath);  // Use the dynamic path
-
-     ingBedSheetReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText3').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText3').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
- // Fetch data for /towelRP path
-      const kngDuvetCoverReplacePath = getFirebasePath('King Duvet Cover Replace');  // Get the dynamic path for /towelRP
-      const kngDuvetCoverReplaceRef = firebase.database().ref(kngDuvetCoverReplacePath);  // Use the dynamic path
-
-     kngDuvetCoverReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText4').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText4').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const illowcaseReplacePath = getFirebasePath('Pillowcase Replace');  // Get the dynamic path for /towelRP
-      const illowcaseReplaceRef = firebase.database().ref(illowcaseReplacePath);  // Use the dynamic path
-
-     illowcaseReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText5').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText5').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-// Fetch data for /towelRP path
-      const athTowelReplacePath = getFirebasePath('Bath Towel Replace');  // Get the dynamic path for /towelRP
-      const athTowelReplaceRef = firebase.database().ref(athTowelReplacePath);  // Use the dynamic path
-
-     athTowelReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText6').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText6').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const andTowelReplacePath = getFirebasePath('Hand Towel Replace');  // Get the dynamic path for /towelRP
-      const andTowelReplaceRef = firebase.database().ref(andTowelReplacePath);  // Use the dynamic path
-
-     andTowelReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText7').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText7').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
- // Fetch data for /towelRP path
-      const aathMatReplacePath = getFirebasePath('Bath Mat Replace');  // Get the dynamic path for /towelRP
-      const aathMatReplaceRef = firebase.database().ref(aathMatReplacePath);  // Use the dynamic path
-
-     aathMatReplaceRef.once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          document.getElementById('inputText8').setAttribute('placeholder', data);  // Set the placeholder if data is not null
-        } else {
-          document.getElementById('inputText8').setAttribute('placeholder', 'Type here');  // Handle empty data
-        }
-      }, (error) => {
-        console.error('Error', error);
-      });
-
-     }
-// Fetch data every 5 seconds
-    setInterval(fetchData, 5000);
-
-    // Initial data fetch on page load
-    fetchData();
-
-  // Update the date initially and every second
-  updateDate();
-  setInterval(updateDate, 1000);
-
+    if(!slot){msg.textContent='❌ All 5 extra slots used.';return;}
+    await ref.update({[slot]:room});
+    msg.textContent=`✅ Added ${room} to ${floor} (${slot})`;
+    $('extraRoomNumber').value='';
+    loadDashboardFast();
+  }catch(e){console.error(e);msg.textContent='❌ Failed to add room.';}
+});
+
+/* Init */
+$('screen-login').style.display='flex';
 </script>
-
-
 </body>
 </html>
