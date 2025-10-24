@@ -4,149 +4,129 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Housekeeping Admin Panel</title>
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <style>
-  :root{
-    --bg:#f2f4f8; --card:#ffffff; --muted:#6b7280;
-    --accent:#1f6feb; --ok:#1e7e34; --warn:#d6333f;
-    --glass: rgba(255,255,255,0.8);
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#f6f8fb 0%,var(--bg) 100%);color:#0f1724}
-  .container{max-width:1200px;margin:28px auto;padding:22px}
-  .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6b90ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
-  h1{margin:0;font-size:20px}
-  .controls{display:flex;align-items:center;gap:8px}
-  input[type="date"]{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;background:#fff}
-  button.btn{padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
-  button.primary{background:var(--accent);color:#fff}
-  button.ghost{background:transparent;border:1px solid #e6e9ef;color:var(--muted)}
-  .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 18px rgba(19,24,47,0.06)}
-  .login-wrap{display:flex;align-items:center;justify-content:center;min-height:72vh}
-  .login-card{width:520px;padding:28px;border-radius:12px;background:linear-gradient(180deg,#ffffff,#fbfdff);box-shadow:0 10px 30px rgba(2,6,23,0.08)}
-  .login-card h2{margin:0 0 8px 0;font-size:22px}
-  .muted{color:var(--muted);font-size:14px}
-  .field{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-  input[type="password"]{padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:15px}
-  .error{color:var(--warn);margin-top:8px}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}
-  .floor-card{padding:18px;border-radius:12px;transition:transform .12s,box-shadow .12s;cursor:pointer;display:flex;flex-direction:column;gap:10px}
-  .floor-card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(12,22,60,0.08)}
-  .floor-title{display:flex;align-items:center;justify-content:space-between}
-  .floor-name{font-weight:700;font-size:16px}
-  .stats{display:flex;gap:10px;align-items:center}
-  .stat{padding:8px 12px;border-radius:8px;background:rgba(15,23,36,0.03);font-weight:600}
-  .stat.small{font-weight:500;font-size:13px}
-  .ok{color:var(--ok);font-weight:700}
-  .bad{color:var(--warn);font-weight:700}
-  .floor-meta{color:var(--muted);font-size:13px}
-  .back-btn{margin-bottom:12px}
-  .table-wrap{overflow:auto;background:transparent;margin-top:8px}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #eef2f6}
-  th{font-size:13px;color:var(--muted);font-weight:700}
-  td .small{font-size:13px;color:var(--muted)}
-  tr.okrow{background:linear-gradient(90deg,rgba(34,197,94,0.06),transparent)}
-  tr.badrow{background:linear-gradient(90deg,rgba(214,51,63,0.05),transparent)}
-  .pill{display:inline-block;padding:6px 8px;border-radius:999px;font-weight:700;font-size:13px}
-  .pill.ok{background:rgba(34,197,94,0.12);color:var(--ok)}
-  .pill.bad{background:rgba(214,51,63,0.08);color:var(--warn)}
-  @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:560px){.grid{grid-template-columns:1fr}.container{padding:12px}}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:#f4f6fb;color:#0f1724}
+  .wrap{max-width:1100px;margin:24px auto;padding:18px}
+  .card{background:#fff;border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(15,23,42,0.06);margin-bottom:12px}
+  h1{margin:0 0 6px 0;font-size:20px}
+  .muted{color:#6b7280;font-size:13px}
+  input,select,textarea,button{font-family:inherit}
+  input,select,textarea{padding:8px;border-radius:8px;border:1px solid #e6e9ef}
+  button{padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+  button.primary{background:#2563eb;color:#fff}
+  button.ghost{background:#fff;border:1px solid #e6e9ef;color:#374151}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+  .floor-card{padding:12px;border-radius:10px;border:1px solid #eef2f6;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:8px 10px;border-bottom:1px solid #eef2f6;text-align:left}
+  th{color:#6b7280;font-size:13px}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700;font-size:13px}
+  .pill.ok{background:#dcfce7;color:#166534}
+  .pill.bad{background:#fee2e2;color:#991b1b}
+  pre{white-space:pre-wrap;margin:0;font-family:inherit}
+  .smallmuted{font-size:12px;color:#6b7280}
 </style>
 </head>
 <body>
-<div class="container">
+<div class="wrap">
 
-  <div id="headerTop" class="header card">
-    <div class="brand">
-      <div class="logo">HK</div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
         <h1>Housekeeping — Admin Panel</h1>
-        <div class="muted">Supervisor dashboard — monitor floors, rooms & reports</div>
+        <div class="muted">Manage floors, passwords, notices & exports</div>
       </div>
-    </div>
-    <div class="controls">
-      <label class="muted">Date</label>
-      <input id="datePicker" type="date">
-      <button id="btnLogout" class="btn ghost" style="display:none">Logout</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="datePicker" type="date">
+        <button id="btnLogout" class="ghost" style="display:none">Logout</button>
+      </div>
     </div>
   </div>
 
   <!-- LOGIN -->
-  <div id="screen-login" class="login-wrap">
-    <div class="login-card card">
-      <h2>Admin Login</h2>
-      <div class="muted">Enter password stored in <code>Password/AdminKey</code></div>
-      <div class="field">
-        <input id="adminPass" type="password" placeholder="Admin password">
-        <div style="display:flex;gap:8px;">
-          <button id="btnAdminLogin" class="btn primary">Login</button>
-          <button id="btnDemo" class="btn ghost">Demo</button>
-        </div>
-        <div id="loginErr" class="error" style="display:none"></div>
-      </div>
+  <div id="loginCard" class="card">
+    <h3>Admin Login</h3>
+    <div class="muted">Enter Admin password (Password/AdminKey)</div>
+    <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <input id="adminPass" type="password" placeholder="Admin password">
+      <button id="btnAdminLogin" class="primary">Login</button>
+      <button id="btnDemo" class="ghost">Demo</button>
     </div>
+    <div id="loginErr" class="smallmuted" style="color:#b91c1c;margin-top:8px;display:none"></div>
   </div>
 
   <!-- DASHBOARD -->
-  <div id="screen-dashboard" class="card" style="display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <h2 style="margin:0">Overview</h2>
-        <div class="muted">Floors 2 — 14. Click any floor for details.</div>
+  <div id="mainPanel" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h3 style="margin:0">Dashboard</h3>
+          <div class="muted">Click floor for details. Date controls which DailyAttended date is shown.</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="btnRefreshDashboard" class="ghost">Refresh</button>
+          <button id="btnExportAll" class="ghost">Export All CSV</button>
+        </div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button id="btnRefreshDashboard" class="btn ghost">Refresh</button>
-        <button id="btnExportAll" class="btn ghost">Export All CSV</button>
-      </div>
-    </div>
 
-    <!-- Add Extra Room -->
-    <div id="extraRoomPanel" style="margin-top:20px;padding:14px;border-radius:8px;background:#f9fafb;border:1px solid #e5e7eb;">
-      <h3 style="margin-top:0;">➕ Add Extra Room</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-        <select id="floorSelect" style="padding:8px;border-radius:8px;border:1px solid #ccc;">
-          <option value="">Select Floor</option>
-          <option>2ND FLOOR</option><option>3RD FLOOR</option><option>4TH FLOOR</option>
-          <option>5TH FLOOR</option><option>6TH FLOOR</option><option>7TH FLOOR</option>
-          <option>8TH FLOOR</option><option>9TH FLOOR</option><option>10TH FLOOR</option>
-          <option>11TH FLOOR</option><option>12TH FLOOR</option><option>13TH FLOOR</option><option>14TH FLOOR</option>
-        </select>
-        <input id="extraRoomNumber" type="text" placeholder="Enter room number" style="padding:8px;border-radius:8px;border:1px solid #ccc;width:150px;">
-        <button id="btnAddExtraRoom" class="btn primary">Add Room</button>
-        <div id="extraRoomMsg" class="muted" style="margin-left:8px;"></div>
+      <div style="margin-top:12px">
+        <h4 style="margin:0 0 6px 0">➕ Add Extra Room</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="floorSelect"><option value="">Select Floor</option></select>
+          <input id="extraRoomNumber" placeholder="Room number (e.g. 2005)">
+          <button id="btnAddExtraRoom" class="primary">Add Room</button>
+          <div id="extraRoomMsg" class="smallmuted"></div>
+        </div>
       </div>
     </div>
 
-    <div id="floorsGrid" class="grid" style="margin-top:14px"></div>
-  </div>
-
-  <!-- FLOOR DETAILS -->
-  <div id="screen-floor" class="card" style="display:none">
-    <button id="btnBackToDash" class="btn ghost back-btn">← Back</button>
-    <h2 id="floorTitle">Floor</h2>
-    <div id="floorSummary" class="muted" style="font-weight:600"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr><th>Room</th><th>Staff</th><th>Time In</th><th>Time Out</th><th>Replace</th><th>Remove</th><th>Status</th></tr>
-        </thead>
-        <tbody id="roomTableBody"></tbody>
-      </table>
+    <div class="card">
+      <h4 style="margin:0 0 8px 0">🔑 Floor Passwords (Pass2..Pass14)</h4>
+      <div id="pwList" class="smallmuted">Loading...</div>
     </div>
-    <button id="btnExportCSV" class="btn primary" style="margin-top:10px;">Export CSV</button>
+
+    <div class="card">
+      <h4 style="margin:0 0 8px 0">📢 Floor Notice Editor</h4>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select id="noticeFloorSel"><option value="">Select Floor</option></select>
+        <button id="btnLoadFloorNotice" class="ghost">Load</button>
+        <button id="btnSaveFloorNotice" class="primary">Save</button>
+      </div>
+      <textarea id="noticeText" rows="3" style="width:100%;margin-top:8px" placeholder="Notice stored at RoomsData/{FLOOR}/NOTICE"></textarea>
+      <div id="noticeMsg" class="smallmuted" style="margin-top:6px"></div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin:0 0 8px 0">Floors</h4>
+      <div id="floorsGrid" class="grid"></div>
+    </div>
+
+    <div id="floorDetails" class="card" style="display:none">
+      <button id="btnBackToDash" class="ghost">← Back</button>
+      <h3 id="floorTitle"></h3>
+      <div id="floorSummary" class="smallmuted"></div>
+      <div style="overflow:auto;margin-top:10px">
+        <table>
+          <thead>
+            <tr><th>Room</th><th>Staff</th><th>Time In</th><th>Time Out</th><th>Replace</th><th>Remove</th><th>Status</th></tr>
+          </thead>
+          <tbody id="roomTableBody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:10px">
+        <button id="btnExportCSV" class="primary">Export Floor CSV</button>
+      </div>
+    </div>
   </div>
 
 </div>
 
-<!-- Firebase -->
+<!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
+/* CONFIG - use your project config (kept same as provided) */
 const firebaseConfig = {
   apiKey: "AIzaSyCOxc6WfkoFZ5j-NXCZc3ZIi10nP34HBDM",
   authDomain: "ritz-hk.firebaseapp.com",
@@ -154,62 +134,219 @@ const firebaseConfig = {
   projectId: "ritz-hk",
   storageBucket: "ritz-hk.appspot.com",
   messagingSenderId: "975572159061",
-  appId: "1:975572159061:web:f280915806e9820abd22dc",
-  measurementId: "G-Z6J3WDJQ4J"
+  appId: "1:975572159061:web:f280915806e9820abd22dc"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+/* Helpers */
 function $(id){return document.getElementById(id);}
-function todayISO(){const d=new Date();return d.toISOString().split('T')[0];}
-function keyFromISO(iso){const d=new Date(iso);return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;}
-const FLOORS=["2ND FLOOR","3RD FLOOR","4TH FLOOR","5TH FLOOR","6TH FLOOR","7TH FLOOR","8TH FLOOR","9TH FLOOR","10TH FLOOR","11TH FLOOR","12TH FLOOR","13TH FLOOR","14TH FLOOR"];
-const REPLACE_KEYS=['Twin Bed Sheet Replace','Twin Duvet Cover Replace','King Bed Sheet Replace','King Duvet Cover Replace','Pillowcase Replace','Bath Towel Replace','Hand Towel Replace','Bath Mat Replace'];
-const REMOVE_KEYS=['Twin Bed Sheet Remove','Twin Duvet Cover Remove','King Bed Sheet Remove','King Duvet Cover Remove','Pillowcase Remove','Bath Towel Remove','Hand Towel Remove','Bath Mat Remove'];
+function isoToKey(iso){const d=new Date(iso);return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}-${d.getFullYear()}`;}
+function todayISO(){return new Date().toISOString().split('T')[0];}
+function currentDateKey(){ const v=$('datePicker').value||todayISO(); return isoToKey(v); }
 
-let ADMIN_OK=false,currentFloor=null,currentDateKey=keyFromISO(todayISO());
-$('datePicker').value=todayISO();
-$('datePicker').addEventListener('change',()=>{currentDateKey=keyFromISO($('datePicker').value);if($('screen-dashboard').style.display!=='none')loadDashboardFast();});
-async function getAdminKey(){try{const s=await db.ref('Password/AdminKey').once('value');return s.val();}catch(e){return null;}}
-$('btnAdminLogin').onclick=async()=>{const pw=$('adminPass').value.trim();if(!pw)return;const key=await getAdminKey();if(String(key).trim()===pw){ADMIN_OK=true;showDashboard();}else alert('Invalid password');};
-$('btnDemo').onclick=()=>{ADMIN_OK=true;showDashboard();};
-$('btnLogout').onclick=()=>{ADMIN_OK=false;$('screen-login').style.display='flex';$('screen-dashboard').style.display='none';$('btnLogout').style.display='none';};
-function showDashboard(){$('screen-login').style.display='none';$('screen-dashboard').style.display='block';$('btnLogout').style.display='inline-block';loadDashboardFast();}
-async function loadDashboardFast(){const grid=$('floorsGrid');grid.innerHTML='';FLOORS.forEach(f=>{const c=document.createElement('div');c.className='card floor-card';c.innerHTML=`<div class="floor-title"><div class="floor-name">${f}</div><div class="floor-meta muted">--</div></div><div style="display:flex;justify-content:space-between"><div><div class="muted">Total</div><div class="stat small">--</div></div><div><div class="muted">Completed</div><div class="stat small ok">--</div></div><div><div class="muted">Mismatch</div><div class="stat small bad">--</div></div></div>`;c.onclick=()=>openFloorDetails(f);grid.appendChild(c);});setTimeout(()=>loadDashboardSummary(currentDateKey),200);}
-async function loadDashboardSummary(dateKey){try{const roomSnaps=await Promise.all(FLOORS.map(f=>db.ref(`RoomsData/${f}`).once('value')));const dailySnap=await db.ref('DailyAttended').once('value');const daily=dailySnap.val()||{};FLOORS.forEach((f,i)=>{const card=[...$('floorsGrid').children].find(x=>x.querySelector('.floor-name').textContent===f);const d=roomSnaps[i].val()||{};const rooms=Object.entries(d).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);let total=rooms.length,done=0,bad=0;rooms.forEach(r=>{const rec=daily[`${r}-${dateKey}`];if(rec){let all=REPLACE_KEYS.every((k,j)=>Number(rec[k]||0)===Number(rec[REMOVE_KEYS[j]]||0));if(all)done++;else bad++;}});card.querySelector('.stat.small').textContent=total;card.querySelector('.stat.small.ok').textContent=done;card.querySelector('.stat.small.bad').textContent=bad;card.style.borderLeft=bad?'4px solid var(--warn)':done?'4px solid var(--ok)':'4px solid transparent';});}catch(e){console.error(e);}}
-$('btnRefreshDashboard').onclick=()=>loadDashboardFast();
-async function openFloorDetails(floor){currentFloor=floor;$('screen-dashboard').style.display='none';$('screen-floor').style.display='block';$('floorTitle').textContent=floor;const snap=await db.ref(`RoomsData/${floor}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);$('roomTableBody').innerHTML='';let ok=0,bad=0;for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};let all=REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));if(Object.keys(val).length){if(all)ok++;else bad++;}const rep=REPLACE_KEYS.map(k=>`${k.split(' ')[0]}:${val[k]||0}`).join('<br>');const rem=REMOVE_KEYS.map(k=>`${k.split(' ')[0]}:${val[k]||0}`).join('<br>');$('roomTableBody').innerHTML+=`<tr class="${all?'okrow':Object.keys(val).length&&!all?'badrow':''}"><td>${r}</td><td>${val['Staff Name']||'-'}</td><td>${val['Time In']||'-'}</td><td>${val['Time Out']||'-'}</td><td>${rep}</td><td>${rem}</td><td>${Object.keys(val).length?(all?'<span class="pill ok">OK</span>':'<span class="pill bad">Mismatch</span>'):'<span class="pill">No Data</span>'}</td></tr>`;}
-$('floorSummary').textContent=`Total ${rooms.length}, OK ${ok}, Mismatch ${bad}`;}
-$('btnBackToDash').onclick=()=>{$('screen-floor').style.display='none';$('screen-dashboard').style.display='block';};
-$('btnExportCSV').onclick=async()=>{if(!currentFloor)return;const rows=[['Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];const snap=await db.ref(`RoomsData/${currentFloor}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};const ok=Object.keys(val).length&&REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));rows.push([r,val['Staff Name']||'',val['Time In']||'',val['Time Out']||'',...REPLACE_KEYS.map(k=>val[k]||0),...REMOVE_KEYS.map(k=>val[k]||0),ok?'OK':'Mismatch']);}const csv=rows.map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`${currentFloor.replace(/\s+/g,'_')}_${currentDateKey}.csv`;a.click();};
-$('btnExportAll').onclick=async()=>{const rows=[['Floor','Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];for(const f of FLOORS){const snap=await db.ref(`RoomsData/${f}`).once('value');const data=snap.val()||{};const rooms=Object.entries(data).filter(([k])=>k.startsWith('Room')||k.startsWith('ExtraRoom')).map(([,v])=>v).filter(Boolean);for(const r of rooms){const val=(await db.ref(`DailyAttended/${r}-${currentDateKey}`).once('value')).val()||{};const ok=Object.keys(val).length&&REPLACE_KEYS.every((k,i)=>Number(val[k]||0)===Number(val[REMOVE_KEYS[i]]||0));rows.push([f,r,val['Staff Name']||'',val['Time In']||'',val['Time Out']||'',...REPLACE_KEYS.map(k=>val[k]||0),...REMOVE_KEYS.map(k=>val[k]||0),ok?'OK':'Mismatch']);}}const csv=rows.map(r=>r.join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`AllFloors_${currentDateKey}.csv`;a.click();};
+/* Constants matching your JSON */
+const FLOORS = ["2ND FLOOR","3RD FLOOR","4TH FLOOR","5TH FLOOR","6TH FLOOR","7TH FLOOR","8TH FLOOR","9TH FLOOR","10TH FLOOR","11TH FLOOR","12TH FLOOR","13TH FLOOR","14TH FLOOR"];
+const REPLACE_KEYS = ['Twin Bed Sheet Replace','Twin Duvet Cover Replace','King Bed Sheet Replace','King Duvet Cover Replace','Pillowcase Replace','Bath Towel Replace','Hand Towel Replace','Bath Mat Replace','Pool Towel Replace'];
+const REMOVE_KEYS =  ['Twin Bed Sheet Remove','Twin Duvet Cover Remove','King Bed Sheet Remove','King Duvet Cover Remove','Pillowcase Remove','Bath Towel Remove','Hand Towel Remove','Bath Mat Remove','Pool Towel Remove'];
+const ITEMS = ['Twin Bed Sheet','Twin Duvet Cover','King Bed Sheet','King Duvet Cover','Pillowcase','Bath Towel','Hand Towel','Bath Mat','Pool Towel'];
 
-/* ADD EXTRA ROOM FEATURE */
-$('btnAddExtraRoom').addEventListener('click', async ()=>{
-  const floor=$('floorSelect').value.trim();
-  const room=$('extraRoomNumber').value.trim();
-  const msg=$('extraRoomMsg');
-  msg.textContent='';
-  if(!floor||!room){msg.textContent='⚠️ Select floor and enter room';return;}
-  try{
-    const ref=db.ref(`RoomsData/${floor}`);
-    const snap=await ref.once('value');
-    const data=snap.val()||{};
-    let slot=null;
-    for(let i=1;i<=5;i++){
-      const key=`ExtraRoom${i}`;
-      const val=(data[key]||'').toString().trim().toLowerCase();
-      if(!val||val==='no extra'||val==='no'||val==='noextra'){slot=key;break;}
-    }
-    if(!slot){msg.textContent='❌ All 5 extra slots used.';return;}
-    await ref.update({[slot]:room});
-    msg.textContent=`✅ Added ${room} to ${floor} (${slot})`;
-    $('extraRoomNumber').value='';
-    loadDashboardFast();
-  }catch(e){console.error(e);msg.textContent='❌ Failed to add room.';}
+/* Init UI */
+$('datePicker').value = todayISO();
+FLOORS.forEach(f=>{
+  $('floorSelect').innerHTML += `<option>${f}</option>`;
+  $('noticeFloorSel').innerHTML += `<option>${f}</option>`;
 });
 
-/* Init */
-$('screen-login').style.display='flex';
+/* LOGIN */
+$('btnAdminLogin').addEventListener('click', async ()=>{
+  const pw = $('adminPass').value.trim();
+  if(!pw){ $('loginErr').textContent='Enter password'; $('loginErr').style.display='block'; return; }
+  const snap = await db.ref('Password/AdminKey').once('value');
+  const adminKey = snap.val();
+  if(String(adminKey).trim() === pw){ $('loginCard').style.display='none'; $('mainPanel').style.display='block'; $('btnLogout').style.display='inline-block'; loadDashboard(); loadPasswordsPanel(); }
+  else { $('loginErr').textContent='Invalid admin password'; $('loginErr').style.display='block'; }
+});
+$('btnDemo').addEventListener('click', ()=>{ $('loginCard').style.display='none'; $('mainPanel').style.display='block'; loadDashboard(); loadPasswordsPanel(); });
+
+$('btnLogout').addEventListener('click', ()=>{ $('mainPanel').style.display='none'; $('loginCard').style.display='block'; $('btnLogout').style.display='none'; });
+
+/* LOAD DASHBOARD (floors grid and counts) */
+async function loadDashboard(){
+  $('floorsGrid').innerHTML = 'Loading...';
+  const allDailySnap = await db.ref('DailyAttended').once('value');
+  const daily = allDailySnap.val() || {};
+  $('floorsGrid').innerHTML = '';
+  for(const floor of FLOORS){
+    const roomsSnap = await db.ref(`RoomsData/${floor}`).once('value');
+    const roomsObj = roomsSnap.val() || {};
+    // collect only actual room values (skip NAME, NOTICE, EXTRA; skip 'NO EXTRA' placeholders)
+    const rooms = Object.entries(roomsObj)
+      .filter(([k,v]) => (k.toLowerCase().startsWith('room') || k.toLowerCase().startsWith('extraroom')) )
+      .map(([,v]) => String(v).trim())
+      .filter(v => v && !/no extra/i.test(v) && !/^extra$/i.test(v));
+    let ok=0, bad=0;
+    for(const r of rooms){
+      const rec = daily[`${r}-${currentDateKey()}`];
+      if(rec){
+        const allMatch = REPLACE_KEYS.every((k,i)=>Number(rec[k]||0) === Number(rec[REMOVE_KEYS[i]]||0));
+        if(allMatch) ok++; else bad++;
+      }
+    }
+    const card = document.createElement('div');
+    card.className = 'floor-card';
+    card.innerHTML = `<strong>${floor}</strong><div class="smallmuted">${rooms.length} rooms</div><div style="margin-top:8px"><span class="pill ok">${ok} OK</span> <span style="margin-left:8px" class="pill bad">${bad} Mismatch</span></div>`;
+    card.onclick = ()=> openFloorDetails(floor);
+    $('floorsGrid').appendChild(card);
+  }
+}
+
+/* OPEN FLOOR DETAILS */
+async function openFloorDetails(floor){
+  $('floorDetails').style.display='block';
+  $('floorTitle').textContent = floor;
+  $('roomTableBody').innerHTML = 'Loading...';
+  const roomsSnap = await db.ref(`RoomsData/${floor}`).once('value');
+  const roomsObj = roomsSnap.val() || {};
+  const rooms = Object.entries(roomsObj)
+    .filter(([k,v]) => (k.toLowerCase().startsWith('room') || k.toLowerCase().startsWith('extraroom')) )
+    .map(([,v]) => String(v).trim())
+    .filter(v => v && !/no extra/i.test(v) && !/^extra$/i.test(v));
+  const dailySnap = await db.ref('DailyAttended').once('value');
+  const daily = dailySnap.val() || {};
+  $('roomTableBody').innerHTML = '';
+  let ok=0,bad=0;
+  for(const r of rooms){
+    const rec = daily[`${r}-${currentDateKey()}`] || {};
+    const hasData = Object.keys(rec).length>0;
+    const allMatch = hasData ? REPLACE_KEYS.every((k,i)=>Number(rec[k]||0) === Number(rec[REMOVE_KEYS[i]]||0)) : false;
+    if(hasData){ if(allMatch) ok++; else bad++; }
+    const rep = ITEMS.map(it => `${it}: ${ (rec[`${it} Replace`]!==undefined && rec[`${it} Replace`]!=='' ) ? rec[`${it} Replace`] : '-' }`).join('<br>');
+    const rem = ITEMS.map(it => `${it}: ${ (rec[`${it} Remove`]!==undefined && rec[`${it} Remove`]!=='' ) ? rec[`${it} Remove`] : '-' }`).join('<br>');
+    const statusHTML = hasData ? (allMatch ? '<span class="pill ok">OK</span>' : '<span class="pill bad">Mismatch</span>') : '<span class="smallmuted">No Data</span>';
+    $('roomTableBody').insertAdjacentHTML('beforeend', `<tr><td>${r}</td><td>${rec['Staff Name']||'-'}</td><td>${rec['Time In']||'-'}</td><td>${rec['Time Out']||'-'}</td><td><pre>${rep}</pre></td><td><pre>${rem}</pre></td><td>${statusHTML}</td></tr>`);
+  }
+  $('floorSummary').textContent = `Total ${rooms.length}, OK ${ok}, Mismatch ${bad}`;
+}
+
+/* Back button */
+$('btnBackToDash').addEventListener('click', ()=>{ $('floorDetails').style.display='none'; });
+
+/* Export CSV for floor */
+$('btnExportCSV').addEventListener('click', async ()=>{
+  const floor = $('floorTitle').textContent;
+  if(!floor) return alert('Open a floor first');
+  const snap = await db.ref(`RoomsData/${floor}`).once('value');
+  const roomsObj = snap.val()||{};
+  const rooms = Object.entries(roomsObj)
+    .filter(([k,v]) => (k.toLowerCase().startsWith('room') || k.toLowerCase().startsWith('extraroom')) )
+    .map(([,v]) => String(v).trim())
+    .filter(v => v && !/no extra/i.test(v) && !/^extra$/i.test(v));
+  const rows = [['Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];
+  for(const r of rooms){
+    const rec = (await db.ref(`DailyAttended/${r}-${currentDateKey()}`).once('value')).val() || {};
+    const ok = Object.keys(rec).length && REPLACE_KEYS.every((k,i)=>Number(rec[k]||0) === Number(rec[REMOVE_KEYS[i]]||0));
+    rows.push([r, rec['Staff Name']||'', rec['Time In']||'', rec['Time Out']||'', ...REPLACE_KEYS.map(k=>rec[k]||0), ...REMOVE_KEYS.map(k=>rec[k]||0), ok?'OK':'Mismatch']);
+  }
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = `${floor.replace(/\s+/g,'_')}_${currentDateKey()}.csv`; a.click();
+});
+
+/* Export All CSV (fixed async loop) */
+$('btnExportAll').addEventListener('click', async ()=>{
+  const rows = [['Floor','Room','Staff','Time In','Time Out',...REPLACE_KEYS,...REMOVE_KEYS,'Status']];
+  for(const floor of FLOORS){
+    const snap = await db.ref(`RoomsData/${floor}`).once('value');
+    const roomsObj = snap.val()||{};
+    const rooms = Object.entries(roomsObj)
+      .filter(([k,v]) => (k.toLowerCase().startsWith('room') || k.toLowerCase().startsWith('extraroom')) )
+      .map(([,v]) => String(v).trim())
+      .filter(v => v && !/no extra/i.test(v) && !/^extra$/i.test(v));
+    for(const r of rooms){
+      const rec = (await db.ref(`DailyAttended/${r}-${currentDateKey()}`).once('value')).val() || {};
+      const ok = Object.keys(rec).length && REPLACE_KEYS.every((k,i)=>Number(rec[k]||0) === Number(rec[REMOVE_KEYS[i]]||0));
+      rows.push([floor, r, rec['Staff Name']||'', rec['Time In']||'', rec['Time Out']||'', ...REPLACE_KEYS.map(k=>rec[k]||0), ...REMOVE_KEYS.map(k=>rec[k]||0), ok?'OK':'Mismatch']);
+    }
+  }
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download = `AllFloors_${currentDateKey()}.csv`; a.click();
+});
+
+/* Add Extra Room */
+$('btnAddExtraRoom').addEventListener('click', async ()=>{
+  const floor = $('floorSelect').value;
+  const room = String($('extraRoomNumber').value).trim();
+  $('extraRoomMsg').textContent = '';
+  if(!floor || !room){ $('extraRoomMsg').textContent = 'Select floor and enter room'; return; }
+  const ref = db.ref(`RoomsData/${floor}`);
+  const snap = await ref.once('value');
+  const data = snap.val() || {};
+  // find free ExtraRoom slot (ExtraRoom1..ExtraRoom5)
+  let slot = null;
+  for(let i=1;i<=6;i++){
+    const key = `ExtraRoom${i}`;
+    if(!data[key] || /no extra/i.test(String(data[key])) ){ slot = key; break; }
+  }
+  if(!slot){ $('extraRoomMsg').textContent = 'All extra slots used'; return; }
+  await ref.update({ [slot]: room });
+  $('extraRoomMsg').textContent = `Added ${room} to ${floor} (${slot})`;
+  $('extraRoomNumber').value = '';
+  loadDashboard();
+  loadPasswordsPanel(); // refresh notices and fields
+});
+
+/* PASSWORDS PANEL - load Pass2..Pass14 and allow copy/save */
+async function loadPasswordsPanel(){
+  const pwRoot = await db.ref('Password/Key').once('value');
+  const pwObj = pwRoot.val() || {};
+  // render mapping
+  const container = $('pwList'); container.innerHTML = '';
+  // map floors 2..14 to Pass2..Pass14
+  for(let i=2;i<=14;i++){
+    const passKey = `Pass${i}`;
+    const floorLabel = FLOORS[i-2] || `${i}TH FLOOR`;
+    const current = pwObj[passKey] || '';
+    const row = document.createElement('div');
+    row.style.display='flex'; row.style.alignItems='center'; row.style.gap='8px'; row.style.marginBottom='6px';
+    row.innerHTML = `<div style="min-width:120px"><strong>${floorLabel}</strong><div class="smallmuted">${passKey}</div></div>
+      <input id="inp_${passKey}" value="${current}" style="flex:1;padding:6px;border-radius:6px;border:1px solid #e6e9ef">
+      <button onclick="copyPass('${passKey}')" class="ghost">Copy</button>
+      <button onclick="savePass('${passKey}')" class="primary">Save</button>`;
+    container.appendChild(row);
+  }
+}
+window.copyPass = async (passKey) => {
+  const v = document.getElementById(`inp_${passKey}`).value || '';
+  await navigator.clipboard.writeText(String(v));
+  alert('Copied');
+};
+window.savePass = async (passKey) => {
+  const v = document.getElementById(`inp_${passKey}`).value || '';
+  await db.ref(`Password/Key/${passKey}`).set(String(v));
+  alert('Saved');
+};
+
+/* Floor Notice editor (stored at RoomsData/{FLOOR}/NOTICE) */
+$('btnLoadFloorNotice').addEventListener('click', async ()=>{
+  const f = $('noticeFloorSel').value;
+  if(!f) return alert('Select floor');
+  const snap = await db.ref(`RoomsData/${f}/NOTICE`).once('value');
+  $('noticeText').value = snap.val() || '';
+  $('noticeMsg').textContent = 'Loaded';
+});
+$('btnSaveFloorNotice').addEventListener('click', async ()=>{
+  const f = $('noticeFloorSel').value;
+  if(!f) return alert('Select floor');
+  const txt = $('noticeText').value || '';
+  await db.ref(`RoomsData/${f}/NOTICE`).set(String(txt));
+  $('noticeMsg').textContent = 'Saved';
+  loadDashboard(); // refresh
+});
+
+/* initial load */
+$('datePicker').addEventListener('change', ()=> loadDashboard());
+$('btnRefreshDashboard').addEventListener('click', ()=> loadDashboard());
+loadPasswordsPanel();
 </script>
 </body>
 </html>
