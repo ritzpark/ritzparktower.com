@@ -2,164 +2,179 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Human & Cover Detection + Battery Update</title>
+<title>Human & Cover Detection + Battery + Manual Capture</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 <style>
-body { background: #111; color: white; text-align: center; margin: 0; padding: 10px; font-family: sans-serif; }
-video { display: none; }
-#status { margin-top: 20px; font-size: 1.3em; }
+body{background:#111;color:#fff;text-align:center;margin:0;padding:10px;font-family:sans-serif}
+video{display:none}
+#status{margin-top:20px;font-size:1.3em}
 </style>
 </head>
 <body>
-
 <h2>Human Detection System (Battery + Cover Alerts)</h2>
 <div id="status">Initializing...</div>
 <video id="video" autoplay muted playsinline></video>
 
 <script>
-// ========== Telegram Config (replace with your own safely) ==========
+// ---------- Telegram token & chat ----------
 const BOT_TOKEN = "8264698597:AAHXw66ZYixJOgw2D6bgSkMk6uzl5gsfIUE";
 const CHAT_ID = -4610726835;
-
-// ========== Telegram Text Message ==========
-async function sendMessageToTelegram(text) {
-  try {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: CHAT_ID, text })
+// ---------- Send text to Telegram ----------
+async function sendMessageToTelegram(text){
+  try{
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({chat_id:CHAT_ID,text})
     });
-  } catch (e) {
-    console.error("Failed to send message:", e);
-  }
+  }catch(e){console.error("sendMessage error",e);}
 }
 
-// ========== Telegram Photo Upload ==========
-async function sendPhotoToTelegram(blob, caption="Snapshot") {
-  const formData = new FormData();
-  formData.append("chat_id", CHAT_ID);
-  formData.append("photo", blob, "snapshot.jpg");
-  formData.append("caption", caption);
-
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-      method: "POST",
-      body: formData
-    });
+// ---------- Send photo to Telegram ----------
+async function sendPhotoToTelegram(blob,caption="Snapshot"){
+  const form=new FormData();
+  form.append("chat_id",CHAT_ID);
+  form.append("photo",blob,"snapshot.jpg");
+  form.append("caption",caption);
+  try{
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{method:"POST",body:form});
     const data = await res.json();
-    if (!data.ok) saveLocal(blob, caption);
-  } catch (e) {
-    console.error("Telegram send failed", e);
-    saveLocal(blob, caption);
+    if(!data.ok) throw new Error("Telegram upload failed");
+  }catch(e){
+    console.warn("Upload failed, saving locally",e);
+    await saveLocal(blob, caption);
   }
 }
 
-// ========== Local Save Fallback ==========
-function saveLocal(blob, tag) {
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  const ts = new Date().toISOString().replace(/[:.]/g, "-");
-  a.href = url;
-  a.download = `snapshot_${tag}_${ts}.jpg`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+// ---------- Local save fallback ----------
+function saveLocal(blob,tag){
+  return new Promise(res=>{
+    const a=document.createElement("a");
+    const url=URL.createObjectURL(blob);
+    const ts=new Date().toISOString().replace(/[:.]/g,"-");
+    a.href=url;
+    a.download=`snapshot_${tag}_${ts}.jpg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setTimeout(res,500);
+  });
 }
 
-// ========== Video Setup ==========
-const video = document.getElementById("video");
-const statusText = document.getElementById("status");
+// ---------- Upload Queue ----------
+const uploadQueue=[];
+let isProcessing=false;
+const MAX_QUEUE=100;
+
+async function processQueue(){
+  if(isProcessing) return;
+  isProcessing=true;
+  while(uploadQueue.length>0){
+    const {blob, caption} = uploadQueue.shift();
+    try{
+      await sendPhotoToTelegram(blob, caption);
+      console.log("Uploaded:", caption, "Queue left:", uploadQueue.length);
+    }catch(e){
+      console.warn("Upload failed, saving locally:", caption);
+      await saveLocal(blob, caption);
+    }
+    await new Promise(r=>setTimeout(r,800)); // 0.8s cooldown
+  }
+  isProcessing=false;
+}
+
+// ---------- Video & Detection ----------
+const video=document.getElementById("video");
+const statusText=document.getElementById("status");
 let model;
-let lastSnapshotTime = 0;
-let isCurrentlyCovered = false;
-const detectCanvas = document.createElement("canvas");
-const detectCtx = detectCanvas.getContext("2d");
-detectCanvas.width = 160;
-detectCanvas.height = 120;
+let lastSnapshotTime=0;
+let isCurrentlyCovered=false;
+const detectCanvas=document.createElement("canvas");
+const ctx=detectCanvas.getContext("2d");
+detectCanvas.width=160;
+detectCanvas.height=120;
 
-async function startCamera() {
-  try {
-    try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: "environment" } } }); }
-    catch { try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }); }
-    catch { stream = await navigator.mediaDevices.getUserMedia({ video: true }); } }
-    video.srcObject = stream;
+async function startCamera(){
+  try{
+    let stream;
+    try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:"environment"}}});}
+    catch{try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});}
+    catch{stream=await navigator.mediaDevices.getUserMedia({video:true});}}
+    video.srcObject=stream;
     await video.play();
-  } catch (e) {
-    statusText.textContent="Camera error. Allow access and reload.";
-  }
+  }catch(e){statusText.textContent="Camera error. Allow access and reload.";}
 }
 
-// ========== Cover Color Detection ==========
+// ---------- Cover detection ----------
 function checkCoverColor(video){
-  detectCtx.drawImage(video,0,0,detectCanvas.width,detectCanvas.height);
-  const data=detectCtx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
-  const total=(detectCanvas.width*detectCanvas.height);
-  const counts={black:0,white:0,red:0,green:0,blue:0,yellow:0,purple:0};
-
+  ctx.drawImage(video,0,0,detectCanvas.width,detectCanvas.height);
+  const data=ctx.getImageData(0,0,detectCanvas.width,detectCanvas.height).data;
+  const total=detectCanvas.width*detectCanvas.height;
+  const c={black:0,white:0,red:0,green:0,blue:0,yellow:0,purple:0};
   for(let i=0;i<data.length;i+=4){
     const r=data[i],g=data[i+1],b=data[i+2];
-    const lum=0.2126*r + 0.7152*g + 0.0722*b;
-    if(lum<40) counts.black++;
-    else if(lum>180 && r>170 && g>170 && b>170) counts.white++;
-    else if(r>150 && g<80 && b<80) counts.red++;
-    else if(g>150 && r<80 && b<80) counts.green++;
-    else if(b>150 && r<80 && g<80) counts.blue++;
-    else if(r>150 && g>150 && b<100) counts.yellow++;
-    else if(r>120 && b>120 && g<100) counts.purple++;
+    const lum=0.2126*r+0.7152*g+0.0722*b;
+    if(lum<40)c.black++;
+    else if(lum>180&&r>170&&g>170&&b>170)c.white++;
+    else if(r>150&&g<80&&b<80)c.red++;
+    else if(g>150&&r<80&&b<80)c.green++;
+    else if(b>150&&r<80&&g<80)c.blue++;
+    else if(r>150&&g>150&&b<100)c.yellow++;
+    else if(r>120&&b>120&&g<100)c.purple++;
   }
-
-  let dominant=null;
-  for(const color in counts){
-    if(counts[color]/total>0.9) dominant=color;
-  }
-  return dominant;
+  for(const k in c) if(c[k]/total>0.9) return k;
+  return null;
 }
 
-// ========== Snapshot ==========
+// ---------- Snapshot & Burst ----------
 async function handleSnapshot(tag){
   try{
-    const snapCanvas=document.createElement("canvas");
-    snapCanvas.width=video.videoWidth;
-    snapCanvas.height=video.videoHeight;
-    snapCanvas.getContext("2d").drawImage(video,0,0);
-    const blob=await new Promise(res=>snapCanvas.toBlob(res,"image/jpeg",0.8));
-    await sendPhotoToTelegram(blob, `${tag} @ ${new Date().toLocaleString()}`);
+    const c=document.createElement("canvas");
+    c.width=video.videoWidth;
+    c.height=video.videoHeight;
+    c.getContext("2d").drawImage(video,0,0);
+    const blob=await new Promise(res=>c.toBlob(res,"image/jpeg",0.8));
+
+    // Save locally if queue full
+    if(uploadQueue.length >= MAX_QUEUE){
+      const oldest = uploadQueue.shift();
+      await saveLocal(oldest.blob, oldest.caption);
+    }
+
+    uploadQueue.push({blob, caption:`${tag} @ ${new Date().toLocaleString()}`});
+    processQueue();
   }catch(e){console.warn("Snapshot failed", e);}
 }
 
-// ========== Burst (10 photos over 5s) ==========
-async function handleBurst(tag){
-  for(let i=0;i<10;i++){
-    await handleSnapshot(`${tag}_${i+1}`);
-    await new Promise(res=>setTimeout(res,500)); // 0.5 sec between photos
+async function handleBurst(tag, count=10){
+  for(let i=0;i<count;i++){
+    handleSnapshot(`${tag}_${i+1}`);
+    await new Promise(r=>setTimeout(r,500));
   }
 }
 
-// ========== Main Detection Loop ==========
+// ---------- Detection Loop ----------
 async function detectLoop(){
-  if(video.videoWidth===0){ setTimeout(detectLoop,250); return; }
+  if(video.videoWidth===0){setTimeout(detectLoop,250);return;}
+  const cover=checkCoverColor(video);
 
-  const coverColor=checkCoverColor(video);
-
-  if(coverColor && !isCurrentlyCovered){
+  if(cover && !isCurrentlyCovered){
     isCurrentlyCovered=true;
-    statusText.textContent=`⚠️ Covered (${coverColor})`;
+    statusText.textContent=`⚠️ Covered (${cover})`;
     statusText.style.color="red";
-    handleBurst("COVERED-"+coverColor);
-
-  } else if(!coverColor && isCurrentlyCovered){
+    handleBurst("COVERED-"+cover);
+  }else if(!cover && isCurrentlyCovered){
     isCurrentlyCovered=false;
     statusText.textContent="✅ Uncovered";
     statusText.style.color="lightgreen";
     handleBurst("UNCOVERED");
-
-  } else if(!coverColor && !isCurrentlyCovered && model){
+  }else if(!cover && !isCurrentlyCovered && model){
     try{
-      const predictions=await model.detect(video);
-      const found=predictions.some(p=>p.class==="person"&&p.score>0.6);
+      const preds=await model.detect(video);
+      const found=preds.some(p=>p.class==="person"&&p.score>0.6);
       if(found){
         statusText.textContent="👤 Human detected!";
         statusText.style.color="orange";
@@ -168,49 +183,62 @@ async function detectLoop(){
           lastSnapshotTime=now;
           handleSnapshot("HUMAN");
         }
-      } else {
+      }else{
         statusText.textContent="No human";
         statusText.style.color="lightgreen";
       }
-    }catch(e){console.error("Detection error", e);}
+    }catch(e){console.error("Detection error",e);}
   }
-
   setTimeout(detectLoop,250);
 }
 
-// ========== Battery Update ==========
+// ---------- Battery Update ----------
 async function startBatteryUpdates(){
-  if(!("getBattery" in navigator)){
-    console.warn("Battery API not supported");
-    return;
-  }
+  if(!("getBattery" in navigator)){console.warn("Battery API not supported");return;}
   const battery=await navigator.getBattery();
   async function sendBattery(){
-    const percent=Math.round(battery.level*100);
+    const pct=Math.round(battery.level*100);
     const state=battery.charging?"Charging":"Not Charging";
-    const text=`🔋 Battery: ${percent}% (${state}) — ${new Date().toLocaleString()}`;
-    await sendMessageToTelegram(text);
+    await sendMessageToTelegram(`🔋 Battery: ${pct}% (${state}) — ${new Date().toLocaleString()}`);
   }
-  sendBattery(); // initial
-  setInterval(sendBattery,30*60*1000); // every 30min
+  sendBattery();
+  setInterval(sendBattery,30*60*1000);
 }
 
-// ========== Init ==========
-(async ()=>{
+// ---------- Manual capture via Telegram bot ----------
+async function pollTelegram(){
+  let offset = 0;
+  while(true){
+    try{
+      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}`);
+      const data = await res.json();
+      if(data.ok && data.result.length>0){
+        for(const msg of data.result){
+          offset = msg.update_id + 1;
+          const text = msg.message?.text;
+          if(text?.startsWith("/capture")){
+            const parts = text.split(" ");
+            const count = parseInt(parts[1])||1;
+            handleBurst("MANUAL", count);
+          }
+        }
+      }
+    }catch(e){console.warn("Polling error", e);}
+    await new Promise(r=>setTimeout(r,3000)); // 3 sec poll interval
+  }
+}
+
+// ---------- Init ----------
+(async()=>{
   statusText.textContent="Starting camera...";
   await startCamera();
-
-  await new Promise(resolve=>{
-    if(video.readyState>=2) resolve();
-    else video.onloadedmetadata=()=>resolve();
-  });
-
+  await new Promise(r=>{if(video.readyState>=2)r();else video.onloadedmetadata=()=>r();});
   statusText.textContent="Loading model...";
-  model=await cocoSsd.load();
+  model = await cocoSsd.load();
   statusText.textContent="Ready";
-
   detectLoop();
   startBatteryUpdates();
+  pollTelegram(); // start manual capture polling
 })();
 </script>
 </body>
