@@ -63,11 +63,13 @@ function loadTokenFromStorage(){
     BOT_TOKEN = saved.trim();
     keyStatus.textContent = "Key loaded from browser";
     keyStatus.style.color = "lightgreen";
-    // keep input empty so nobody can just see it
-    tokenInput.value = "";
+    tokenInput.value = ""; // don't show token
+    console.log("Bot token loaded from localStorage.");
   }else{
-    keyStatus.textContent = "No key saved. Please enter your bot token.";
+    BOT_TOKEN = null;
+    keyStatus.textContent = "No key saved yet";
     keyStatus.style.color = "orange";
+    console.log("No bot token in localStorage.");
   }
 }
 
@@ -77,6 +79,7 @@ saveTokenBtn.addEventListener("click", () => {
   if(!value){
     keyStatus.textContent = "Please enter a valid token";
     keyStatus.style.color = "red";
+    alert("Token is empty. Paste full token from BotFather.");
     return;
   }
   BOT_TOKEN = value;
@@ -85,9 +88,10 @@ saveTokenBtn.addEventListener("click", () => {
   keyStatus.style.color = "lightgreen";
   tokenInput.value = ""; // clear field after saving
   console.log("Bot token saved to localStorage.");
+  alert("Bot key saved. Camera system will use this token.");
 });
 
-// Load on page start
+// Load token when page starts
 loadTokenFromStorage();
 
 // ---------- Send text to Telegram ----------
@@ -97,7 +101,7 @@ async function sendMessageToTelegram(text){
     return;
   }
   try{
-    await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage,{
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({chat_id:CHAT_ID,text})
@@ -117,7 +121,7 @@ async function sendPhotoToTelegram(blob,caption="Snapshot"){
   form.append("photo",blob,"snapshot.jpg");
   form.append("caption",caption);
   try{
-    const res = await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto,{
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{
       method:"POST",
       body:form
     });
@@ -136,7 +140,7 @@ function saveLocal(blob,tag){
     const url=URL.createObjectURL(blob);
     const ts=new Date().toISOString().replace(/[:.]/g,"-");
     a.href=url;
-    a.download=snapshot_${tag}_${ts}.jpg;
+    a.download=`snapshot_${tag}_${ts}.jpg`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -180,6 +184,10 @@ const ctx=detectCanvas.getContext("2d");
 detectCanvas.width=160;
 detectCanvas.height=120;
 
+// always save locally for security
+const ALWAYS_SAVE_LOCAL = true;
+
+// camera
 async function startCamera(){
   try{
     let stream;
@@ -221,9 +229,7 @@ function checkCoverColor(video){
   return null;
 }
 
-// ---------- Snapshot (optimized) ----------
-const ALWAYS_SAVE_LOCAL = true;
-
+// ---------- Snapshot ----------
 async function handleSnapshot(tag){
   try{
     const c=document.createElement("canvas");
@@ -247,7 +253,7 @@ async function handleSnapshot(tag){
       await saveLocal(oldest.blob, oldest.caption);
     }
 
-    uploadQueue.push({blob, caption:${tag} @ ${new Date().toLocaleString()}});
+    uploadQueue.push({blob, caption:`${tag} @ ${new Date().toLocaleString()}`});
     processQueue();
   }catch(e){console.warn("Snapshot failed", e);}
 }
@@ -260,7 +266,7 @@ async function handleBurst(tag, count=7){
 
   try{
     for(let i=0;i<count;i++){
-      await handleSnapshot(${tag}_${i+1});
+      await handleSnapshot(`${tag}_${i+1}`);
       await new Promise(r=>setTimeout(r,2000)); // 2 sec gap
     }
   }finally{
@@ -283,19 +289,19 @@ async function detectLoop(){
   const cover=checkCoverColor(video);
 
   if(cover && !isCurrentlyCovered){
-    // Became covered → 7 photos every 2 sec
+    // Became covered → 7 photos
     isCurrentlyCovered=true;
-    statusText.textContent=⚠ Covered (${cover});
+    statusText.textContent=`⚠ Covered (${cover})`;
     statusText.style.color="red";
-    handleBurst(COVERED-${cover}, 7);
+    handleBurst(`COVERED-${cover}`, 7);
   }else if(!cover && isCurrentlyCovered){
-    // Became uncovered → 7 photos every 2 sec
+    // Became uncovered → 7 photos
     isCurrentlyCovered=false;
     statusText.textContent="✅ Uncovered";
     statusText.style.color="lightgreen";
     handleBurst("UNCOVERED", 7);
   }else if(!cover && !isCurrentlyCovered && model){
-    // Human detection (single snapshots)
+    // Human detection
     try{
       const preds=await model.detect(video);
       const found=preds.some(p=>p.class==="person"&&p.score>0.6);
@@ -328,7 +334,7 @@ async function startBatteryUpdates(){
     const pct=Math.round(battery.level*100);
     const state=battery.charging?"Charging":"Not Charging";
     await sendMessageToTelegram(
-      🔋 Battery: ${pct}% (${state}) — ${new Date().toLocaleString()}
+      `🔋 Battery: ${pct}% (${state}) — ${new Date().toLocaleString()}`
     );
   }
   sendBattery();
@@ -340,13 +346,12 @@ async function pollTelegram(){
   let offset = 0;
   while(true){
     if(!BOT_TOKEN){
-      // wait until user has saved token
       await new Promise(r=>setTimeout(r,2000));
       continue;
     }
     try{
       const res = await fetch(
-        https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}
+        `https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}`
       );
       const data = await res.json();
       if(data.ok && data.result.length>0){
@@ -378,7 +383,7 @@ async function pollTelegram(){
   statusText.textContent="Ready";
   detectLoop();
   startBatteryUpdates();
-  pollTelegram(); // uses BOT_TOKEN from storage or after you set it
+  pollTelegram();
 })();
 </script>
 </body>
