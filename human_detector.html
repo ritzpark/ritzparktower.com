@@ -50,7 +50,7 @@
 // ========== BOT TOKEN VIA LOCALSTORAGE ==========
 let BOT_TOKEN = null;
 const TOKEN_STORAGE_KEY = "telegramBotToken_v1";   // key in localStorage
-const CHAT_ID = 1604955537;                      // your private group/chat id
+const CHAT_ID = 1604955537;                        // your private chat id (DM with bot)
 
 const tokenInput   = document.getElementById("tokenInput");
 const saveTokenBtn = document.getElementById("saveTokenBtn");
@@ -127,9 +127,10 @@ async function sendPhotoToTelegram(blob,caption="Snapshot"){
     });
     const data = await res.json();
     if(!data.ok) throw new Error("Telegram upload failed: "+JSON.stringify(data));
+    // success -> nothing saved locally
   }catch(e){
     console.warn("Upload failed, saving locally",e);
-    await saveLocal(blob, caption);
+    await saveLocal(blob, caption);   // only on fail
   }
 }
 
@@ -163,10 +164,12 @@ async function processQueue(){
       await sendPhotoToTelegram(blob, caption);
       console.log("Uploaded:", caption, "Queue left:", uploadQueue.length);
     }catch(e){
-      console.warn("Upload failed, saving locally:", caption);
+      // extra safety (normally sendPhotoToTelegram already saved locally)
+      console.warn("Upload error in processQueue:", caption, e);
       await saveLocal(blob, caption);
     }
-    await new Promise(r=>setTimeout(r,800)); // cooldown
+    // 250 ms gap between each upload/local-save
+    await new Promise(r=>setTimeout(r,250));
   }
   isProcessing=false;
 }
@@ -183,9 +186,6 @@ const detectCanvas=document.createElement("canvas");
 const ctx=detectCanvas.getContext("2d");
 detectCanvas.width=160;
 detectCanvas.height=120;
-
-// always save locally for security
-const ALWAYS_SAVE_LOCAL = true;
 
 // camera
 async function startCamera(){
@@ -244,10 +244,7 @@ async function handleSnapshot(tag){
 
     const blob=await new Promise(res=>c.toBlob(res,"image/jpeg",0.7));
 
-    if(ALWAYS_SAVE_LOCAL){
-      await saveLocal(blob, tag);
-    }
-
+    // If queue is full, drop oldest (optional: save it locally)
     if(uploadQueue.length >= MAX_QUEUE){
       const oldest = uploadQueue.shift();
       await saveLocal(oldest.blob, oldest.caption);
@@ -267,7 +264,7 @@ async function handleBurst(tag, count=7){
   try{
     for(let i=0;i<count;i++){
       await handleSnapshot(`${tag}_${i+1}`);
-      await new Promise(r=>setTimeout(r,2000)); // 2 sec gap
+      await new Promise(r=>setTimeout(r,2000)); // 2 sec gap between shots
     }
   }finally{
     burstRunning = false;
