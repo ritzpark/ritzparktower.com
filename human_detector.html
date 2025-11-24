@@ -1,15 +1,103 @@
-<script>
-// ---------- Telegram token & chat ----------
-const BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
-const CHAT_ID = -4610726835; // your chat id
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Human & Cover Detection + Battery + Manual Capture</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.13.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+<style>
+  body{background:#111;color:#fff;text-align:center;margin:0;padding:10px;font-family:sans-serif}
+  video{display:none}
+  #status{margin-top:20px;font-size:1.3em}
+  #tokenBar{margin-top:10px;font-size:0.95em}
+  #tokenInput{
+    width:260px;
+    max-width:90vw;
+    padding:4px 8px;
+    border-radius:4px;
+    border:1px solid #444;
+    background:#222;
+    color:#fff;
+  }
+  #saveTokenBtn{
+    padding:4px 10px;
+    margin-left:6px;
+    border:none;
+    border-radius:4px;
+    background:#2e7d32;
+    color:#fff;
+    cursor:pointer;
+  }
+  #saveTokenBtn:hover{background:#388e3c}
+  #keyStatus{margin-left:8px}
+</style>
+</head>
+<body>
+<h2>Human Detection System (Battery + Cover Alerts)</h2>
 
-// Save every snapshot locally as well (security)
-const ALWAYS_SAVE_LOCAL = true;
+<!-- 🔐 Bot key input & status -->
+<div id="tokenBar">
+  <input type="password" id="tokenInput" placeholder="Enter Telegram Bot Token">
+  <button id="saveTokenBtn">Save Bot Key</button>
+  <span id="keyStatus">No key saved yet</span>
+</div>
+
+<div id="status">Initializing...</div>
+<video id="video" autoplay muted playsinline></video>
+
+<script>
+// ========== BOT TOKEN VIA LOCALSTORAGE ==========
+let BOT_TOKEN = null;
+const TOKEN_STORAGE_KEY = "telegramBotToken_v1";   // key in localStorage
+const CHAT_ID = -4610726835;                      // your private group/chat id
+
+const tokenInput   = document.getElementById("tokenInput");
+const saveTokenBtn = document.getElementById("saveTokenBtn");
+const keyStatus    = document.getElementById("keyStatus");
+
+// Load token from localStorage if exists
+function loadTokenFromStorage(){
+  const saved = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if(saved && saved.trim()){
+    BOT_TOKEN = saved.trim();
+    keyStatus.textContent = "Key loaded from browser";
+    keyStatus.style.color = "lightgreen";
+    // keep input empty so nobody can just see it
+    tokenInput.value = "";
+  }else{
+    keyStatus.textContent = "No key saved. Please enter your bot token.";
+    keyStatus.style.color = "orange";
+  }
+}
+
+// Save token when user clicks button
+saveTokenBtn.addEventListener("click", () => {
+  const value = tokenInput.value.trim();
+  if(!value){
+    keyStatus.textContent = "Please enter a valid token";
+    keyStatus.style.color = "red";
+    return;
+  }
+  BOT_TOKEN = value;
+  localStorage.setItem(TOKEN_STORAGE_KEY, value);
+  keyStatus.textContent = "Key saved in this browser";
+  keyStatus.style.color = "lightgreen";
+  tokenInput.value = ""; // clear field after saving
+  console.log("Bot token saved to localStorage.");
+});
+
+// Load on page start
+loadTokenFromStorage();
 
 // ---------- Send text to Telegram ----------
 async function sendMessageToTelegram(text){
+  if(!BOT_TOKEN){
+    console.warn("No bot token set; skipping sendMessage");
+    return;
+  }
   try{
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+    await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({chat_id:CHAT_ID,text})
@@ -19,17 +107,22 @@ async function sendMessageToTelegram(text){
 
 // ---------- Send photo to Telegram ----------
 async function sendPhotoToTelegram(blob,caption="Snapshot"){
+  if(!BOT_TOKEN){
+    console.warn("No bot token set; saving photo locally only");
+    await saveLocal(blob, caption);
+    return;
+  }
   const form=new FormData();
   form.append("chat_id",CHAT_ID);
   form.append("photo",blob,"snapshot.jpg");
   form.append("caption",caption);
   try{
-    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,{
+    const res = await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto,{
       method:"POST",
       body:form
     });
     const data = await res.json();
-    if(!data.ok) throw new Error("Telegram upload failed");
+    if(!data.ok) throw new Error("Telegram upload failed: "+JSON.stringify(data));
   }catch(e){
     console.warn("Upload failed, saving locally",e);
     await saveLocal(blob, caption);
@@ -43,7 +136,7 @@ function saveLocal(blob,tag){
     const url=URL.createObjectURL(blob);
     const ts=new Date().toISOString().replace(/[:.]/g,"-");
     a.href=url;
-    a.download=`snapshot_${tag}_${ts}.jpg`;
+    a.download=snapshot_${tag}_${ts}.jpg;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -128,12 +221,13 @@ function checkCoverColor(video){
   return null;
 }
 
-// ---------- Snapshot (optimized but same behavior) ----------
+// ---------- Snapshot (optimized) ----------
+const ALWAYS_SAVE_LOCAL = true;
+
 async function handleSnapshot(tag){
   try{
     const c=document.createElement("canvas");
 
-    // smaller resolution to avoid freeze
     const targetWidth = 640;
     const ratio = video.videoHeight / video.videoWidth || 0.75;
     const targetHeight = Math.round(targetWidth * ratio);
@@ -145,7 +239,6 @@ async function handleSnapshot(tag){
     const blob=await new Promise(res=>c.toBlob(res,"image/jpeg",0.7));
 
     if(ALWAYS_SAVE_LOCAL){
-      // save one local copy for security
       await saveLocal(blob, tag);
     }
 
@@ -154,7 +247,7 @@ async function handleSnapshot(tag){
       await saveLocal(oldest.blob, oldest.caption);
     }
 
-    uploadQueue.push({blob, caption:`${tag} @ ${new Date().toLocaleString()}`});
+    uploadQueue.push({blob, caption:${tag} @ ${new Date().toLocaleString()}});
     processQueue();
   }catch(e){console.warn("Snapshot failed", e);}
 }
@@ -163,12 +256,11 @@ async function handleSnapshot(tag){
 async function handleBurst(tag, count=7){
   if(burstRunning) return;
   burstRunning = true;
-  // force exactly max 7
   count = Math.min(count, 7);
 
   try{
     for(let i=0;i<count;i++){
-      await handleSnapshot(`${tag}_${i+1}`);
+      await handleSnapshot(${tag}_${i+1});
       await new Promise(r=>setTimeout(r,2000)); // 2 sec gap
     }
   }finally{
@@ -183,7 +275,6 @@ async function detectLoop(){
     return;
   }
 
-  // If doing burst, skip detection to reduce load
   if(burstRunning){
     setTimeout(detectLoop,250);
     return;
@@ -194,9 +285,9 @@ async function detectLoop(){
   if(cover && !isCurrentlyCovered){
     // Became covered → 7 photos every 2 sec
     isCurrentlyCovered=true;
-    statusText.textContent=`⚠ Covered (${cover})`;
+    statusText.textContent=⚠ Covered (${cover});
     statusText.style.color="red";
-    handleBurst(`COVERED-${cover}`, 7);
+    handleBurst(COVERED-${cover}, 7);
   }else if(!cover && isCurrentlyCovered){
     // Became uncovered → 7 photos every 2 sec
     isCurrentlyCovered=false;
@@ -204,7 +295,7 @@ async function detectLoop(){
     statusText.style.color="lightgreen";
     handleBurst("UNCOVERED", 7);
   }else if(!cover && !isCurrentlyCovered && model){
-    // 🔸 Human detection: keep as before (single snapshots)
+    // Human detection (single snapshots)
     try{
       const preds=await model.detect(video);
       const found=preds.some(p=>p.class==="person"&&p.score>0.6);
@@ -212,7 +303,7 @@ async function detectLoop(){
         statusText.textContent="👤 Human detected!";
         statusText.style.color="orange";
         const t=Date.now();
-        if(t-lastSnapshotTime>1500){ // 1.5s between shots (same as last version)
+        if(t-lastSnapshotTime>1500){
           lastSnapshotTime=t;
           handleSnapshot("HUMAN");
         }
@@ -236,7 +327,9 @@ async function startBatteryUpdates(){
   async function sendBattery(){
     const pct=Math.round(battery.level*100);
     const state=battery.charging?"Charging":"Not Charging";
-    await sendMessageToTelegram(`🔋 Battery: ${pct}% (${state}) — ${new Date().toLocaleString()}`);
+    await sendMessageToTelegram(
+      🔋 Battery: ${pct}% (${state}) — ${new Date().toLocaleString()}
+    );
   }
   sendBattery();
   setInterval(sendBattery,30*60*1000);
@@ -246,8 +339,15 @@ async function startBatteryUpdates(){
 async function pollTelegram(){
   let offset = 0;
   while(true){
+    if(!BOT_TOKEN){
+      // wait until user has saved token
+      await new Promise(r=>setTimeout(r,2000));
+      continue;
+    }
     try{
-      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}`);
+      const res = await fetch(
+        https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${offset}
+      );
       const data = await res.json();
       if(data.ok && data.result.length>0){
         for(const msg of data.result){
@@ -261,7 +361,7 @@ async function pollTelegram(){
         }
       }
     }catch(e){console.warn("Polling error", e);}
-    await new Promise(r=>setTimeout(r,3000)); // 3 sec poll interval
+    await new Promise(r=>setTimeout(r,3000));
   }
 }
 
@@ -278,6 +378,8 @@ async function pollTelegram(){
   statusText.textContent="Ready";
   detectLoop();
   startBatteryUpdates();
-  pollTelegram();
+  pollTelegram(); // uses BOT_TOKEN from storage or after you set it
 })();
 </script>
+</body>
+</html>
