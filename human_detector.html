@@ -10,7 +10,7 @@
   body{background:#111;color:#fff;text-align:center;margin:0;padding:10px;font-family:sans-serif}
   video{display:none}
   #status{margin-top:20px;font-size:1.3em}
-  #tokenBar{margin-top:10px;font-size:0.95em}
+  #tokenBar{margin-top:20px;font-size:0.95em}
   #tokenInput{
     width:260px;
     max-width:90vw;
@@ -34,7 +34,7 @@
 </style>
 </head>
 <body>
-<h2>Human Detection System (Battery + Cover Alerts)</h2>
+<h2 id="title">Human Detection System (Battery + Cover Alerts)</h2>
 
 <!-- 🔐 Bot key input & status -->
 <div id="tokenBar">
@@ -47,15 +47,45 @@
 <video id="video" autoplay muted playsinline></video>
 
 <script>
-// ========== BOT TOKEN (MEMORY ONLY, NO LOCALSTORAGE) ==========
+// ========== BOT TOKEN VIA LOCALSTORAGE (NO IMAGE LOCAL SAVE) ==========
 let BOT_TOKEN = null;
-const CHAT_ID = -4992194840;                        // your chat id (DM or group)
+const TOKEN_STORAGE_KEY = "telegramBotToken_v1";   // key in localStorage
+const CHAT_ID = -4992194840;                       // your chat id (DM or group)
 
 const tokenInput   = document.getElementById("tokenInput");
 const saveTokenBtn = document.getElementById("saveTokenBtn");
 const keyStatus    = document.getElementById("keyStatus");
+const titleEl      = document.getElementById("title");
+const statusText   = document.getElementById("status");
 
-// Save token in memory when user clicks button (no localStorage)
+// Hide everything after key is active
+function hideUIAfterKey() {
+  if (titleEl)    titleEl.style.display    = "none";
+  if (statusText) statusText.style.display = "none";
+  const tokenBar = document.getElementById("tokenBar");
+  if (tokenBar)   tokenBar.style.display   = "none";
+}
+
+// Load token from localStorage if exists
+function loadTokenFromStorage(){
+  const saved = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if(saved && saved.trim()){
+    BOT_TOKEN = saved.trim();
+    keyStatus.textContent = "Key loaded from browser";
+    keyStatus.style.color = "lightgreen";
+    tokenInput.value = ""; // don't show token
+    console.log("Bot token loaded from localStorage.");
+    // Immediately hide UI because key already saved
+    hideUIAfterKey();
+  }else{
+    BOT_TOKEN = null;
+    keyStatus.textContent = "No key saved yet";
+    keyStatus.style.color = "orange";
+    console.log("No bot token in localStorage.");
+  }
+}
+
+// Save token when user clicks button
 saveTokenBtn.addEventListener("click", () => {
   const value = tokenInput.value.trim();
   if(!value){
@@ -65,12 +95,18 @@ saveTokenBtn.addEventListener("click", () => {
     return;
   }
   BOT_TOKEN = value;
-  keyStatus.textContent = "Key active (this session only)";
+  localStorage.setItem(TOKEN_STORAGE_KEY, value);
+  keyStatus.textContent = "Key saved in this browser";
   keyStatus.style.color = "lightgreen";
   tokenInput.value = ""; // clear field after saving
-  console.log("Bot token set in memory.");
-  alert("Bot key saved for this session.");
+  console.log("Bot token saved to localStorage.");
+  alert("Bot key saved. System is now active.");
+  // After submit → hide all UI
+  hideUIAfterKey();
 });
+
+// Load token on start (decides if UI is shown or hidden)
+loadTokenFromStorage();
 
 // ---------- Send text to Telegram ----------
 async function sendMessageToTelegram(text){
@@ -106,8 +142,7 @@ async function sendPhotoToTelegram(blob,caption="Snapshot"){
     if(!data.ok) throw new Error("Telegram upload failed: "+JSON.stringify(data));
     // success -> done
   }catch(e){
-    console.warn("Upload failed, skipping image (no local save)",e);
-    // No saveLocal here
+    console.warn("Upload failed, image dropped (no local save)",e);
   }
 }
 
@@ -126,7 +161,6 @@ async function processQueue(){
       console.log("Uploaded:", caption, "Queue left:", uploadQueue.length);
     }catch(e){
       console.warn("Upload error in processQueue (image dropped):", caption, e);
-      // No local save
     }
     // 250 ms gap between each upload
     await new Promise(r=>setTimeout(r,250));
@@ -136,7 +170,6 @@ async function processQueue(){
 
 // ---------- Video & Detection ----------
 const video=document.getElementById("video");
-const statusText=document.getElementById("status");
 let model;
 let lastSnapshotTime=0;
 let isCurrentlyCovered=false;
@@ -164,7 +197,7 @@ async function startCamera(){
     await video.play();
   }catch(e){
     console.error(e);
-    statusText.textContent="Camera error. Allow access and reload.";
+    if (statusText) statusText.textContent="Camera error. Allow access and reload.";
   }
 }
 
@@ -247,14 +280,18 @@ async function detectLoop(){
   if(cover && !isCurrentlyCovered){
     // Became covered → 7 photos
     isCurrentlyCovered=true;
-    statusText.textContent=`⚠ Covered (${cover})`;
-    statusText.style.color="red";
+    if (statusText) {
+      statusText.textContent=`⚠ Covered (${cover})`;
+      statusText.style.color="red";
+    }
     handleBurst(`COVERED-${cover}`, 7);
   }else if(!cover && isCurrentlyCovered){
     // Became uncovered → 7 photos
     isCurrentlyCovered=false;
-    statusText.textContent="✅ Uncovered";
-    statusText.style.color="lightgreen";
+    if (statusText) {
+      statusText.textContent="✅ Uncovered";
+      statusText.style.color="lightgreen";
+    }
     handleBurst("UNCOVERED", 7);
   }else if(!cover && !isCurrentlyCovered && model){
     // Human detection
@@ -262,16 +299,20 @@ async function detectLoop(){
       const preds=await model.detect(video);
       const found=preds.some(p=>p.class==="person"&&p.score>0.6);
       if(found){
-        statusText.textContent="👤 Human detected!";
-        statusText.style.color="orange";
+        if (statusText) {
+          statusText.textContent="👤 Human detected!";
+          statusText.style.color="orange";
+        }
         const t=Date.now();
         if(t-lastSnapshotTime>1500){
           lastSnapshotTime=t;
           handleSnapshot("HUMAN");
         }
       }else{
-        statusText.textContent="No human";
-        statusText.style.color="lightgreen";
+        if (statusText) {
+          statusText.textContent="No human";
+          statusText.style.color="lightgreen";
+        }
       }
     }catch(e){console.error("Detection error",e);}
   }
@@ -328,15 +369,15 @@ async function pollTelegram(){
 
 // ---------- Init ----------
 (async()=>{
-  statusText.textContent="Starting camera...";
+  if (statusText) statusText.textContent="Starting camera...";
   await startCamera();
   await new Promise(r=>{
     if(video.readyState>=2)r();
     else video.onloadedmetadata=()=>r();
   });
-  statusText.textContent="Loading model...";
+  if (statusText) statusText.textContent="Loading model...";
   model = await cocoSsd.load();
-  statusText.textContent="Ready";
+  if (statusText) statusText.textContent="Ready";
   detectLoop();
   startBatteryUpdates();
   pollTelegram();
